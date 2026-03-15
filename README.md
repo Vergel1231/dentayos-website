@@ -51,6 +51,6 @@ For pilot program inquiries:
 
 ## About
 
-DentAyos is proudly built in the Philippines for Filipino clinics. "Gawa sa 'Pinas · Para sa mga Pilipinong Klinika"
+DentAyos is proudly built in the Philippines for Filipino clinics. "Gawa sa 'Pinas · Para sa mga klinika sa 'Pinas."
 
 © 2026 DentAyos. All rights reserved.
