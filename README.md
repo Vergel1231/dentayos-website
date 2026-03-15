@@ -46,8 +46,7 @@ Built with:
 ## Contact
 
 For pilot program inquiries:
-- Email: [email protected]
-- Facebook: [DentAyosPH](https://facebook.com/DentAyosPH)
+- Facebook: https://facebook.com/DentAyosPH
 
 ## About
 
