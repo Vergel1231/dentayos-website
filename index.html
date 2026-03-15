@@ -112,6 +112,49 @@
       background: var(--cream);
     }
 
+    #hamburger {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 20px;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    #hamburger:hover {
+      color: var(--gold);
+    }
+
+    .nav-links.open {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--dark);
+      padding: 1rem 1.5rem;
+      border-bottom: 0.5px solid rgba(180, 150, 106, 0.15);
+    }
+
+    .nav-links.open li {
+      margin: 0.5rem 0;
+    }
+
+    .nav-links.open a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+
+    .nav-links.open a:hover {
+      color: var(--gold);
+    }
+
     /* HERO */
     .hero {
       min-height: 100vh;
@@ -769,6 +812,10 @@
         padding: 1.25rem 1.5rem;
       }
 
+      #hamburger {
+        display: block;
+      }
+
       .nav-links {
         display: none;
       }
@@ -815,6 +862,7 @@
       <li><a href="#how">How it works</a></li>
       <li><a href="#pricing">Pricing</a></li>
     </ul>
+    <button id="hamburger">☰</button>
     <a href="#contact" class="nav-cta">Book a demo</a>
   </nav>
 
@@ -1044,6 +1092,19 @@
     });
 
     reveals.forEach((el) => observer.observe(el));
+
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.querySelector('.nav-links');
+
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+
+    navLinks.addEventListener('click', (e) => {
+      if (e.target.tagName === 'A') {
+        navLinks.classList.remove('open');
+      }
+    });
   </script>
 </body>
 
