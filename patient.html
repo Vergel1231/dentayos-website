@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DentAyos — Patient Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dark: #0D1B1A;
+    --dark2: #1A2E2C;
+    --dark3: #223330;
+    --gold: #B4966A;
+    --cream: #E8D5B0;
+    --teal: #6B8A87;
+    --muted: #5A7875;
+    --success: #1D9E75;
+    --border: rgba(180,150,106,0.15);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--dark); color:var(--cream); font-family:'DM Sans',sans-serif; font-weight:300; min-height:100vh; }
+
+  /* NAV */
+  nav {
+    padding:1.5rem 3rem;
+    border-bottom:0.5px solid var(--border);
+    display:flex; justify-content:space-between; align-items:center;
+    background:rgba(13,27,26,0.95);
+    position:sticky; top:0; z-index:100;
+  }
+  .nav-logo { font-family:'DM Serif Display',serif; font-size:20px; letter-spacing:2px; color:var(--cream); text-decoration:none; }
+  .nav-logo span { color:var(--gold); }
+  .nav-right { display:flex; align-items:center; gap:1.5rem; }
+  .nav-patient { display:flex; align-items:center; gap:10px; }
+  .patient-avatar {
+    width:34px; height:34px; border-radius:50%;
+    background:var(--dark3); border:0.5px solid rgba(180,150,106,0.3);
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:500; color:var(--gold);
+  }
+  .nav-patient p { font-size:13px; color:var(--cream); }
+  .nav-patient span { font-size:11px; color:var(--teal); display:block; }
+  .nav-back {
+    font-size:11px; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--teal); text-decoration:none; border:0.5px solid var(--border);
+    padding:0.5rem 1rem; transition:all 0.2s;
+  }
+  .nav-back:hover { border-color:var(--gold); color:var(--gold); }
+
+  /* HERO BAND */
+  .patient-hero {
+    background:var(--dark2);
+    border-bottom:0.5px solid var(--border);
+    padding:2.5rem 3rem;
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:1.5rem;
+  }
+  .patient-hero h1 { font-family:'DM Serif Display',serif; font-size:30px; color:var(--cream); }
+  .patient-hero h1 em { font-style:italic; color:var(--gold); }
+  .patient-hero p { font-size:13px; color:var(--teal); margin-top:6px; }
+  .next-appt {
+    border:0.5px solid rgba(180,150,106,0.3);
+    padding:1.25rem 2rem; text-align:center;
+  }
+  .next-appt .label { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--teal); margin-bottom:6px; }
+  .next-appt .date { font-family:'DM Serif Display',serif; font-size:22px; color:var(--gold); }
+  .next-appt .time { font-size:12px; color:var(--teal); margin-top:4px; }
+
+  /* MAIN */
+  .container { max-width:1100px; margin:0 auto; padding:2.5rem 3rem; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
+  .full { grid-column:1/-1; }
+
+  /* PANEL */
+  .panel { background:var(--dark2); border:0.5px solid var(--border); }
+  .panel-header {
+    padding:1.25rem 1.5rem; border-bottom:0.5px solid var(--border);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .panel-header h3 { font-size:14px; font-weight:500; color:var(--cream); letter-spacing:0.5px; }
+  .panel-header span { font-size:11px; color:var(--teal); }
+  .panel-body { padding:1.5rem; }
+
+  /* RECORD ROWS */
+  .record-row {
+    display:flex; justify-content:space-between; align-items:flex-start;
+    padding:1rem 0; border-bottom:0.5px solid var(--border);
+  }
+  .record-row:last-child { border-bottom:none; padding-bottom:0; }
+  .record-label { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--teal); margin-bottom:4px; }
+  .record-value { font-size:14px; color:var(--cream); }
+  .record-badge {
+    font-size:10px; letter-spacing:1px; text-transform:uppercase;
+    padding:3px 10px; background:rgba(29,158,117,0.12); color:#1D9E75;
+    align-self:center;
+  }
+
+  /* HISTORY TABLE */
+  .history-table { width:100%; border-collapse:collapse; }
+  .history-table th {
+    font-size:10px; letter-spacing:2px; text-transform:uppercase;
+    color:var(--teal); text-align:left; padding:0 1rem 1rem 0; font-weight:400;
+  }
+  .history-table td { padding:0.85rem 1rem 0.85rem 0; border-top:0.5px solid var(--border); font-size:13px; color:var(--cream); }
+  .procedure-tag {
+    font-size:10px; letter-spacing:1px; text-transform:uppercase;
+    border:0.5px solid rgba(180,150,106,0.3); color:var(--gold);
+    padding:3px 10px; display:inline-block;
+  }
+  .note-text { font-size:12px; color:var(--teal); }
+
+  /* BOOK APPOINTMENT */
+  .book-section { }
+  .date-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-bottom:1.5rem; }
+  .date-cell {
+    text-align:center; padding:0.6rem 0.25rem;
+    border:0.5px solid var(--border); cursor:pointer;
+    font-size:12px; color:var(--teal); transition:all 0.2s;
+  }
+  .date-cell:hover { border-color:rgba(180,150,106,0.4); color:var(--cream); }
+  .date-cell.selected { border-color:var(--gold); color:var(--gold); background:rgba(180,150,106,0.08); }
+  .date-cell.today { color:var(--cream); }
+  .date-cell.past { opacity:0.3; cursor:default; pointer-events:none; }
+  .date-day { font-size:9px; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+  .time-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:1.5rem; }
+  .time-slot {
+    text-align:center; padding:0.6rem;
+    border:0.5px solid var(--border); cursor:pointer;
+    font-size:12px; color:var(--teal); transition:all 0.2s;
+  }
+  .time-slot:hover { border-color:rgba(180,150,106,0.4); color:var(--cream); }
+  .time-slot.selected { border-color:var(--gold); color:var(--gold); background:rgba(180,150,106,0.08); }
+  .time-slot.taken { opacity:0.3; cursor:default; pointer-events:none; text-decoration:line-through; }
+  .concern-select {
+    width:100%; background:var(--dark3); border:0.5px solid var(--border);
+    color:var(--cream); font-family:'DM Sans',sans-serif; font-size:13px;
+    padding:0.75rem 1rem; outline:none; margin-bottom:1.5rem; transition:border-color 0.2s;
+  }
+  .concern-select:focus { border-color:var(--gold); }
+  .concern-select option { background:var(--dark2); }
+  .book-btn {
+    width:100%; background:var(--gold); border:none;
+    color:var(--dark); font-family:'DM Sans',sans-serif;
+    font-size:12px; letter-spacing:1.5px; text-transform:uppercase;
+    padding:1rem; cursor:pointer; transition:background 0.2s;
+  }
+  .book-btn:hover { background:var(--cream); }
+
+  /* REMINDERS */
+  .notif-list { display:flex; flex-direction:column; gap:0.75rem; }
+  .notif-item {
+    display:flex; gap:1rem; align-items:flex-start;
+    padding:1rem; border:0.5px solid var(--border);
+  }
+  .notif-dot { width:8px; height:8px; border-radius:50%; background:var(--gold); flex-shrink:0; margin-top:4px; }
+  .notif-dot.read { background:var(--muted); }
+  .notif-text p { font-size:13px; color:var(--cream); line-height:1.5; }
+  .notif-text span { font-size:11px; color:var(--teal); margin-top:2px; display:block; }
+
+  /* TOAST */
+  .toast {
+    position:fixed; bottom:2rem; right:2rem;
+    background:var(--dark2); border:0.5px solid rgba(29,158,117,0.5);
+    color:#1D9E75; font-size:13px; padding:1rem 1.5rem;
+    display:none; z-index:300;
+  }
+  .toast.show { display:block; animation:fadeUp 0.3s ease; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+  @media(max-width:768px) {
+    nav, .patient-hero, .container { padding:1.25rem 1.5rem; }
+    .grid { grid-template-columns:1fr; }
+    .date-grid { grid-template-columns:repeat(4,1fr); }
+    .time-grid { grid-template-columns:repeat(3,1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">Dent<span>Ayos</span></a>
+  <div class="nav-right">
+    <div class="nav-patient">
+      <div class="patient-avatar">MS</div>
+      <div>
+        <p>Maria Santos</p>
+        <span>Patient</span>
+      </div>
+    </div>
+    <a href="index.html" class="nav-back">← Website</a>
+  </div>
+</nav>
+
+<!-- HERO BAND -->
+<div class="patient-hero">
+  <div>
+    <h1>Welcome back, <em>Maria.</em></h1>
+    <p>Your dental records and appointments are all in one place.</p>
+  </div>
+  <div class="next-appt">
+    <div class="label">Next Appointment</div>
+    <div class="date">March 17, 2026</div>
+    <div class="time">9:00 AM · Dental Cleaning</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+  <div class="grid">
+
+    <!-- PERSONAL RECORD -->
+    <div class="panel">
+      <div class="panel-header">
+        <h3>My Record</h3>
+        <span>Up to date</span>
+      </div>
+      <div class="panel-body">
+        <div class="record-row">
+          <div><div class="record-label">Full Name</div><div class="record-value">Maria B. Santos</div></div>
+          <span class="record-badge">Active</span>
+        </div>
+        <div class="record-row">
+          <div><div class="record-label">Age</div><div class="record-value">32 years old</div></div>
+        </div>
+        <div class="record-row">
+          <div><div class="record-label">Contact</div><div class="record-value">0917 123 4567</div></div>
+        </div>
+        <div class="record-row">
+          <div><div class="record-label">Primary Concern</div><div class="record-value">Dental Cleaning</div></div>
+        </div>
+        <div class="record-row">
+          <div><div class="record-label">Attending Dentist</div><div class="record-value">Dr. Reyes</div></div>
+        </div>
+        <div class="record-row">
+          <div><div class="record-label">Patient Since</div><div class="record-value">January 2025</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div class="panel">
+      <div class="panel-header">
+        <h3>Reminders & Notifications</h3>
+        <span>3 unread</span>
+      </div>
+      <div class="panel-body">
+        <div class="notif-list">
+          <div class="notif-item">
+            <div class="notif-dot"></div>
+            <div class="notif-text">
+              <p>Hi Maria! This is a reminder from DentAyos Clinic. Your dental cleaning is tomorrow, March 17 at 9:00 AM.</p>
+              <span>Today · 6:00 PM</span>
+            </div>
+          </div>
+          <div class="notif-item">
+            <div class="notif-dot"></div>
+            <div class="notif-text">
+              <p>Your appointment has been confirmed for March 17, 2026 at 9:00 AM. Please arrive 10 minutes early.</p>
+              <span>March 14 · 10:00 AM</span>
+            </div>
+          </div>
+          <div class="notif-item">
+            <div class="notif-dot"></div>
+            <div class="notif-text">
+              <p>Thank you for your visit on March 1! Your next cleaning is scheduled for March 17. See you then! 🦷</p>
+              <span>March 1 · 11:30 AM</span>
+            </div>
+          </div>
+          <div class="notif-item">
+            <div class="notif-dot read"></div>
+            <div class="notif-text">
+              <p>Welcome to DentAyos! Your patient portal is now active. You can view records and book appointments here.</p>
+              <span>January 10, 2025</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TREATMENT HISTORY -->
+    <div class="panel full">
+      <div class="panel-header">
+        <h3>Treatment History</h3>
+        <span>4 visits</span>
+      </div>
+      <div class="panel-body">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Procedure</th>
+              <th>Dentist</th>
+              <th>Notes</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Mar 1, 2026</td>
+              <td><span class="procedure-tag">Cleaning</span></td>
+              <td>Dr. Reyes</td>
+              <td class="note-text">Routine cleaning. Mild tartar buildup. Next visit in 3 months.</td>
+              <td><span class="record-badge">Done</span></td>
+            </tr>
+            <tr>
+              <td>Dec 5, 2025</td>
+              <td><span class="procedure-tag">Cleaning</span></td>
+              <td>Dr. Reyes</td>
+              <td class="note-text">Routine cleaning completed. No cavities detected.</td>
+              <td><span class="record-badge">Done</span></td>
+            </tr>
+            <tr>
+              <td>Sep 10, 2025</td>
+              <td><span class="procedure-tag">Filling</span></td>
+              <td>Dr. Reyes</td>
+              <td class="note-text">Composite filling on lower left molar #36. Healing well.</td>
+              <td><span class="record-badge">Done</span></td>
+            </tr>
+            <tr>
+              <td>Jan 10, 2025</td>
+              <td><span class="procedure-tag">Consultation</span></td>
+              <td>Dr. Reyes</td>
+              <td class="note-text">Initial consultation. Full dental X-ray taken. Treatment plan discussed.</td>
+              <td><span class="record-badge">Done</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- BOOK APPOINTMENT -->
+    <div class="panel full">
+      <div class="panel-header">
+        <h3>Book an Appointment</h3>
+        <span>Select a date and time</span>
+      </div>
+      <div class="panel-body">
+        <div class="book-section">
+          <p style="font-size:12px;color:var(--teal);margin-bottom:1rem;letter-spacing:0.5px;">Select date — March 2026</p>
+          <div class="date-grid" id="date-grid"></div>
+          <p style="font-size:12px;color:var(--teal);margin-bottom:1rem;letter-spacing:0.5px;">Select time</p>
+          <div class="time-grid">
+            <div class="time-slot taken">9:00 AM</div>
+            <div class="time-slot taken">10:00 AM</div>
+            <div class="time-slot taken">11:00 AM</div>
+            <div class="time-slot" onclick="selectTime(this)">1:00 PM</div>
+            <div class="time-slot" onclick="selectTime(this)">2:00 PM</div>
+            <div class="time-slot taken">3:00 PM</div>
+            <div class="time-slot" onclick="selectTime(this)">4:00 PM</div>
+            <div class="time-slot" onclick="selectTime(this)">5:00 PM</div>
+          </div>
+          <p style="font-size:12px;color:var(--teal);margin-bottom:0.5rem;letter-spacing:0.5px;">Concern / Procedure</p>
+          <select class="concern-select">
+            <option>Dental Cleaning</option>
+            <option>Tooth Extraction</option>
+            <option>Braces Consultation</option>
+            <option>Veneers</option>
+            <option>Whitening</option>
+            <option>Filling</option>
+            <option>Root Canal</option>
+            <option>Aesthetic Consultation</option>
+            <option>Follow-up / Checkup</option>
+          </select>
+          <button class="book-btn" onclick="bookAppointment()">Confirm Appointment</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // Build date grid for March 2026
+  const days = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  const grid = document.getElementById('date-grid');
+  const today = 16;
+  // March 2026 starts on Sunday
+  for(let i = 1; i <= 31; i++) {
+    const d = document.createElement('div');
+    d.className = 'date-cell' + (i < today ? ' past' : '') + (i === today ? ' today' : '');
+    d.innerHTML = `<div class="date-day">${days[(i - 1) % 7]}</div>${i}`;
+    if(i >= today) d.onclick = function(){ selectDate(this); };
+    grid.appendChild(d);
+  }
+
+  function selectDate(el) {
+    document.querySelectorAll('.date-cell').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function selectTime(el) {
+    document.querySelectorAll('.time-slot').forEach(t => t.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function bookAppointment() {
+    const date = document.querySelector('.date-cell.selected');
+    const time = document.querySelector('.time-slot.selected');
+    if(!date || !time) {
+      showToast('Please select a date and time.');
+      return;
+    }
+    showToast('Appointment booked! Dr. Reyes will confirm shortly.');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = '✓  ' + msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+</script>
+</body>
+</html>
