@@ -114,9 +114,3 @@ DentAyos is proudly built in the Philippines for Filipino dental and aesthetic c
 *"Gawa sa 'Pinas · Para sa mga klinika sa 'Pinas."*
 
 © 2026 DentAyos. All rights reserved.
-
-## About
-
-DentAyos is proudly built in the Philippines for Filipino clinics. "Gawa sa 'Pinas · Para sa mga klinika sa 'Pinas."
-
-© 2026 DentAyos. All rights reserved.
