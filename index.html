@@ -229,10 +229,10 @@
     width: 0.5px;
     height: 40px;
     background: var(--gold);
-    opacity: 0.4;
+    opacity: 0.35;
+    transform-origin: top center;
     animation: scrollPulse 2s ease infinite;
-    will-change: opacity;
-    isolation: isolate;
+    will-change: transform;
   }
 
   .hero-scroll {
@@ -702,8 +702,8 @@
   }
 
   @keyframes scrollPulse {
-    0%, 100% { opacity: 0.2; }
-    50% { opacity: 0.6; }
+    0%, 100% { transform: scaleY(0.4); }
+    50% { transform: scaleY(1); }
   }
 
   .reveal {
