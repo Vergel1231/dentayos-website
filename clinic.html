@@ -128,16 +128,35 @@
   .add-btn:hover { background:var(--cream); }
 
   /* STATS */
-  .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2.5rem; }
+  .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:1.25rem; margin-bottom:2.5rem; }
   .stat-card {
     background:var(--dark2); border:0.5px solid var(--border);
-    padding:1.25rem 1.5rem;
+    padding:1.75rem 1.75rem 1.5rem;
+    position:relative; overflow:hidden;
+    transition:border-color 0.2s;
   }
-  .stat-label { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--teal); margin-bottom:0.75rem; }
-  .stat-value { font-family:'DM Serif Display',serif; font-size:32px; color:var(--cream); }
-  .stat-sub { font-size:12px; color:var(--muted); margin-top:4px; }
+  .stat-card:hover { border-color:rgba(180,150,106,0.3); }
+  .stat-card-icon {
+    width:36px; height:36px;
+    background:rgba(180,150,106,0.08);
+    border-radius:4px;
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:1.25rem;
+  }
+  .stat-card-icon svg { width:18px; height:18px; }
+  .stat-label { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--teal); margin-bottom:0.5rem; }
+  .stat-value { font-family:'DM Serif Display',serif; font-size:38px; color:var(--cream); line-height:1; }
+  .stat-sub { font-size:12px; color:var(--muted); margin-top:0.5rem; }
+  .stat-trend { display:inline-flex; align-items:center; gap:4px; font-size:11px; margin-top:0.4rem; }
+  .stat-trend.up { color:var(--success); }
+  .stat-trend.down { color:#E24B4A; }
+  .stat-trend.neutral { color:var(--teal); }
   .stat-card.highlight { border-color:rgba(180,150,106,0.4); }
   .stat-card.highlight .stat-value { color:var(--gold); }
+  .stat-card.success-card { border-color:rgba(29,158,117,0.25); }
+  .stat-card.success-card .stat-value { color:var(--success); }
+  .stat-card.danger-card { border-color:rgba(226,75,74,0.2); }
+  .stat-card.danger-card .stat-value { color:#E24B4A; }
 
   /* GRID */
   .content-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
@@ -348,7 +367,7 @@
     <button class="login-btn" onclick="doLogin()">Enter Portal</button>
     <div class="login-error" id="login-error">Please enter your username to continue.</div>
     <div style="text-align:center;margin-top:1.5rem;">
-      <a href="index.html" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#B4966A'" onmouseout="this.style.color='#6B8A87'">← Back to Website</a>
+      <a href="#" onclick="window.location.replace('../index.html?ts='+Date.now())" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#B4966A'" onmouseout="this.style.color='#6B8A87'">← Back to Website</a>
     </div>
   </div>
 </div>
@@ -388,6 +407,7 @@
         <span id="staff-role">—</span>
       </div>
     </div>
+    <a href="#" onclick="goToWebsite()" class="website-btn">← Website</a>
     <button class="logout-btn" onclick="doLogout()">← Log Out</button>
   </div>
 </aside>
@@ -409,24 +429,40 @@
     </div>
     <div class="stats">
       <div class="stat-card highlight">
+        <div class="stat-card-icon">
+          <svg viewBox="0 0 18 18" fill="none" stroke="#B4966A" stroke-width="1.2"><circle cx="9" cy="6" r="3.5"/><path d="M2 16c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke-linecap="round"/></svg>
+        </div>
         <div class="stat-label">Total Patients</div>
-        <div class="stat-value">24</div>
-        <div class="stat-sub">3 added this month</div>
+        <div class="stat-value" id="dash-stat-patients">6</div>
+        <div class="stat-sub">Registered in portal</div>
+        <div class="stat-trend up">↑ 3 added this month</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card success-card">
+        <div class="stat-card-icon">
+          <svg viewBox="0 0 18 18" fill="none" stroke="#1D9E75" stroke-width="1.2"><rect x="2" y="4" width="14" height="11" rx="1.5"/><path d="M6 2v4M12 2v4M2 9h14" stroke-linecap="round"/></svg>
+        </div>
         <div class="stat-label">Today's Appointments</div>
         <div class="stat-value">5</div>
         <div class="stat-sub">Next at 9:00 AM</div>
+        <div class="stat-trend neutral">Mar 16, 2026</div>
       </div>
       <div class="stat-card">
+        <div class="stat-card-icon">
+          <svg viewBox="0 0 18 18" fill="none" stroke="#6B8A87" stroke-width="1.2"><path d="M9 2a5 5 0 015 5v3l1.5 2.5H2.5L4 10V7a5 5 0 015-5z"/><path d="M7 15a2 2 0 004 0"/></svg>
+        </div>
         <div class="stat-label">Reminders Sent</div>
         <div class="stat-value">18</div>
         <div class="stat-sub">This week</div>
+        <div class="stat-trend up">↑ 6 more than last week</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card danger-card">
+        <div class="stat-card-icon">
+          <svg viewBox="0 0 18 18" fill="none" stroke="#E24B4A" stroke-width="1.2"><circle cx="9" cy="9" r="7"/><path d="M9 5v4M9 13h.01" stroke-linecap="round"/></svg>
+        </div>
         <div class="stat-label">No-shows This Month</div>
         <div class="stat-value">2</div>
-        <div class="stat-sub">Down from 7 last month</div>
+        <div class="stat-sub">Requires follow-up</div>
+        <div class="stat-trend up" style="color:var(--success);">↓ Down from 7 last month</div>
       </div>
     </div>
     <div class="content-grid">
@@ -635,11 +671,11 @@
 
 <!-- VIEW PATIENT MODAL -->
 <div class="modal-overlay" id="modal-view-patient">
-  <div class="modal">
+  <div class="modal" style="width:560px;max-width:95vw;">
     <button class="modal-close" onclick="closeModal('view-patient')">✕</button>
     <h3 id="view-patient-name">Patient Record</h3>
-    <p id="view-patient-concern">—</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+    <p id="view-patient-concern" style="color:var(--teal);font-size:13px;margin-bottom:1.5rem;">—</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
       <div>
         <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:4px;">Age</div>
         <div id="view-age" style="font-size:14px;color:var(--cream);">—</div>
@@ -649,6 +685,10 @@
         <div id="view-status" style="font-size:14px;color:var(--cream);">—</div>
       </div>
       <div>
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:4px;">Blood Type</div>
+        <div style="font-size:14px;color:var(--cream);">O+</div>
+      </div>
+      <div>
         <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:4px;">Last Visit</div>
         <div id="view-last" style="font-size:14px;color:var(--cream);">—</div>
       </div>
@@ -656,10 +696,71 @@
         <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:4px;">Next Appointment</div>
         <div id="view-next" style="font-size:14px;color:var(--gold);">—</div>
       </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:4px;">Allergies</div>
+        <div style="font-size:14px;color:var(--cream);">None on file</div>
+      </div>
+    </div>
+    <!-- Tooth Chart -->
+    <div style="border:0.5px solid var(--border);padding:1rem;margin-bottom:1.5rem;">
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.75rem;">Tooth Chart (Mock)</div>
+      <div style="display:flex;gap:3px;justify-content:center;flex-wrap:wrap;margin-bottom:.4rem;">
+        <!-- Upper -->
+        <div style="display:flex;gap:3px;">
+          <div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:2px 2px 0 0;">18</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:2px 2px 0 0;">17</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:2px 2px 0 0;">16</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:2px 2px 0 0;">15</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:2px 2px 0 0;">14</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:2px 2px 0 0;">13</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:2px 2px 0 0;">12</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:2px 2px 0 0;">11</div>
+          <div style="width:6px;"></div>
+          <div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:2px 2px 0 0;">21</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:2px 2px 0 0;">22</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:2px 2px 0 0;">23</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:2px 2px 0 0;">24</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:2px 2px 0 0;">25</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:2px 2px 0 0;">26</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:2px 2px 0 0;">27</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:2px 2px 0 0;">28</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:3px;justify-content:center;flex-wrap:wrap;">
+        <div style="display:flex;gap:3px;">
+          <div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:0 0 2px 2px;">48</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:0 0 2px 2px;">47</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:0 0 2px 2px;">46</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:0 0 2px 2px;">45</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:0 0 2px 2px;">44</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:0 0 2px 2px;">43</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:0 0 2px 2px;">42</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:0 0 2px 2px;">41</div>
+          <div style="width:6px;"></div>
+          <div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:0 0 2px 2px;">31</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:0 0 2px 2px;">32</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:0 0 2px 2px;">33</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:0 0 2px 2px;">34</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:0 0 2px 2px;">35</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:0 0 2px 2px;background:rgba(226,75,74,0.15);border-color:rgba(226,75,74,0.4);color:#E24B4A;">36</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:0 0 2px 2px;">37</div><div style="width:22px;height:26px;border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--teal);border-radius:0 0 2px 2px;">38</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:1rem;margin-top:.75rem;flex-wrap:wrap;">
+        <span style="font-size:10px;color:var(--teal);display:flex;align-items:center;gap:.35rem;"><span style="width:10px;height:10px;background:rgba(226,75,74,0.15);border:0.5px solid rgba(226,75,74,0.4);display:inline-block;border-radius:2px;"></span>Treated / Noted</span>
+        <span style="font-size:10px;color:var(--teal);display:flex;align-items:center;gap:.35rem;"><span style="width:10px;height:10px;border:0.5px solid var(--border);display:inline-block;border-radius:2px;"></span>Healthy</span>
+      </div>
+    </div>
+    <!-- Clinical Notes -->
+    <div style="border:0.5px solid var(--border);padding:1rem;margin-bottom:1.5rem;">
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.75rem;">Latest Clinical Note</div>
+      <p id="view-clinical-note" style="font-size:13px;color:var(--cream);line-height:1.6;">No clinical notes on file.</p>
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('view-patient')">Close</button>
       <button class="btn-save" onclick="openRemindFromView()">Send Reminder</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESCHEDULE MODAL -->
+<div class="modal-overlay" id="modal-reschedule">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('reschedule')">✕</button>
+    <h3>Reschedule Appointment</h3>
+    <p id="reschedule-patient-name">Propose a new date and time.</p>
+    <div class="form-group" style="margin-top:1rem;">
+      <label>New Date</label>
+      <input type="text" id="reschedule-date" placeholder="e.g. March 25, 2026">
+    </div>
+    <div class="form-group">
+      <label>New Time</label>
+      <select id="reschedule-time">
+        <option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option>
+        <option>1:00 PM</option><option>2:00 PM</option><option>3:00 PM</option>
+        <option>4:00 PM</option><option>5:00 PM</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Reason (optional)</label>
+      <textarea rows="2" id="reschedule-reason" placeholder="e.g. Dentist unavailable, please select a new slot."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('reschedule')">Cancel</button>
+      <button class="btn-save" onclick="confirmReschedule()">Send Reschedule Request</button>
     </div>
   </div>
 </div>
@@ -669,12 +770,12 @@
 
 <script>
   const patients = [
-    { name:'Maria Santos', age:32, concern:'Dental Cleaning', lastVisit:'Mar 1, 2026', next:'Mar 17, 2026', status:'active' },
-    { name:'Jose Dela Cruz', age:45, concern:'Braces Consultation', lastVisit:'Feb 20, 2026', next:'Mar 20, 2026', status:'pending' },
-    { name:'Ana Reyes', age:28, concern:'Veneers', lastVisit:'Mar 5, 2026', next:'Mar 22, 2026', status:'active' },
-    { name:'Carlos Mendoza', age:37, concern:'Tooth Extraction', lastVisit:'Feb 10, 2026', next:'Mar 18, 2026', status:'pending' },
-    { name:'Liza Garcia', age:24, concern:'Whitening', lastVisit:'—', next:'Mar 19, 2026', status:'new' },
-    { name:'Ramon Villanueva', age:52, concern:'Root Canal', lastVisit:'Jan 28, 2026', next:'Mar 21, 2026', status:'active' },
+    { name:'Maria Santos', age:32, concern:'Dental Cleaning', lastVisit:'Mar 1, 2026', next:'Mar 17, 2026', status:'active', note:'Routine cleaning. Mild tartar buildup on lower molars. Advised to floss daily. Next cleaning in 3 months.' },
+    { name:'Jose Dela Cruz', age:45, concern:'Braces Consultation', lastVisit:'Feb 20, 2026', next:'Mar 20, 2026', status:'pending', note:'Initial braces consultation. Mild crowding on upper arch. X-rays taken. Treatment plan: 18-month braces. Awaiting confirmation.' },
+    { name:'Ana Reyes', age:28, concern:'Veneers', lastVisit:'Mar 5, 2026', next:'Mar 22, 2026', status:'active', note:'Veneer consultation completed. 4 upper front teeth. Shade selected: BL2. Temporaries placed. Final fitting on Mar 22.' },
+    { name:'Carlos Mendoza', age:37, concern:'Tooth Extraction', lastVisit:'Feb 10, 2026', next:'Mar 18, 2026', status:'pending', note:'Lower right molar (#47) extracted Feb 10. Healing well. Follow-up scheduled to assess socket closure.' },
+    { name:'Liza Garcia', age:24, concern:'Whitening', lastVisit:'—', next:'Mar 19, 2026', status:'new', note:'New patient. Walk-in whitening inquiry. Pre-whitening check required. No prior dental history on file.' },
+    { name:'Ramon Villanueva', age:52, concern:'Root Canal', lastVisit:'Jan 28, 2026', next:'Mar 21, 2026', status:'active', note:'Root canal treatment in progress on upper left molar (#26). Session 2 of 3. No acute pain. Crown placement planned after session 3.' },
   ];
 
   const appointments = [
@@ -817,6 +918,10 @@
     document.getElementById('login-screen').style.display = 'flex';
   }
 
+  function goToWebsite() {
+    window.location.replace('../index.html?ts=' + Date.now());
+  }
+
   // Sidebar toggle
   function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
@@ -884,8 +989,9 @@
         <td style="font-size:12px;">${a.time}</td>
         <td style="font-size:11px;color:var(--teal);">${a.bookedAt}</td>
         <td><span class="status-badge pending">Pending</span></td>
-        <td style="display:flex;gap:8px;">
+        <td style="display:flex;gap:8px;flex-wrap:wrap;">
           <button class="action-btn remind" onclick="confirmAppt(${i})">Confirm</button>
+          <button class="action-btn" onclick="rescheduleAppt(${i})">Reschedule</button>
           <button class="action-btn" onclick="declineAppt(${i})">Decline</button>
         </td>
       </tr>`).join('');
@@ -932,6 +1038,33 @@
     showToast('Appointment declined.');
   }
 
+  let rescheduleIndex = -1;
+  function rescheduleAppt(i) {
+    const booked = JSON.parse(localStorage.getItem('dentayos_appointments') || '[]');
+    const appt = booked[i];
+    rescheduleIndex = i;
+    document.getElementById('reschedule-patient-name').textContent = 'Proposing new schedule for ' + appt.patient + ' — original: ' + appt.date + ' at ' + appt.time + '.';
+    document.getElementById('reschedule-date').value = '';
+    document.getElementById('reschedule-reason').value = '';
+    openModal('reschedule');
+  }
+
+  function confirmReschedule() {
+    const newDate = document.getElementById('reschedule-date').value.trim();
+    const newTime = document.getElementById('reschedule-time').value;
+    if(!newDate) { showToast('Please enter a new date.'); return; }
+    const booked = JSON.parse(localStorage.getItem('dentayos_appointments') || '[]');
+    if(rescheduleIndex >= 0 && booked[rescheduleIndex]) {
+      booked[rescheduleIndex].date = newDate;
+      booked[rescheduleIndex].time = newTime;
+      booked[rescheduleIndex].status = 'rescheduled';
+      localStorage.setItem('dentayos_appointments', JSON.stringify(booked));
+    }
+    closeModal('reschedule');
+    loadBookedAppointments();
+    showToast('Reschedule request sent to patient.');
+  }
+
   // Modal
   function openModal(id) { document.getElementById('modal-' + id).classList.add('open'); }
   function closeModal(id) { document.getElementById('modal-' + id).classList.remove('open'); }
@@ -947,6 +1080,7 @@
     document.getElementById('view-status').textContent = statusLabel;
     document.getElementById('view-last').textContent = p.lastVisit;
     document.getElementById('view-next').textContent = p.next;
+    document.getElementById('view-clinical-note').textContent = p.note || 'No clinical notes on file.';
     openModal('view-patient');
   }
 

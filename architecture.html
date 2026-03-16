@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>DentAyos — System Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--dark:#0D1B1A;--dark2:#1A2E2C;--dark3:#223330;--gold:#B4966A;--cream:#E8D5B0;--teal:#6B8A87;--success:#1D9E75;--warning:#BA7517;--border:rgba(180,150,106,0.18);--tx:#1A1A1A;--tx2:#4A4A4A;--alt:#F7F4EF;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--dark);color:var(--cream);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;line-height:1.7;}
+a{color:inherit;text-decoration:none;}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+
+header{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.2rem 2rem;display:flex;justify-content:space-between;align-items:center;background:rgba(13,27,26,.94);border-bottom:0.5px solid var(--border);backdrop-filter:blur(14px);}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:20px;letter-spacing:2.5px;color:var(--cream);}
+.nav-logo span{color:var(--gold);}
+.nav-back{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:.45rem 1rem;border:0.5px solid var(--border);color:var(--teal);transition:all .2s;background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.nav-back:hover{border-color:var(--gold);color:var(--gold);}
+
+.page{padding:9rem 2rem 5rem;max-width:1100px;margin:0 auto;}
+.page-label{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);}
+.page-title{font-family:'DM Serif Display',serif;font-size:clamp(28px,3.5vw,44px);line-height:1.15;margin:.75rem 0 1rem;}
+.page-desc{font-size:16px;color:var(--teal);max-width:600px;line-height:1.8;margin-bottom:4rem;}
+
+/* PHASE TABS */
+.phase-tabs{display:flex;gap:.5rem;margin-bottom:3rem;flex-wrap:wrap;}
+.phase-tab{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:.5rem 1.25rem;border:0.5px solid var(--border);color:var(--teal);cursor:pointer;transition:all .2s;background:transparent;font-family:'DM Sans',sans-serif;}
+.phase-tab:hover{border-color:rgba(180,150,106,.4);color:var(--cream);}
+.phase-tab.active{background:var(--gold);border-color:var(--gold);color:var(--dark);}
+.phase-panel{display:none;}
+.phase-panel.active{display:block;}
+
+/* ARCH DIAGRAM */
+.arch{display:grid;gap:1px;background:var(--border);}
+.arch-row{display:grid;grid-template-columns:1fr 60px 1fr 60px 1fr;background:var(--dark);}
+.arch-row.wide{grid-template-columns:1fr;}
+.arch-row.two{grid-template-columns:1fr 60px 1fr;}
+
+.arch-node{padding:1.5rem;border:0.5px solid var(--border);transition:border-color .2s;}
+.arch-node:hover{border-color:rgba(180,150,106,.4);}
+.arch-node.primary{border-color:rgba(180,150,106,.35);background:var(--dark2);}
+.arch-node.accent{border-color:rgba(29,158,117,.3);background:rgba(29,158,117,.04);}
+.arch-node.warn{border-color:rgba(186,117,23,.3);background:rgba(186,117,23,.04);}
+.arch-node.center{text-align:center;}
+
+.node-tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:.5rem;}
+.node-tag.gold{color:var(--gold);}
+.node-tag.green{color:var(--success);}
+.node-tag.amber{color:var(--warning);}
+.node-tag.teal{color:var(--teal);}
+.node-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--cream);margin-bottom:.4rem;}
+.node-desc{font-size:12px;color:var(--teal);line-height:1.6;}
+.node-items{display:flex;flex-direction:column;gap:.35rem;margin-top:.75rem;}
+.node-item{font-size:11px;color:var(--teal);display:flex;align-items:center;gap:.5rem;}
+.node-item::before{content:'';width:10px;height:.5px;background:var(--gold);flex-shrink:0;}
+
+.arch-arrow{display:flex;align-items:center;justify-content:center;background:var(--dark);}
+.arrow-icon{font-size:20px;color:var(--border);}
+
+/* FLOW DIAGRAM */
+.flow{display:flex;flex-direction:column;gap:0;}
+.flow-step{display:grid;grid-template-columns:200px 1fr;gap:2rem;align-items:start;}
+.flow-left{text-align:right;padding-top:.25rem;}
+.flow-actor{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:.35rem .85rem;display:inline-block;border:0.5px solid var(--border);}
+.flow-actor.patient{border-color:rgba(180,150,106,.35);color:var(--gold);}
+.flow-actor.clinic{border-color:rgba(29,158,117,.35);color:var(--success);}
+.flow-actor.system{border-color:rgba(107,138,135,.35);color:var(--teal);}
+.flow-right{border-left:.5px solid var(--border);padding-left:2rem;padding-bottom:2rem;position:relative;}
+.flow-right::before{content:'';position:absolute;left:-4px;top:.65rem;width:7px;height:7px;border-radius:50%;background:var(--gold);}
+.flow-action{font-size:14px;color:var(--cream);font-weight:500;margin-bottom:.3rem;}
+.flow-detail{font-size:12px;color:var(--teal);line-height:1.6;}
+.flow-arrow{text-align:center;padding:.5rem 0;font-size:12px;color:var(--border);letter-spacing:2px;}
+
+/* STACK TABLE */
+.stack-table{width:100%;border-collapse:collapse;}
+.stack-table th{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-align:left;padding:.75rem 1rem .75rem 0;border-bottom:.5px solid var(--border);font-weight:400;}
+.stack-table td{padding:.85rem 1rem .85rem 0;border-bottom:.5px solid rgba(180,150,106,.06);font-size:13px;color:var(--cream);vertical-align:top;}
+.stack-table tr:last-child td{border-bottom:none;}
+.status-tag{font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:2px 10px;display:inline-block;}
+.status-tag.live{background:rgba(29,158,117,.15);color:var(--success);}
+.status-tag.planned{background:rgba(180,150,106,.12);color:var(--gold);}
+.stack-note{font-size:11px;color:var(--teal);margin-top:3px;}
+
+/* SECURITY */
+.security-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2.5rem;}
+.sec-card{padding:1.5rem;border:.5px solid var(--border);}
+.sec-card h4{font-size:13px;font-weight:500;color:var(--cream);margin-bottom:.4rem;}
+.sec-card p{font-size:12px;color:var(--teal);line-height:1.6;}
+.sec-icon{font-size:20px;margin-bottom:.75rem;}
+
+/* BACK TO TOP */
+#back-to-top{position:fixed;bottom:2rem;right:2rem;width:42px;height:42px;background:var(--gold);border:none;color:var(--dark);font-size:20px;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:400;transition:background .2s;}
+#back-to-top:hover{background:var(--cream);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+@media(max-width:768px){
+  .arch-row{grid-template-columns:1fr !important;}
+  .arch-arrow{display:none;}
+  .flow-step{grid-template-columns:1fr;}
+  .flow-left{text-align:left;}
+  .security-grid{grid-template-columns:1fr 1fr;}
+  .phase-tabs{gap:.35rem;}
+}
+@media(max-width:500px){
+  .security-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<header role="banner">
+  <a href="#" onclick="window.location.replace('../index.html?ts='+Date.now())" class="nav-logo">Dent<span>Ayos</span></a>
+  <a href="#" onclick="window.location.replace('../index.html?ts='+Date.now())" class="nav-back">← Back to Website</a>
+</header>
+
+<div class="page">
+  <div class="reveal">
+    <p class="page-label">System Architecture</p>
+    <h1 class="page-title">How DentAyos is built —<br>and where it's going.</h1>
+    <p class="page-desc">This document explains the current prototype architecture, the planned production system, and the data flow between the clinic and patient portals.</p>
+  </div>
+
+  <div class="phase-tabs reveal" role="tablist">
+    <button class="phase-tab active" role="tab" onclick="showPhase('current',this)">Current Prototype</button>
+    <button class="phase-tab" role="tab" onclick="showPhase('flow',this)">Data Flow</button>
+    <button class="phase-tab" role="tab" onclick="showPhase('planned',this)">Planned System</button>
+    <button class="phase-tab" role="tab" onclick="showPhase('stack',this)">Full Stack</button>
+    <button class="phase-tab" role="tab" onclick="showPhase('security',this)">Security</button>
+  </div>
+
+  <!-- CURRENT PROTOTYPE -->
+  <div id="phase-current" class="phase-panel active reveal">
+    <div class="arch">
+      <div class="arch-row">
+        <div class="arch-node primary">
+          <div class="node-tag teal">Layer 1 — User Interfaces</div>
+          <div class="node-title">Patient Portal</div>
+          <div class="node-desc">patient.html — self-registration, login, records, appointment booking</div>
+          <div class="node-items">
+            <div class="node-item">Login / Register</div>
+            <div class="node-item">View dental records</div>
+            <div class="node-item">Book appointments</div>
+            <div class="node-item">View treatment history</div>
+            <div class="node-item">Receive notifications</div>
+          </div>
+        </div>
+        <div class="arch-arrow"><div class="arrow-icon">⟷</div></div>
+        <div class="arch-node primary">
+          <div class="node-tag teal">Layer 1 — User Interfaces</div>
+          <div class="node-title">Clinic Portal</div>
+          <div class="node-desc">clinic.html — staff login, dashboard, patient management, appointments</div>
+          <div class="node-items">
+            <div class="node-item">Staff login (multi-role)</div>
+            <div class="node-item">Patient records management</div>
+            <div class="node-item">Appointment confirmation queue</div>
+            <div class="node-item">Reminder log</div>
+            <div class="node-item">Dashboard analytics</div>
+          </div>
+        </div>
+        <div class="arch-arrow"><div class="arrow-icon">⟷</div></div>
+        <div class="arch-node primary">
+          <div class="node-tag gold">Layer 1 — Owner Interface</div>
+          <div class="node-title">Owner Portal</div>
+          <div class="node-desc">owner.html — platform-wide oversight, clinic management, revenue</div>
+          <div class="node-items">
+            <div class="node-item">All clinic accounts</div>
+            <div class="node-item">Monthly revenue tracking</div>
+            <div class="node-item">Platform activity log</div>
+            <div class="node-item">Add / remove clinics</div>
+          </div>
+        </div>
+      </div>
+      <div class="arch-row wide">
+        <div class="arch-node center" style="padding:.85rem;">
+          <div class="arrow-icon" style="font-size:16px;">↓ &nbsp; Data Layer &nbsp; ↓</div>
+        </div>
+      </div>
+      <div class="arch-row two">
+        <div class="arch-node accent">
+          <div class="node-tag green">Layer 2 — Data Sync (Current)</div>
+          <div class="node-title">localStorage</div>
+          <div class="node-desc">Browser-based key-value storage. Used to sync patient-booked appointments to the clinic portal without a backend.</div>
+          <div class="node-items">
+            <div class="node-item">dentayos_appointments — pending queue</div>
+            <div class="node-item">dentayos_confirmed — confirmed visits</div>
+            <div class="node-item">Browser-scoped (per device)</div>
+            <div class="node-item">Clears in incognito mode</div>
+          </div>
+        </div>
+        <div class="arch-arrow"><div class="arrow-icon">→</div></div>
+        <div class="arch-node warn">
+          <div class="node-tag amber">Layer 2 — Logic (Current)</div>
+          <div class="node-title">JavaScript (Inline)</div>
+          <div class="node-desc">All business logic, state management, and data rendering is handled in vanilla JavaScript embedded directly in each HTML file.</div>
+          <div class="node-items">
+            <div class="node-item">Staff account validation</div>
+            <div class="node-item">Patient account creation</div>
+            <div class="node-item">Appointment booking flow</div>
+            <div class="node-item">Dynamic table rendering</div>
+          </div>
+        </div>
+      </div>
+      <div class="arch-row wide">
+        <div class="arch-node center" style="padding:1rem;border-color:rgba(180,150,106,.08);">
+          <div style="font-size:11px;color:var(--teal);letter-spacing:1px;">⚠ &nbsp; No persistent database in current prototype — all data resets on page refresh (except localStorage)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATA FLOW -->
+  <div id="phase-flow" class="phase-panel reveal">
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-left"><span class="flow-actor patient">Patient</span></div>
+        <div class="flow-right">
+          <div class="flow-action">Self-registers on Patient Portal</div>
+          <div class="flow-detail">Creates username + password. Account stored in memory for the session. In the production system, this writes to the users table in PostgreSQL via Firebase Auth.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-left"><span class="flow-actor patient">Patient</span></div>
+        <div class="flow-right">
+          <div class="flow-action">Books an appointment</div>
+          <div class="flow-detail">Selects date, time, and concern. On submit, an appointment object is pushed to <code style="font-size:11px;background:var(--dark3);padding:1px 6px;border-radius:2px;">localStorage['dentayos_appointments']</code> with patient name, concern, date, time, and timestamp.</div>
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">
+        <div class="flow-left"><span class="flow-actor system">System</span></div>
+        <div class="flow-right">
+          <div class="flow-action">localStorage sync</div>
+          <div class="flow-detail">The appointment object is available immediately in the same browser session. When the clinic staff opens the Appointments section, the portal reads from the same localStorage key and renders the pending queue.</div>
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">
+        <div class="flow-left"><span class="flow-actor clinic">Clinic Staff</span></div>
+        <div class="flow-right">
+          <div class="flow-action">Sees pending appointment queue</div>
+          <div class="flow-detail">The Appointments section displays all pending patient-booked appointments in a table. Staff can Confirm or Decline each entry.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-left"><span class="flow-actor clinic">Clinic Staff</span></div>
+        <div class="flow-right">
+          <div class="flow-action">Confirms appointment</div>
+          <div class="flow-detail">The appointment is removed from <code style="font-size:11px;background:var(--dark3);padding:1px 6px;border-radius:2px;">dentayos_appointments</code>, saved to <code style="font-size:11px;background:var(--dark3);padding:1px 6px;border-radius:2px;">dentayos_confirmed</code>, and added to the Upcoming list with a green Confirmed badge.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-left"><span class="flow-actor clinic">Clinic Staff</span></div>
+        <div class="flow-right">
+          <div class="flow-action">Sends reminder</div>
+          <div class="flow-detail">Staff selects a patient and sends a reminder via the modal. In the prototype this shows a success toast. In production, this triggers a Twilio SMS or Resend email to the patient's contact.</div>
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">
+        <div class="flow-left"><span class="flow-actor system">System</span></div>
+        <div class="flow-right">
+          <div class="flow-action">Notification delivered</div>
+          <div class="flow-detail">Patient receives notification in their portal notification feed. In production, also delivered via SMS (Twilio) and email (Resend).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLANNED SYSTEM -->
+  <div id="phase-planned" class="phase-panel reveal">
+    <div class="arch">
+      <div class="arch-row">
+        <div class="arch-node primary">
+          <div class="node-tag teal">Frontend</div>
+          <div class="node-title">React + Tailwind</div>
+          <div class="node-desc">Component-based UI. Patient, clinic, and owner portals as separate React apps or routes within a single SPA.</div>
+          <div class="node-items">
+            <div class="node-item">React Router for portal routing</div>
+            <div class="node-item">Zustand for state management</div>
+            <div class="node-item">Tailwind CSS for styling</div>
+          </div>
+        </div>
+        <div class="arch-arrow"><div class="arrow-icon">→</div></div>
+        <div class="arch-node primary">
+          <div class="node-tag gold">API Layer</div>
+          <div class="node-title">Node.js + Express</div>
+          <div class="node-desc">RESTful API handling all business logic — authentication, data operations, notification dispatch.</div>
+          <div class="node-items">
+            <div class="node-item">JWT authentication middleware</div>
+            <div class="node-item">Role-based access control</div>
+            <div class="node-item">Appointment booking endpoints</div>
+            <div class="node-item">Notification trigger endpoints</div>
+          </div>
+        </div>
+        <div class="arch-arrow"><div class="arrow-icon">→</div></div>
+        <div class="arch-node primary">
+          <div class="node-tag green">Database</div>
+          <div class="node-title">PostgreSQL</div>
+          <div class="node-desc">Relational database storing all persistent data — users, clinics, patients, appointments, records.</div>
+          <div class="node-items">
+            <div class="node-item">users — staff + patient accounts</div>
+            <div class="node-item">clinics — multi-tenant support</div>
+            <div class="node-item">patients — records per clinic</div>
+            <div class="node-item">appointments — bookings + status</div>
+            <div class="node-item">treatments — procedure history</div>
+          </div>
+        </div>
+      </div>
+      <div class="arch-row wide">
+        <div class="arch-node center" style="padding:.85rem;"><div class="arrow-icon" style="font-size:14px;">↕ &nbsp; External Services &nbsp; ↕</div></div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-node">
+          <div class="node-tag teal">Auth</div>
+          <div class="node-title">Firebase Auth</div>
+          <div class="node-desc">Handles secure authentication — email/password, OTP, session tokens.</div>
+        </div>
+        <div class="arch-arrow"><div class="arrow-icon">|</div></div>
+        <div class="arch-node">
+          <div class="node-tag teal">Notifications</div>
+          <div class="node-title">Twilio + Resend</div>
+          <div class="node-desc">Twilio for SMS reminders, Resend for email confirmations and notifications.</div>
+        </div>
+        <div class="arch-arrow"><div class="arrow-icon">|</div></div>
+        <div class="arch-node">
+          <div class="node-tag teal">Payments</div>
+          <div class="node-title">PayMongo</div>
+          <div class="node-desc">Philippine payment gateway for clinic subscription billing — GCash, Maya, cards.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STACK TABLE -->
+  <div id="phase-stack" class="phase-panel reveal">
+    <table class="stack-table">
+      <thead>
+        <tr>
+          <th>Layer</th>
+          <th>Technology</th>
+          <th>Purpose</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="color:var(--teal);">Frontend</td>
+          <td>HTML5 · CSS3 · Vanilla JS</td>
+          <td>All three portals — patient, clinic, owner<div class="stack-note">Single-file HTML per portal, no build step required</div></td>
+          <td><span class="status-tag live">Live</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--teal);">Hosting</td>
+          <td>GitHub Pages</td>
+          <td>Static site hosting via GitHub repository<div class="stack-note">vergel1231.github.io/dentayos-website</div></td>
+          <td><span class="status-tag live">Live</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--teal);">Data sync</td>
+          <td>localStorage API</td>
+          <td>Simulates backend sync for appointment booking flow<div class="stack-note">Browser-scoped — different browsers show different data</div></td>
+          <td><span class="status-tag live">Live</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--teal);">Authentication</td>
+          <td>Firebase Auth</td>
+          <td>Secure email/password auth with session tokens<div class="stack-note">Replaces hardcoded demo accounts</div></td>
+          <td><span class="status-tag planned">Planned</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--teal);">Database</td>
+          <td>PostgreSQL</td>
+          <td>Persistent storage for clinics, patients, appointments, treatments</td>
+          <td><span class="status-tag planned">Planned</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--teal);">API</td>
+          <td>Node.js + Express</td>
+          <td>RESTful API layer with JWT auth middleware and role-based access control</td>
+          <td><span class="status-tag planned">Planned</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--teal);">SMS</td>
+          <td>Twilio</td>
+          <td>Automated appointment reminders via SMS to patient mobile numbers</td>
+          <td><span class="status-tag planned">Planned</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--teal);">Email</td>
+          <td>Resend</td>
+          <td>Transactional email — booking confirmations, account creation, reminders</td>
+          <td><span class="status-tag planned">Planned</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--teal);">Payments</td>
+          <td>PayMongo</td>
+          <td>Clinic subscription billing — GCash, Maya, debit/credit card support</td>
+          <td><span class="status-tag planned">Planned</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--teal);">Hosting (prod)</td>
+          <td>Render / Railway</td>
+          <td>Node.js API server hosting with PostgreSQL add-on</td>
+          <td><span class="status-tag planned">Planned</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--teal);">Frontend (prod)</td>
+          <td>React + Vite</td>
+          <td>Component-based UI with proper routing, state management, and build pipeline</td>
+          <td><span class="status-tag planned">Planned</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECURITY -->
+  <div id="phase-security" class="phase-panel reveal">
+    <p style="font-size:15px;color:var(--teal);line-height:1.8;margin-bottom:.5rem;">Security considerations for the current prototype and the planned production system.</p>
+    <div class="security-grid">
+      <div class="sec-card">
+        <div class="sec-icon">🔐</div>
+        <h4>Authentication</h4>
+        <p>Current: hardcoded demo accounts in JS. Planned: Firebase Auth with email/password, session tokens, and 24-hour expiry.</p>
+      </div>
+      <div class="sec-card">
+        <div class="sec-icon">👥</div>
+        <h4>Role-based Access</h4>
+        <p>Clinic staff are separated by role — dentist, receptionist, assistant, admin. Each role sees only their permitted sections.</p>
+      </div>
+      <div class="sec-card">
+        <div class="sec-icon">🏥</div>
+        <h4>Multi-tenancy Isolation</h4>
+        <p>Each clinic gets a unique clinic_id. All patient data is scoped to that ID — clinic A cannot see clinic B's records.</p>
+      </div>
+      <div class="sec-card">
+        <div class="sec-icon">🔒</div>
+        <h4>Patient Data Privacy</h4>
+        <p>Patients can only see their own records. The clinic portal enforces that staff can only access patients belonging to their registered clinic.</p>
+      </div>
+      <div class="sec-card">
+        <div class="sec-icon">📋</div>
+        <h4>Data Privacy Act (PH)</h4>
+        <p>DentAyos is designed with the Philippine Data Privacy Act of 2012 (RA 10173) in mind. Patient data is stored with consent and never shared with third parties.</p>
+      </div>
+      <div class="sec-card">
+        <div class="sec-icon">🔑</div>
+        <h4>Password Policy</h4>
+        <p>Minimum 8 characters enforced. Username cannot match password. In production, bcrypt hashing replaces plaintext storage.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">&#8679;</button>
+
+<script>
+  function showPhase(name, el) {
+    document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.phase-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('phase-' + name).classList.add('active');
+  }
+
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if(e.isIntersecting){ setTimeout(() => e.target.classList.add('visible'), i * 80); io.unobserve(e.target); }
+    });
+  }, {threshold:.1});
+  reveals.forEach(el => io.observe(el));
+
+  window.addEventListener('scroll', () => {
+    const b = document.getElementById('back-to-top');
+    if(b) b.style.display = window.scrollY > 300 ? 'flex' : 'none';
+  });
+</script>
+</body>
+</html>

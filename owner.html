@@ -234,7 +234,7 @@
     <button class="login-btn" onclick="doLogin()">Access Owner Portal</button>
     <div class="login-error" id="login-error">Incorrect credentials.</div>
     <div style="text-align:center;margin-top:1.5rem;">
-      <a href="index.html" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#B4966A'" onmouseout="this.style.color='#6B8A87'">← Back to Website</a>
+      <a href="#" onclick="window.location.replace('../index.html?ts='+Date.now())" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#B4966A'" onmouseout="this.style.color='#6B8A87'">← Back to Website</a>
     </div>
   </div>
 </div>
@@ -274,6 +274,7 @@
         <span>DentAyos Owner</span>
       </div>
     </div>
+    <a href="#" onclick="goToWebsite()" class="logout-btn" style="display:inline-block;text-align:center;text-decoration:none;margin-bottom:.5rem;">← Website</a>
     <button class="logout-btn" onclick="doLogout()">← Log Out</button>
   </div>
 </aside>
@@ -588,6 +589,10 @@
     document.getElementById('login-error').style.display = 'none';
     document.getElementById('owner-greeting').textContent = 'Good morning, Ver. 👑';
     document.getElementById('login-screen').style.display = 'flex';
+  }
+
+  function goToWebsite() {
+    window.location.replace('../index.html?ts=' + Date.now());
   }
 
   // Sidebar toggle
