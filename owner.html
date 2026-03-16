@@ -1,1230 +1,482 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DentAyos — Owner Portal</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap"
-    rel="stylesheet">
-  <style>
-    :root {
-      --dark: #0D1B1A;
-      --dark2: #1A2E2C;
-      --dark3: #223330;
-      --gold: #B4966A;
-      --cream: #E8D5B0;
-      --teal: #6B8A87;
-      --muted: #5A7875;
-      --success: #1D9E75;
-      --warning: #BA7517;
-      --danger: #A32D2D;
-      --border: rgba(180, 150, 106, 0.15);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background: var(--dark);
-      color: var(--cream);
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      min-height: 100vh;
-      display: flex;
-    }
-
-    /* LOGIN */
-    .login-screen {
-      position: fixed;
-      inset: 0;
-      background: var(--dark);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 500;
-    }
-
-    .login-box {
-      width: 420px;
-      max-width: 90vw;
-      border: 0.5px solid rgba(180, 150, 106, 0.3);
-      padding: 3rem;
-      position: relative;
-    }
-
-    .login-box::before {
-      content: '';
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      width: 20px;
-      height: 20px;
-      border-top: 0.5px solid var(--gold);
-      border-left: 0.5px solid var(--gold);
-    }
-
-    .login-box::after {
-      content: '';
-      position: absolute;
-      bottom: 8px;
-      right: 8px;
-      width: 20px;
-      height: 20px;
-      border-bottom: 0.5px solid var(--gold);
-      border-right: 0.5px solid var(--gold);
-    }
-
-    .login-logo {
-      font-family: 'DM Serif Display', serif;
-      font-size: 22px;
-      letter-spacing: 3px;
-      color: var(--cream);
-      margin-bottom: 0.25rem;
-    }
-
-    .login-logo span {
-      color: var(--gold);
-    }
-
-    .login-subtitle {
-      font-size: 10px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--teal);
-      margin-bottom: 2.5rem;
-    }
-
-    .login-box h2 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 22px;
-      color: var(--cream);
-      margin-bottom: 0.4rem;
-    }
-
-    .login-box>p {
-      font-size: 13px;
-      color: var(--teal);
-      margin-bottom: 2rem;
-    }
-
-    .login-form-group {
-      margin-bottom: 1.25rem;
-    }
-
-    .login-form-group label {
-      display: block;
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--teal);
-      margin-bottom: 0.5rem;
-    }
-
-    .login-form-group input {
-      width: 100%;
-      background: var(--dark2);
-      border: 0.5px solid var(--border);
-      color: var(--cream);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      padding: 0.85rem 1rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .login-form-group input:focus {
-      border-color: var(--gold);
-    }
-
-    .login-btn {
-      width: 100%;
-      background: var(--gold);
-      border: none;
-      color: var(--dark);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 1rem;
-      cursor: pointer;
-      margin-top: 0.5rem;
-      transition: background 0.2s;
-    }
-
-    .login-btn:hover {
-      background: var(--cream);
-    }
-
-    .login-error {
-      font-size: 12px;
-      color: #E24B4A;
-      margin-top: 0.75rem;
-      display: none;
-    }
-
-    .owner-badge {
-      display: inline-block;
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      background: rgba(180, 150, 106, 0.15);
-      color: var(--gold);
-      padding: 4px 12px;
-      margin-bottom: 1.5rem;
-    }
-
-    /* SIDEBAR */
-    .sidebar {
-      width: 240px;
-      min-height: 100vh;
-      background: var(--dark2);
-      border-right: 0.5px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-      position: fixed;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      transition: transform 0.3s ease;
-      z-index: 50;
-    }
-
-    .sidebar.collapsed {
-      transform: translateX(-240px);
-    }
-
-    .sidebar-logo {
-      padding: 2rem 1.5rem 1.5rem;
-      border-bottom: 0.5px solid var(--border);
-    }
-
-    .sidebar-logo h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 20px;
-      letter-spacing: 2px;
-      color: var(--cream);
-    }
-
-    .sidebar-logo h1 span {
-      color: var(--gold);
-    }
-
-    .sidebar-logo p {
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-top: 4px;
-    }
-
-    .sidebar-nav {
-      padding: 1.5rem 0;
-      flex: 1;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 0.85rem 1.5rem;
-      font-size: 13px;
-      letter-spacing: 0.5px;
-      color: var(--teal);
-      cursor: pointer;
-      border-left: 2px solid transparent;
-      transition: all 0.2s;
-    }
-
-    .nav-item:hover {
-      color: var(--cream);
-      background: rgba(180, 150, 106, 0.05);
-    }
-
-    .nav-item.active {
-      color: var(--gold);
-      border-left-color: var(--gold);
-      background: rgba(180, 150, 106, 0.08);
-    }
-
-    .nav-icon {
-      width: 16px;
-      height: 16px;
-      opacity: 0.7;
-    }
-
-    .sidebar-footer {
-      padding: 1.5rem;
-      border-top: 0.5px solid var(--border);
-    }
-
-    .staff-badge {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .staff-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--gold);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--dark);
-      flex-shrink: 0;
-    }
-
-    .staff-info p {
-      font-size: 13px;
-      color: var(--cream);
-    }
-
-    .staff-info span {
-      font-size: 11px;
-      color: var(--gold);
-      letter-spacing: 0.5px;
-    }
-
-    .website-btn {
-      margin-bottom: 0.75rem;
-      width: 100%;
-      background: transparent;
-      border: 0.5px solid var(--border);
-      color: var(--teal);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: 0.6rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-decoration: none;
-      display: inline-block;
-      text-align: center;
-    }
-
-    .website-btn:hover {
-      border-color: var(--gold);
-      color: var(--gold);
-    }
-
-    .logout-btn {
-      margin-top: 1rem;
-      width: 100%;
-      background: transparent;
-      border: 0.5px solid var(--border);
-      color: var(--teal);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: 0.6rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .logout-btn:hover {
-      border-color: var(--gold);
-      color: var(--gold);
-    }
-
-    /* TOGGLE */
-    .sidebar-toggle {
-      position: fixed;
-      top: 1.25rem;
-      left: 252px;
-      z-index: 200;
-      background: var(--dark2);
-      border: 0.5px solid var(--border);
-      color: var(--teal);
-      width: 28px;
-      height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: left 0.3s ease, color 0.2s;
-      font-size: 14px;
-    }
-
-    .sidebar-toggle:hover {
-      color: var(--gold);
-      border-color: rgba(180, 150, 106, 0.4);
-    }
-
-    .sidebar-toggle.collapsed {
-      left: 12px;
-    }
-
-    /* MAIN */
-    .main {
-      margin-left: 240px;
-      flex: 1;
-      padding: 2.5rem 3rem;
-      min-height: 100vh;
-      transition: margin-left 0.3s ease;
-    }
-
-    .main.expanded {
-      margin-left: 0;
-    }
-
-    /* TOPBAR */
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2.5rem;
-    }
-
-    .topbar h2 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 28px;
-      color: var(--cream);
-    }
-
-    .topbar p {
-      font-size: 13px;
-      color: var(--teal);
-      margin-top: 4px;
-    }
-
-    .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .date-badge {
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--teal);
-      border: 0.5px solid var(--border);
-      padding: 0.5rem 1rem;
-    }
-
-    .add-btn {
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--dark);
-      background: var(--gold);
-      border: none;
-      padding: 0.6rem 1.25rem;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      transition: background 0.2s;
-    }
-
-    .add-btn:hover {
-      background: var(--cream);
-    }
-
-    /* STATS */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .stat-card {
-      background: var(--dark2);
-      border: 0.5px solid var(--border);
-      padding: 1.25rem 1.5rem;
-    }
-
-    .stat-label {
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--teal);
-      margin-bottom: 0.75rem;
-    }
-
-    .stat-value {
-      font-family: 'DM Serif Display', serif;
-      font-size: 32px;
-      color: var(--cream);
-    }
-
-    .stat-sub {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-
-    .stat-card.highlight {
-      border-color: rgba(180, 150, 106, 0.4);
-    }
-
-    .stat-card.highlight .stat-value {
-      color: var(--gold);
-    }
-
-    .stat-card.success .stat-value {
-      color: var(--success);
-    }
-
-    .stat-card.warning .stat-value {
-      color: var(--warning);
-    }
-
-    /* PANEL */
-    .panel {
-      background: var(--dark2);
-      border: 0.5px solid var(--border);
-      margin-bottom: 1.5rem;
-    }
-
-    .panel-header {
-      padding: 1.25rem 1.5rem;
-      border-bottom: 0.5px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .panel-header h3 {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--cream);
-      letter-spacing: 0.5px;
-    }
-
-    .panel-header span {
-      font-size: 11px;
-      color: var(--teal);
-      letter-spacing: 1px;
-    }
-
-    .panel-body {
-      padding: 1.5rem;
-    }
-
-    /* CONTENT GRID */
-    .content-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .full-width {
-      grid-column: 1/-1;
-    }
-
-    /* CLINIC TABLE */
-    .clinic-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .clinic-table th {
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--teal);
-      text-align: left;
-      padding: 0 1rem 1rem 0;
-      font-weight: 400;
-    }
-
-    .clinic-table td {
-      padding: 0.85rem 1rem 0.85rem 0;
-      border-top: 0.5px solid var(--border);
-      font-size: 13px;
-      color: var(--cream);
-      vertical-align: middle;
-    }
-
-    .clinic-table tr:hover td {
-      background: rgba(180, 150, 106, 0.03);
-    }
-
-    .clinic-name {
-      font-weight: 500;
-    }
-
-    .clinic-meta {
-      font-size: 11px;
-      color: var(--teal);
-      margin-top: 2px;
-    }
-
-    .status-badge {
-      font-size: 10px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      padding: 3px 10px;
-      display: inline-block;
-    }
-
-    .status-badge.active {
-      background: rgba(29, 158, 117, 0.15);
-      color: #1D9E75;
-    }
-
-    .status-badge.trial {
-      background: rgba(180, 150, 106, 0.15);
-      color: var(--gold);
-    }
-
-    .status-badge.overdue {
-      background: rgba(163, 45, 45, 0.15);
-      color: #E24B4A;
-    }
-
-    .action-btn {
-      font-size: 11px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      background: transparent;
-      border: 0.5px solid var(--border);
-      color: var(--teal);
-      padding: 4px 12px;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      transition: all 0.2s;
-      margin-right: 4px;
-    }
-
-    .action-btn:hover {
-      border-color: var(--gold);
-      color: var(--gold);
-    }
-
-    .action-btn.danger:hover {
-      border-color: #E24B4A;
-      color: #E24B4A;
-    }
-
-    /* REVENUE */
-    .revenue-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.85rem 0;
-      border-bottom: 0.5px solid var(--border);
-    }
-
-    .revenue-row:last-child {
-      border-bottom: none;
-    }
-
-    .revenue-clinic {
-      font-size: 13px;
-      color: var(--cream);
-    }
-
-    .revenue-plan {
-      font-size: 11px;
-      color: var(--teal);
-      margin-top: 2px;
-    }
-
-    .revenue-amount {
-      font-family: 'DM Serif Display', serif;
-      font-size: 18px;
-      color: var(--gold);
-    }
-
-    .revenue-status {
-      font-size: 11px;
-      color: var(--teal);
-      text-align: right;
-      margin-top: 2px;
-    }
-
-    /* ACTIVITY */
-    .activity-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .activity-item {
-      display: flex;
-      gap: 1rem;
-      align-items: flex-start;
-      padding: 0.85rem 1rem;
-      border: 0.5px solid var(--border);
-    }
-
-    .activity-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      margin-top: 4px;
-    }
-
-    .activity-dot.new {
-      background: var(--success);
-    }
-
-    .activity-dot.payment {
-      background: var(--gold);
-    }
-
-    .activity-dot.alert {
-      background: #E24B4A;
-    }
-
-    .activity-dot.info {
-      background: var(--teal);
-    }
-
-    .activity-text p {
-      font-size: 13px;
-      color: var(--cream);
-      line-height: 1.5;
-    }
-
-    .activity-text span {
-      font-size: 11px;
-      color: var(--teal);
-      margin-top: 2px;
-      display: block;
-    }
-
-    /* MODAL */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(13, 27, 26, 0.85);
-      z-index: 200;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-overlay.open {
-      display: flex;
-    }
-
-    .modal {
-      background: var(--dark2);
-      border: 0.5px solid rgba(180, 150, 106, 0.3);
-      padding: 2.5rem;
-      width: 480px;
-      max-width: 90vw;
-      position: relative;
-    }
-
-    .modal h3 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 22px;
-      color: var(--cream);
-      margin-bottom: 0.5rem;
-    }
-
-    .modal p {
-      font-size: 13px;
-      color: var(--teal);
-      margin-bottom: 2rem;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: transparent;
-      border: none;
-      color: var(--teal);
-      font-size: 18px;
-      cursor: pointer;
-      transition: color 0.2s;
-    }
-
-    .modal-close:hover {
-      color: var(--gold);
-    }
-
-    .form-group {
-      margin-bottom: 1.25rem;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--teal);
-      margin-bottom: 0.5rem;
-    }
-
-    .form-group input,
-    .form-group select {
-      width: 100%;
-      background: var(--dark3);
-      border: 0.5px solid var(--border);
-      color: var(--cream);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      padding: 0.75rem 1rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus {
-      border-color: var(--gold);
-    }
-
-    .form-group select option {
-      background: var(--dark2);
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1.5rem;
-    }
-
-    .btn-save {
-      flex: 1;
-      background: var(--gold);
-      border: none;
-      color: var(--dark);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: 0.85rem;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .btn-save:hover {
-      background: var(--cream);
-    }
-
-    .btn-cancel {
-      flex: 1;
-      background: transparent;
-      border: 0.5px solid var(--border);
-      color: var(--teal);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: 0.85rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .btn-cancel:hover {
-      border-color: var(--gold);
-      color: var(--gold);
-    }
-
-    /* TOAST */
-    .toast {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      background: var(--dark2);
-      border: 0.5px solid rgba(29, 158, 117, 0.5);
-      color: #1D9E75;
-      font-size: 13px;
-      padding: 1rem 1.5rem;
-      display: none;
-      z-index: 300;
-      letter-spacing: 0.5px;
-    }
-
-    .toast.show {
-      display: block;
-      animation: fadeUp 0.3s ease;
-    }
-
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* SECTION */
-    .section-content {
-      display: none;
-    }
-
-    .section-content.active {
-      display: block;
-    }
-
-    @media(max-width:768px) {
-      .sidebar {
-        position: fixed;
-      }
-
-      .main {
-        margin-left: 0;
-        padding: 1.5rem;
-      }
-
-      .stats {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .content-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DentAyos — Owner Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dark: #0D1B1A;
+    --dark2: #1A2E2C;
+    --dark3: #223330;
+    --gold: #B4966A;
+    --cream: #E8D5B0;
+    --teal: #6B8A87;
+    --muted: #5A7875;
+    --success: #1D9E75;
+    --warning: #BA7517;
+    --danger: #A32D2D;
+    --border: rgba(180,150,106,0.15);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--dark); color:var(--cream); font-family:'DM Sans',sans-serif; font-weight:300; min-height:100vh; display:flex; }
+
+  /* LOGIN */
+  .login-screen {
+    position:fixed; inset:0; background:var(--dark);
+    display:flex; align-items:center; justify-content:center; z-index:500;
+  }
+  .login-box {
+    width:420px; max-width:90vw;
+    border:0.5px solid rgba(180,150,106,0.3);
+    padding:3rem; position:relative;
+  }
+  .login-box::before { content:''; position:absolute; top:8px; left:8px; width:20px; height:20px; border-top:0.5px solid var(--gold); border-left:0.5px solid var(--gold); }
+  .login-box::after { content:''; position:absolute; bottom:8px; right:8px; width:20px; height:20px; border-bottom:0.5px solid var(--gold); border-right:0.5px solid var(--gold); }
+  .login-logo { font-family:'DM Serif Display',serif; font-size:22px; letter-spacing:3px; color:var(--cream); margin-bottom:0.25rem; }
+  .login-logo span { color:var(--gold); }
+  .login-subtitle { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--teal); margin-bottom:2.5rem; }
+  .login-box h2 { font-family:'DM Serif Display',serif; font-size:22px; color:var(--cream); margin-bottom:0.4rem; }
+  .login-box > p { font-size:13px; color:var(--teal); margin-bottom:2rem; }
+  .login-form-group { margin-bottom:1.25rem; }
+  .login-form-group label { display:block; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--teal); margin-bottom:0.5rem; }
+  .login-form-group input {
+    width:100%; background:var(--dark2); border:0.5px solid var(--border);
+    color:var(--cream); font-family:'DM Sans',sans-serif; font-size:14px;
+    padding:0.85rem 1rem; outline:none; transition:border-color 0.2s;
+  }
+  .login-form-group input:focus { border-color:var(--gold); }
+  .login-btn {
+    width:100%; background:var(--gold); border:none; color:var(--dark);
+    font-family:'DM Sans',sans-serif; font-size:12px; letter-spacing:2px;
+    text-transform:uppercase; padding:1rem; cursor:pointer; margin-top:0.5rem; transition:background 0.2s;
+  }
+  .login-btn:hover { background:var(--cream); }
+  .login-error { font-size:12px; color:#E24B4A; margin-top:0.75rem; display:none; }
+  .owner-badge { display:inline-block; font-size:10px; letter-spacing:2px; text-transform:uppercase; background:rgba(180,150,106,0.15); color:var(--gold); padding:4px 12px; margin-bottom:1.5rem; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width:240px; min-height:100vh; background:var(--dark2);
+    border-right:0.5px solid var(--border); display:flex;
+    flex-direction:column; flex-shrink:0; position:fixed;
+    top:0; left:0; bottom:0; transition:transform 0.3s ease; z-index:50;
+  }
+  .sidebar.collapsed { transform:translateX(-240px); }
+  .sidebar-logo { padding:2rem 1.5rem 1.5rem; border-bottom:0.5px solid var(--border); }
+  .sidebar-logo h1 { font-family:'DM Serif Display',serif; font-size:20px; letter-spacing:2px; color:var(--cream); }
+  .sidebar-logo h1 span { color:var(--gold); }
+  .sidebar-logo p { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-top:4px; }
+  .sidebar-nav { padding:1.5rem 0; flex:1; }
+  .nav-item {
+    display:flex; align-items:center; gap:12px; padding:0.85rem 1.5rem;
+    font-size:13px; letter-spacing:0.5px; color:var(--teal); cursor:pointer;
+    border-left:2px solid transparent; transition:all 0.2s;
+  }
+  .nav-item:hover { color:var(--cream); background:rgba(180,150,106,0.05); }
+  .nav-item.active { color:var(--gold); border-left-color:var(--gold); background:rgba(180,150,106,0.08); }
+  .nav-icon { width:16px; height:16px; opacity:0.7; }
+  .sidebar-footer { padding:1.5rem; border-top:0.5px solid var(--border); }
+  .staff-badge { display:flex; align-items:center; gap:10px; }
+  .staff-avatar {
+    width:32px; height:32px; border-radius:50%; background:var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:500; color:var(--dark); flex-shrink:0;
+  }
+  .staff-info p { font-size:13px; color:var(--cream); }
+  .staff-info span { font-size:11px; color:var(--gold); letter-spacing:0.5px; }
+  .logout-btn {
+    margin-top:1rem; width:100%; background:transparent; border:0.5px solid var(--border);
+    color:var(--teal); font-family:'DM Sans',sans-serif; font-size:11px;
+    letter-spacing:1.5px; text-transform:uppercase; padding:0.6rem; cursor:pointer; transition:all 0.2s;
+  }
+  .logout-btn:hover { border-color:var(--gold); color:var(--gold); }
+
+  /* TOGGLE */
+  .sidebar-toggle {
+    position:fixed; top:1.25rem; left:252px; z-index:200;
+    background:var(--dark2); border:0.5px solid var(--border);
+    color:var(--teal); width:28px; height:28px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; transition:left 0.3s ease, color 0.2s; font-size:14px;
+  }
+  .sidebar-toggle:hover { color:var(--gold); border-color:rgba(180,150,106,0.4); }
+  .sidebar-toggle.collapsed { left:12px; }
+
+  /* MAIN */
+  .main { margin-left:240px; flex:1; padding:2.5rem 3rem; min-height:100vh; transition:margin-left 0.3s ease; }
+  .main.expanded { margin-left:0; }
+
+  /* TOPBAR */
+  .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:2.5rem; }
+  .topbar h2 { font-family:'DM Serif Display',serif; font-size:28px; color:var(--cream); }
+  .topbar p { font-size:13px; color:var(--teal); margin-top:4px; }
+  .topbar-right { display:flex; align-items:center; gap:1rem; }
+  .date-badge { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--teal); border:0.5px solid var(--border); padding:0.5rem 1rem; }
+  .add-btn { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--dark); background:var(--gold); border:none; padding:0.6rem 1.25rem; cursor:pointer; font-family:'DM Sans',sans-serif; transition:background 0.2s; }
+  .add-btn:hover { background:var(--cream); }
+
+  /* STATS */
+  .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2.5rem; }
+  .stat-card { background:var(--dark2); border:0.5px solid var(--border); padding:1.25rem 1.5rem; }
+  .stat-label { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--teal); margin-bottom:0.75rem; }
+  .stat-value { font-family:'DM Serif Display',serif; font-size:32px; color:var(--cream); }
+  .stat-sub { font-size:12px; color:var(--muted); margin-top:4px; }
+  .stat-card.highlight { border-color:rgba(180,150,106,0.4); }
+  .stat-card.highlight .stat-value { color:var(--gold); }
+  .stat-card.success .stat-value { color:var(--success); }
+  .stat-card.warning .stat-value { color:var(--warning); }
+
+  /* PANEL */
+  .panel { background:var(--dark2); border:0.5px solid var(--border); margin-bottom:1.5rem; }
+  .panel-header { padding:1.25rem 1.5rem; border-bottom:0.5px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+  .panel-header h3 { font-size:14px; font-weight:500; color:var(--cream); letter-spacing:0.5px; }
+  .panel-header span { font-size:11px; color:var(--teal); letter-spacing:1px; }
+  .panel-body { padding:1.5rem; }
+
+  /* CONTENT GRID */
+  .content-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
+  .full-width { grid-column:1/-1; }
+
+  /* CLINIC TABLE */
+  .clinic-table { width:100%; border-collapse:collapse; }
+  .clinic-table th { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--teal); text-align:left; padding:0 1rem 1rem 0; font-weight:400; }
+  .clinic-table td { padding:0.85rem 1rem 0.85rem 0; border-top:0.5px solid var(--border); font-size:13px; color:var(--cream); vertical-align:middle; }
+  .clinic-table tr:hover td { background:rgba(180,150,106,0.03); }
+  .clinic-name { font-weight:500; }
+  .clinic-meta { font-size:11px; color:var(--teal); margin-top:2px; }
+  .status-badge { font-size:10px; letter-spacing:1px; text-transform:uppercase; padding:3px 10px; display:inline-block; }
+  .status-badge.active { background:rgba(29,158,117,0.15); color:#1D9E75; }
+  .status-badge.trial { background:rgba(180,150,106,0.15); color:var(--gold); }
+  .status-badge.overdue { background:rgba(163,45,45,0.15); color:#E24B4A; }
+  .action-btn { font-size:11px; letter-spacing:1px; text-transform:uppercase; background:transparent; border:0.5px solid var(--border); color:var(--teal); padding:4px 12px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s; margin-right:4px; }
+  .action-btn:hover { border-color:var(--gold); color:var(--gold); }
+  .action-btn.danger:hover { border-color:#E24B4A; color:#E24B4A; }
+
+  /* REVENUE */
+  .revenue-row { display:flex; justify-content:space-between; align-items:center; padding:0.85rem 0; border-bottom:0.5px solid var(--border); }
+  .revenue-row:last-child { border-bottom:none; }
+  .revenue-clinic { font-size:13px; color:var(--cream); }
+  .revenue-plan { font-size:11px; color:var(--teal); margin-top:2px; }
+  .revenue-amount { font-family:'DM Serif Display',serif; font-size:18px; color:var(--gold); }
+  .revenue-status { font-size:11px; color:var(--teal); text-align:right; margin-top:2px; }
+
+  /* ACTIVITY */
+  .activity-list { display:flex; flex-direction:column; gap:0.75rem; }
+  .activity-item { display:flex; gap:1rem; align-items:flex-start; padding:0.85rem 1rem; border:0.5px solid var(--border); }
+  .activity-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+  .activity-dot.new { background:var(--success); }
+  .activity-dot.payment { background:var(--gold); }
+  .activity-dot.alert { background:#E24B4A; }
+  .activity-dot.info { background:var(--teal); }
+  .activity-text p { font-size:13px; color:var(--cream); line-height:1.5; }
+  .activity-text span { font-size:11px; color:var(--teal); margin-top:2px; display:block; }
+
+  /* MODAL */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(13,27,26,0.85); z-index:200; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--dark2); border:0.5px solid rgba(180,150,106,0.3); padding:2.5rem; width:480px; max-width:90vw; position:relative; }
+  .modal h3 { font-family:'DM Serif Display',serif; font-size:22px; color:var(--cream); margin-bottom:0.5rem; }
+  .modal p { font-size:13px; color:var(--teal); margin-bottom:2rem; }
+  .modal-close { position:absolute; top:1rem; right:1rem; background:transparent; border:none; color:var(--teal); font-size:18px; cursor:pointer; transition:color 0.2s; }
+  .modal-close:hover { color:var(--gold); }
+  .form-group { margin-bottom:1.25rem; }
+  .form-group label { display:block; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--teal); margin-bottom:0.5rem; }
+  .form-group input, .form-group select { width:100%; background:var(--dark3); border:0.5px solid var(--border); color:var(--cream); font-family:'DM Sans',sans-serif; font-size:13px; padding:0.75rem 1rem; outline:none; transition:border-color 0.2s; }
+  .form-group input:focus, .form-group select:focus { border-color:var(--gold); }
+  .form-group select option { background:var(--dark2); }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .modal-actions { display:flex; gap:1rem; margin-top:1.5rem; }
+  .btn-save { flex:1; background:var(--gold); border:none; color:var(--dark); font-family:'DM Sans',sans-serif; font-size:12px; letter-spacing:1.5px; text-transform:uppercase; padding:0.85rem; cursor:pointer; transition:background 0.2s; }
+  .btn-save:hover { background:var(--cream); }
+  .btn-cancel { flex:1; background:transparent; border:0.5px solid var(--border); color:var(--teal); font-family:'DM Sans',sans-serif; font-size:12px; letter-spacing:1.5px; text-transform:uppercase; padding:0.85rem; cursor:pointer; transition:all 0.2s; }
+  .btn-cancel:hover { border-color:var(--gold); color:var(--gold); }
+
+  /* TOAST */
+  .toast { position:fixed; bottom:2rem; right:2rem; background:var(--dark2); border:0.5px solid rgba(29,158,117,0.5); color:#1D9E75; font-size:13px; padding:1rem 1.5rem; display:none; z-index:300; letter-spacing:0.5px; }
+  .toast.show { display:block; animation:fadeUp 0.3s ease; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+  /* SECTION */
+  .section-content { display:none; }
+  .section-content.active { display:block; }
+
+  @media(max-width:768px) {
+    .sidebar { position:fixed; }
+    .main { margin-left:0; padding:1.5rem; }
+    .stats { grid-template-columns:1fr 1fr; }
+    .content-grid { grid-template-columns:1fr; }
+  }
+</style>
 </head>
-
 <body>
 
-  <!-- LOGIN -->
-  <div class="login-screen" id="login-screen">
-    <div class="login-box">
-      <div class="login-logo">Dent<span>Ayos</span></div>
-      <div class="login-subtitle">Owner Portal</div>
-      <div class="owner-badge">Restricted Access</div>
-      <h2>Owner login.</h2>
-      <p>This portal is for DentAyos administrators only.</p>
-      <div class="login-form-group">
-        <label>Username</label>
-        <input type="text" id="login-user" placeholder="Enter owner username"
-          onkeydown="if(event.key==='Enter') doLogin()">
+<!-- LOGIN -->
+<div class="login-screen" id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Dent<span>Ayos</span></div>
+    <div class="login-subtitle">Owner Portal</div>
+    <div class="owner-badge">Restricted Access</div>
+    <h2>Owner login.</h2>
+    <p>This portal is for DentAyos administrators only.</p>
+    <div class="login-form-group">
+      <label>Username</label>
+      <input type="text" id="login-user" placeholder="Enter owner username" onkeydown="if(event.key==='Enter') doLogin()">
+    </div>
+    <div class="login-form-group">
+      <label>Password</label>
+      <div style="position:relative;">
+        <input type="password" id="login-pass" placeholder="Enter password" onkeydown="if(event.key==='Enter') doLogin()" style="padding-right:3rem;">
+        <button onclick="togglePw()" style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--teal);cursor:pointer;font-size:12px;letter-spacing:1px;" id="toggle-pw">Show</button>
       </div>
-      <div class="login-form-group">
-        <label>Password</label>
-        <div style="position:relative;">
-          <input type="password" id="login-pass" placeholder="Enter password"
-            onkeydown="if(event.key==='Enter') doLogin()" style="padding-right:3rem;">
-          <button onclick="togglePw()"
-            style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--teal);cursor:pointer;font-size:12px;letter-spacing:1px;"
-            id="toggle-pw">Show</button>
-        </div>
-      </div>
-      <button class="login-btn" onclick="doLogin()">Access Owner Portal</button>
-      <div class="login-error" id="login-error">Incorrect credentials.</div>
+    </div>
+    <button class="login-btn" onclick="doLogin()">Access Owner Portal</button>
+    <div class="login-error" id="login-error">Incorrect credentials.</div>
+    <div style="text-align:center;margin-top:1.5rem;">
+      <a href="index.html" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#B4966A'" onmouseout="this.style.color='#6B8A87'">← Back to Website</a>
     </div>
   </div>
+</div>
 
-  <!-- SIDEBAR TOGGLE -->
-  <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">☰</button>
+<!-- SIDEBAR TOGGLE -->
+<button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">☰</button>
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo">
-      <h1>Dent<span>Ayos</span></h1>
-      <p>Owner Portal</p>
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <h1>Dent<span>Ayos</span></h1>
+    <p>Owner Portal</p>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-item active" id="nav-dashboard" onclick="showSection('dashboard')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+      Dashboard
     </div>
-    <nav class="sidebar-nav">
-      <div class="nav-item active" id="nav-dashboard" onclick="showSection('dashboard')">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
-          <rect x="1" y="1" width="6" height="6" rx="1" />
-          <rect x="9" y="1" width="6" height="6" rx="1" />
-          <rect x="1" y="9" width="6" height="6" rx="1" />
-          <rect x="9" y="9" width="6" height="6" rx="1" />
-        </svg>
-        Dashboard
-      </div>
-      <div class="nav-item" id="nav-clinics" onclick="showSection('clinics')">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
-          <path d="M2 14V6l6-4 6 4v8" />
-          <rect x="5" y="9" width="3" height="5" />
-          <rect x="8" y="9" width="3" height="5" />
-        </svg>
-        Clinics
-      </div>
-      <div class="nav-item" id="nav-revenue" onclick="showSection('revenue')">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
-          <path d="M8 1v14M4 5h6a2 2 0 010 4H6a2 2 0 000 4h6" />
-        </svg>
-        Revenue
-      </div>
-      <div class="nav-item" id="nav-activity" onclick="showSection('activity')">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
-          <polyline points="1,8 4,4 7,9 10,5 13,8 15,6" />
-        </svg>
-        Activity
-      </div>
-    </nav>
-    <div class="sidebar-footer">
-      <div class="staff-badge">
-        <div class="staff-avatar">V</div>
-        <div class="staff-info">
-          <p id="owner-name">Ver</p>
-          <span>DentAyos Owner</span>
-        </div>
-      </div>
-      <a href="index.html" class="website-btn">← Website</a>
-      <button class="logout-btn" onclick="doLogout()">← Log Out</button>
+    <div class="nav-item" id="nav-clinics" onclick="showSection('clinics')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 14V6l6-4 6 4v8"/><rect x="5" y="9" width="3" height="5"/><rect x="8" y="9" width="3" height="5"/></svg>
+      Clinics
     </div>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="main" id="main">
-
-    <!-- DASHBOARD -->
-    <div id="section-dashboard" class="section-content active">
-      <div class="topbar">
-        <div>
-          <h2 id="owner-greeting">Good morning, Ver. 👑</h2>
-          <p>Here's your DentAyos platform overview.</p>
-        </div>
-        <div class="topbar-right">
-          <div class="date-badge" id="today-date"></div>
-          <button class="add-btn" onclick="openModal('add-clinic')">+ Add Clinic</button>
-        </div>
-      </div>
-      <div class="stats">
-        <div class="stat-card highlight">
-          <div class="stat-label">Total Clinics</div>
-          <div class="stat-value" id="stat-clinics">3</div>
-          <div class="stat-sub">1 on trial</div>
-        </div>
-        <div class="stat-card success">
-          <div class="stat-label">Monthly Revenue</div>
-          <div class="stat-value" id="stat-revenue">₱9,000</div>
-          <div class="stat-sub">From 3 active clinics</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Total Patients</div>
-          <div class="stat-value">72</div>
-          <div class="stat-sub">Across all clinics</div>
-        </div>
-        <div class="stat-card warning">
-          <div class="stat-label">Overdue Payments</div>
-          <div class="stat-value">1</div>
-          <div class="stat-sub">Requires follow-up</div>
-        </div>
-      </div>
-      <div class="content-grid">
-        <div class="panel full-width">
-          <div class="panel-header">
-            <h3>Clinic Accounts</h3><span id="clinic-count">3 total</span>
-          </div>
-          <div class="panel-body">
-            <table class="clinic-table">
-              <thead>
-                <tr>
-                  <th>Clinic</th>
-                  <th>Plan</th>
-                  <th>Monthly Fee</th>
-                  <th>Patients</th>
-                  <th>Since</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="clinic-tbody-dash"></tbody>
-            </table>
-          </div>
-        </div>
-        <div class="panel">
-          <div class="panel-header">
-            <h3>Revenue Breakdown</h3><span>This month</span>
-          </div>
-          <div class="panel-body" id="revenue-breakdown"></div>
-        </div>
-        <div class="panel">
-          <div class="panel-header">
-            <h3>Recent Activity</h3><span>Platform-wide</span>
-          </div>
-          <div class="panel-body">
-            <div class="activity-list" id="activity-dash"></div>
-          </div>
-        </div>
+    <div class="nav-item" id="nav-revenue" onclick="showSection('revenue')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M8 1v14M4 5h6a2 2 0 010 4H6a2 2 0 000 4h6"/></svg>
+      Revenue
+    </div>
+    <div class="nav-item" id="nav-activity" onclick="showSection('activity')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><polyline points="1,8 4,4 7,9 10,5 13,8 15,6"/></svg>
+      Activity
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="staff-badge">
+      <div class="staff-avatar">V</div>
+      <div class="staff-info">
+        <p id="owner-name">Ver</p>
+        <span>DentAyos Owner</span>
       </div>
     </div>
+    <button class="logout-btn" onclick="doLogout()">← Log Out</button>
+  </div>
+</aside>
 
-    <!-- CLINICS -->
-    <div id="section-clinics" class="section-content">
-      <div class="topbar">
-        <div>
-          <h2>Clinics</h2>
-          <p>All registered clinic accounts on DentAyos.</p>
-        </div>
-        <div class="topbar-right">
-          <div class="date-badge" id="today-date-c"></div>
-          <button class="add-btn" onclick="openModal('add-clinic')">+ Add Clinic</button>
-        </div>
+<!-- MAIN -->
+<main class="main" id="main">
+
+  <!-- DASHBOARD -->
+  <div id="section-dashboard" class="section-content active">
+    <div class="topbar">
+      <div>
+        <h2 id="owner-greeting">Good morning, Ver. 👑</h2>
+        <p>Here's your DentAyos platform overview.</p>
       </div>
-      <div class="panel">
-        <div class="panel-header">
-          <h3>All Clinic Accounts</h3><span id="clinic-count-full">3 total</span>
-        </div>
+      <div class="topbar-right">
+        <div class="date-badge" id="today-date"></div>
+        <button class="add-btn" onclick="openModal('add-clinic')">+ Add Clinic</button>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat-card highlight">
+        <div class="stat-label">Total Clinics</div>
+        <div class="stat-value" id="stat-clinics">3</div>
+        <div class="stat-sub">1 on trial</div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-label">Monthly Revenue</div>
+        <div class="stat-value" id="stat-revenue">₱9,000</div>
+        <div class="stat-sub">From 3 active clinics</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Patients</div>
+        <div class="stat-value">72</div>
+        <div class="stat-sub">Across all clinics</div>
+      </div>
+      <div class="stat-card warning">
+        <div class="stat-label">Overdue Payments</div>
+        <div class="stat-value">1</div>
+        <div class="stat-sub">Requires follow-up</div>
+      </div>
+    </div>
+    <div class="content-grid">
+      <div class="panel full-width">
+        <div class="panel-header"><h3>Clinic Accounts</h3><span id="clinic-count">3 total</span></div>
         <div class="panel-body">
           <table class="clinic-table">
-            <thead>
-              <tr>
-                <th>Clinic</th>
-                <th>Owner / Contact</th>
-                <th>Plan</th>
-                <th>Monthly Fee</th>
-                <th>Patients</th>
-                <th>Since</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="clinic-tbody-full"></tbody>
+            <thead><tr><th>Clinic</th><th>Plan</th><th>Monthly Fee</th><th>Patients</th><th>Since</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="clinic-tbody-dash"></tbody>
           </table>
         </div>
       </div>
-    </div>
-
-    <!-- REVENUE -->
-    <div id="section-revenue" class="section-content">
-      <div class="topbar">
-        <div>
-          <h2>Revenue</h2>
-          <p>Monthly income across all clinic subscriptions.</p>
-        </div>
-        <div class="topbar-right">
-          <div class="date-badge" id="today-date-r"></div>
-        </div>
-      </div>
-      <div class="stats">
-        <div class="stat-card highlight">
-          <div class="stat-label">This Month</div>
-          <div class="stat-value">₱9,000</div>
-          <div class="stat-sub">3 active subscriptions</div>
-        </div>
-        <div class="stat-card success">
-          <div class="stat-label">Collected</div>
-          <div class="stat-value">₱6,000</div>
-          <div class="stat-sub">2 clinics paid</div>
-        </div>
-        <div class="stat-card warning">
-          <div class="stat-label">Pending</div>
-          <div class="stat-value">₱3,000</div>
-          <div class="stat-sub">1 clinic overdue</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Setup Fees (Total)</div>
-          <div class="stat-value">₱13,000</div>
-          <div class="stat-sub">One-time collected</div>
-        </div>
+      <div class="panel">
+        <div class="panel-header"><h3>Revenue Breakdown</h3><span>This month</span></div>
+        <div class="panel-body" id="revenue-breakdown"></div>
       </div>
       <div class="panel">
-        <div class="panel-header">
-          <h3>Per Clinic Revenue</h3><span>March 2026</span>
-        </div>
-        <div class="panel-body" id="revenue-full"></div>
-      </div>
-    </div>
-
-    <!-- ACTIVITY -->
-    <div id="section-activity" class="section-content">
-      <div class="topbar">
-        <div>
-          <h2>Activity</h2>
-          <p>All platform-wide events and alerts.</p>
-        </div>
-        <div class="topbar-right">
-          <div class="date-badge" id="today-date-a"></div>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panel-header">
-          <h3>Activity Log</h3><span>All events</span>
-        </div>
+        <div class="panel-header"><h3>Recent Activity</h3><span>Platform-wide</span></div>
         <div class="panel-body">
-          <div class="activity-list" id="activity-full"></div>
+          <div class="activity-list" id="activity-dash"></div>
         </div>
-      </div>
-    </div>
-
-  </main>
-
-  <!-- ADD CLINIC MODAL -->
-  <div class="modal-overlay" id="modal-add-clinic">
-    <div class="modal">
-      <button class="modal-close" onclick="closeModal('add-clinic')">✕</button>
-      <h3>Add New Clinic</h3>
-      <p>Register a new clinic account on DentAyos.</p>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Clinic Name</label>
-          <input type="text" id="new-clinic-name" placeholder="e.g. Smile Dental Clinic">
-        </div>
-        <div class="form-group">
-          <label>Owner / Contact</label>
-          <input type="text" id="new-clinic-owner" placeholder="e.g. Dr. Santos">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Location</label>
-          <input type="text" id="new-clinic-location" placeholder="e.g. Quezon City">
-        </div>
-        <div class="form-group">
-          <label>Plan</label>
-          <select id="new-clinic-plan">
-            <option value="Pilot">Pilot — ₱1,500/mo</option>
-            <option value="Standard">Standard — ₱3,000/mo</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Contact Number</label>
-        <input type="text" id="new-clinic-contact" placeholder="09XX XXX XXXX">
-      </div>
-      <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal('add-clinic')">Cancel</button>
-        <button class="btn-save" onclick="addClinic()">Add Clinic</button>
       </div>
     </div>
   </div>
 
-  <!-- TOAST -->
-  <div class="toast" id="toast"></div>
+  <!-- CLINICS -->
+  <div id="section-clinics" class="section-content">
+    <div class="topbar">
+      <div><h2>Clinics</h2><p>All registered clinic accounts on DentAyos.</p></div>
+      <div class="topbar-right">
+        <div class="date-badge" id="today-date-c"></div>
+        <button class="add-btn" onclick="openModal('add-clinic')">+ Add Clinic</button>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h3>All Clinic Accounts</h3><span id="clinic-count-full">3 total</span></div>
+      <div class="panel-body">
+        <table class="clinic-table">
+          <thead><tr><th>Clinic</th><th>Owner / Contact</th><th>Plan</th><th>Monthly Fee</th><th>Patients</th><th>Since</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="clinic-tbody-full"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
-  <script>
-    // Owner credentials
-    const OWNER = { username: 'ver', password: 'dentayos2026' };
+  <!-- REVENUE -->
+  <div id="section-revenue" class="section-content">
+    <div class="topbar">
+      <div><h2>Revenue</h2><p>Monthly income across all clinic subscriptions.</p></div>
+      <div class="topbar-right"><div class="date-badge" id="today-date-r"></div></div>
+    </div>
+    <div class="stats">
+      <div class="stat-card highlight">
+        <div class="stat-label">This Month</div>
+        <div class="stat-value" id="rev-total">₱9,000</div>
+        <div class="stat-sub" id="rev-total-sub">3 active subscriptions</div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-label">Collected</div>
+        <div class="stat-value" id="rev-collected">₱6,000</div>
+        <div class="stat-sub" id="rev-collected-sub">2 clinics paid</div>
+      </div>
+      <div class="stat-card warning">
+        <div class="stat-label">Pending</div>
+        <div class="stat-value" id="rev-pending">₱3,000</div>
+        <div class="stat-sub" id="rev-pending-sub">1 clinic overdue</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Setup Fees (Total)</div>
+        <div class="stat-value" id="rev-setup">₱13,000</div>
+        <div class="stat-sub">One-time collected</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h3>Per Clinic Revenue</h3><span>March 2026</span></div>
+      <div class="panel-body" id="revenue-full"></div>
+    </div>
+  </div>
 
-    // Clinic data
-    const clinics = [
-      { name: 'Smile Dental Clinic', owner: 'Dr. Ana Santos', location: 'Makati', plan: 'Standard', fee: 3000, patients: 24, since: 'Jan 2026', status: 'active' },
-      { name: 'BrightSmile Aesthetics', owner: 'Dr. Carlo Reyes', location: 'BGC', plan: 'Standard', fee: 3000, patients: 31, since: 'Feb 2026', status: 'active' },
-      { name: 'PearlWhite Dental', owner: 'Dr. Liza Cruz', location: 'Quezon City', plan: 'Pilot', fee: 1500, patients: 17, since: 'Mar 2026', status: 'trial' },
-    ];
+  <!-- ACTIVITY -->
+  <div id="section-activity" class="section-content">
+    <div class="topbar">
+      <div><h2>Activity</h2><p>All platform-wide events and alerts.</p></div>
+      <div class="topbar-right"><div class="date-badge" id="today-date-a"></div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h3>Activity Log</h3><span>All events</span></div>
+      <div class="panel-body">
+        <div class="activity-list" id="activity-full"></div>
+      </div>
+    </div>
+  </div>
 
-    const activities = [
-      { type: 'new', text: 'PearlWhite Dental joined as a pilot clinic.', time: 'Mar 16, 2026 · 9:00 AM' },
-      { type: 'payment', text: 'BrightSmile Aesthetics paid ₱3,000 for March.', time: 'Mar 15, 2026 · 2:30 PM' },
-      { type: 'payment', text: 'Smile Dental Clinic paid ₱3,000 for March.', time: 'Mar 14, 2026 · 11:00 AM' },
-      { type: 'alert', text: 'PearlWhite Dental payment due in 15 days.', time: 'Mar 13, 2026 · 8:00 AM' },
-      { type: 'info', text: 'BrightSmile Aesthetics added 5 new patients.', time: 'Mar 12, 2026 · 4:00 PM' },
-      { type: 'info', text: 'Smile Dental Clinic sent 18 reminders this week.', time: 'Mar 11, 2026 · 10:00 AM' },
-      { type: 'new', text: 'BrightSmile Aesthetics joined on Standard plan.', time: 'Feb 1, 2026 · 9:00 AM' },
-      { type: 'new', text: 'Smile Dental Clinic joined on Standard plan.', time: 'Jan 5, 2026 · 9:00 AM' },
-    ];
+</main>
 
-    function clinicRow(c, full) {
-      const statusClass = c.status === 'active' ? 'active' : c.status === 'trial' ? 'trial' : 'overdue';
-      const statusLabel = c.status === 'active' ? 'Active' : c.status === 'trial' ? 'Trial' : 'Overdue';
-      return `<tr>
+<!-- ADD CLINIC MODAL -->
+<div class="modal-overlay" id="modal-add-clinic">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('add-clinic')">✕</button>
+    <h3>Add New Clinic</h3>
+    <p>Register a new clinic account on DentAyos.</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Clinic Name</label>
+        <input type="text" id="new-clinic-name" placeholder="e.g. Smile Dental Clinic">
+      </div>
+      <div class="form-group">
+        <label>Owner / Contact</label>
+        <input type="text" id="new-clinic-owner" placeholder="e.g. Dr. Santos">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Location</label>
+        <input type="text" id="new-clinic-location" placeholder="e.g. Quezon City">
+      </div>
+      <div class="form-group">
+        <label>Plan</label>
+        <select id="new-clinic-plan">
+          <option value="Pilot">Pilot — ₱1,500/mo</option>
+          <option value="Standard">Standard — ₱3,000/mo</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Contact Number</label>
+      <input type="text" id="new-clinic-contact" placeholder="09XX XXX XXXX">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('add-clinic')">Cancel</button>
+      <button class="btn-save" onclick="addClinic()">Add Clinic</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // Owner credentials
+  const OWNER = { username: 'ver', password: 'dentayos2026' };
+
+  // Clinic data
+  const clinics = [
+    { name:'Smile Dental Clinic', owner:'Dr. Ana Santos', location:'Makati', plan:'Standard', fee:3000, patients:24, since:'Jan 2026', status:'active' },
+    { name:'BrightSmile Aesthetics', owner:'Dr. Carlo Reyes', location:'BGC', plan:'Standard', fee:3000, patients:31, since:'Feb 2026', status:'active' },
+    { name:'PearlWhite Dental', owner:'Dr. Liza Cruz', location:'Quezon City', plan:'Pilot', fee:1500, patients:17, since:'Mar 2026', status:'trial' },
+  ];
+
+  const activities = [
+    { type:'new', text:'PearlWhite Dental joined as a pilot clinic.', time:'Mar 16, 2026 · 9:00 AM' },
+    { type:'payment', text:'BrightSmile Aesthetics paid ₱3,000 for March.', time:'Mar 15, 2026 · 2:30 PM' },
+    { type:'payment', text:'Smile Dental Clinic paid ₱3,000 for March.', time:'Mar 14, 2026 · 11:00 AM' },
+    { type:'alert', text:'PearlWhite Dental payment due in 15 days.', time:'Mar 13, 2026 · 8:00 AM' },
+    { type:'info', text:'BrightSmile Aesthetics added 5 new patients.', time:'Mar 12, 2026 · 4:00 PM' },
+    { type:'info', text:'Smile Dental Clinic sent 18 reminders this week.', time:'Mar 11, 2026 · 10:00 AM' },
+    { type:'new', text:'BrightSmile Aesthetics joined on Standard plan.', time:'Feb 1, 2026 · 9:00 AM' },
+    { type:'new', text:'Smile Dental Clinic joined on Standard plan.', time:'Jan 5, 2026 · 9:00 AM' },
+  ];
+
+  function clinicRow(c, full) {
+    const statusClass = c.status === 'active' ? 'active' : c.status === 'trial' ? 'trial' : 'overdue';
+    const statusLabel = c.status === 'active' ? 'Active' : c.status === 'trial' ? 'Trial' : 'Overdue';
+    return `<tr>
       <td><div class="clinic-name">${c.name}</div><div class="clinic-meta">${c.location}</div></td>
       ${full ? `<td style="font-size:12px;color:var(--teal);">${c.owner}</td>` : ''}
       <td style="font-size:12px;">${c.plan}</td>
@@ -1237,139 +489,166 @@
         <button class="action-btn danger">Remove</button>
       </td>
     </tr>`;
-    }
+  }
 
-    function revenueRow(c) {
-      const paid = c.status !== 'overdue';
-      return `<div class="revenue-row">
+  function revenueRow(c) {
+    const paid = c.status !== 'overdue';
+    return `<div class="revenue-row">
       <div><div class="revenue-clinic">${c.name}</div><div class="revenue-plan">${c.plan} Plan · ${c.location}</div></div>
       <div style="text-align:right;">
         <div class="revenue-amount">₱${c.fee.toLocaleString()}</div>
         <div class="revenue-status" style="color:${paid ? 'var(--success)' : '#E24B4A'}">${paid ? 'Paid' : 'Overdue'}</div>
       </div>
     </div>`;
-    }
+  }
 
-    function activityItem(a) {
-      return `<div class="activity-item">
+  function activityItem(a) {
+    return `<div class="activity-item">
       <div class="activity-dot ${a.type}"></div>
       <div class="activity-text"><p>${a.text}</p><span>${a.time}</span></div>
     </div>`;
-    }
+  }
 
-    function renderAll() {
-      // Clinic tables
-      ['clinic-tbody-dash', 'clinic-tbody-full'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) { el.innerHTML = ''; clinics.forEach(c => { el.innerHTML += clinicRow(c, id === 'clinic-tbody-full'); }); }
-      });
-      // Revenue
-      ['revenue-breakdown', 'revenue-full'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) { el.innerHTML = ''; clinics.forEach(c => { el.innerHTML += revenueRow(c); }); }
-      });
-      // Activity
-      ['activity-dash', 'activity-full'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) { el.innerHTML = ''; const items = id === 'activity-dash' ? activities.slice(0, 4) : activities; items.forEach(a => { el.innerHTML += activityItem(a); }); }
-      });
-      // Counts
-      updateCounts();
-    }
-
-    function updateCounts() {
-      const count = clinics.length;
-      const revenue = clinics.reduce((sum, c) => sum + c.fee, 0);
-      document.querySelectorAll('#clinic-count, #clinic-count-full').forEach(el => el.textContent = count + ' total');
-      document.getElementById('stat-clinics').textContent = count;
-      document.getElementById('stat-revenue').textContent = '₱' + revenue.toLocaleString();
-    }
-
-    // Date
-    const dateStr = new Date().toLocaleDateString('en-PH', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
-    ['today-date', 'today-date-c', 'today-date-r', 'today-date-a'].forEach(id => {
-      const el = document.getElementById(id); if (el) el.textContent = dateStr;
+  function renderAll() {
+    // Clinic tables
+    ['clinic-tbody-dash','clinic-tbody-full'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) { el.innerHTML = ''; clinics.forEach(c => { el.innerHTML += clinicRow(c, id === 'clinic-tbody-full'); }); }
     });
+    // Revenue
+    ['revenue-breakdown','revenue-full'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) { el.innerHTML = ''; clinics.forEach(c => { el.innerHTML += revenueRow(c); }); }
+    });
+    // Activity
+    ['activity-dash','activity-full'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) { el.innerHTML = ''; const items = id === 'activity-dash' ? activities.slice(0,4) : activities; items.forEach(a => { el.innerHTML += activityItem(a); }); }
+    });
+    // Counts
+    updateCounts();
+  }
 
-    // Login
-    function togglePw() {
-      const pw = document.getElementById('login-pass');
-      const btn = document.getElementById('toggle-pw');
-      pw.type = pw.type === 'password' ? 'text' : 'password';
-      btn.textContent = pw.type === 'password' ? 'Show' : 'Hide';
-    }
+  function updateCounts() {
+    const count = clinics.length;
+    const total = clinics.reduce((sum, c) => sum + c.fee, 0);
+    const overdue = clinics.filter(c => c.status === 'overdue');
+    const paid = clinics.filter(c => c.status !== 'overdue');
+    const overdueTotal = overdue.reduce((sum, c) => sum + c.fee, 0);
+    const paidTotal = paid.reduce((sum, c) => sum + c.fee, 0);
+    const setupTotal = clinics.reduce((sum, c) => sum + (c.plan === 'Standard' ? 6500 : 0), 0);
 
-    function doLogin() {
-      const user = document.getElementById('login-user').value.trim().toLowerCase();
-      const pass = document.getElementById('login-pass').value;
-      const err = document.getElementById('login-error');
-      if (!user || !pass) { err.textContent = 'Please enter your credentials.'; err.style.display = 'block'; return; }
-      if (user !== OWNER.username || pass !== OWNER.password) { err.textContent = 'Incorrect username or password.'; err.style.display = 'block'; return; }
-      err.style.display = 'none';
-      const hour = new Date().getHours();
-      const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
-      document.getElementById('owner-greeting').textContent = greeting + ', Ver. 👑';
-      document.getElementById('login-screen').style.display = 'none';
-      renderAll();
-    }
+    document.querySelectorAll('#clinic-count, #clinic-count-full').forEach(el => el.textContent = count + ' total');
+    document.getElementById('stat-clinics').textContent = count;
+    document.getElementById('stat-revenue').textContent = '₱' + total.toLocaleString();
 
-    function doLogout() {
-      document.getElementById('login-user').value = '';
-      document.getElementById('login-pass').value = '';
-      document.getElementById('login-error').style.display = 'none';
-      document.getElementById('login-screen').style.display = 'flex';
-    }
+    // Revenue section stats
+    const revTotal = document.getElementById('rev-total');
+    const revCollected = document.getElementById('rev-collected');
+    const revPending = document.getElementById('rev-pending');
+    const revSetup = document.getElementById('rev-setup');
+    if(revTotal) revTotal.textContent = '₱' + total.toLocaleString();
+    if(revCollected) { revCollected.textContent = '₱' + paidTotal.toLocaleString(); document.getElementById('rev-collected-sub').textContent = paid.length + ' clinic' + (paid.length !== 1 ? 's' : '') + ' paid'; }
+    if(revPending) { revPending.textContent = '₱' + overdueTotal.toLocaleString(); document.getElementById('rev-pending-sub').textContent = overdue.length + ' clinic' + (overdue.length !== 1 ? 's' : '') + ' overdue'; }
+    if(revSetup) revSetup.textContent = '₱' + setupTotal.toLocaleString();
+    if(revTotal) document.getElementById('rev-total-sub').textContent = count + ' active subscription' + (count !== 1 ? 's' : '');
+  }
 
-    // Sidebar toggle
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      const main = document.getElementById('main');
-      const toggle = document.getElementById('sidebar-toggle');
-      sidebar.classList.toggle('collapsed');
-      main.classList.toggle('expanded');
-      toggle.classList.toggle('collapsed');
-      toggle.textContent = sidebar.classList.contains('collapsed') ? '☰' : '✕';
-    }
+  // Date
+  const dateStr = new Date().toLocaleDateString('en-PH', { weekday:'short', year:'numeric', month:'short', day:'numeric' });
+  ['today-date','today-date-c','today-date-r','today-date-a'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.textContent = dateStr;
+  });
 
-    // Section switching
-    const sections = ['dashboard', 'clinics', 'revenue', 'activity'];
-    function showSection(name) {
-      sections.forEach(s => {
-        const sec = document.getElementById('section-' + s);
-        const nav = document.getElementById('nav-' + s);
-        if (sec) sec.className = 'section-content' + (s === name ? ' active' : '');
-        if (nav) nav.classList.toggle('active', s === name);
-      });
-      window.scrollTo(0, 0);
-    }
+  // Login
+  function togglePw() {
+    const pw = document.getElementById('login-pass');
+    const btn = document.getElementById('toggle-pw');
+    pw.type = pw.type === 'password' ? 'text' : 'password';
+    btn.textContent = pw.type === 'password' ? 'Show' : 'Hide';
+  }
 
-    // Modal
-    function openModal(id) { document.getElementById('modal-' + id).classList.add('open'); }
-    function closeModal(id) { document.getElementById('modal-' + id).classList.remove('open'); }
+  function doLogin() {
+    const user = document.getElementById('login-user').value.trim().toLowerCase();
+    const pass = document.getElementById('login-pass').value;
+    const err = document.getElementById('login-error');
+    if(!user || !pass) { err.textContent = 'Please enter your credentials.'; err.style.display = 'block'; return; }
+    if(user !== OWNER.username || pass !== OWNER.password) { err.textContent = 'Incorrect username or password.'; err.style.display = 'block'; return; }
+    err.style.display = 'none';
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+    document.getElementById('owner-greeting').textContent = greeting + ', Ver. 👑';
+    document.getElementById('login-screen').style.display = 'none';
+    renderAll();
+  }
 
-    function addClinic() {
-      const name = document.getElementById('new-clinic-name').value.trim();
-      const owner = document.getElementById('new-clinic-owner').value.trim();
-      const location = document.getElementById('new-clinic-location').value.trim();
-      const planEl = document.getElementById('new-clinic-plan');
-      const plan = planEl.options[planEl.selectedIndex].text.split(' ')[0];
-      const fee = plan === 'Pilot' ? 1500 : 3000;
-      if (!name) { showToast('Please enter the clinic name.'); return; }
-      clinics.push({ name, owner: owner || '—', location: location || '—', plan, fee, patients: 0, since: new Date().toLocaleDateString('en-PH', { month: 'short', year: 'numeric' }), status: plan === 'Pilot' ? 'trial' : 'active' });
-      activities.unshift({ type: 'new', text: name + ' was added to DentAyos.', time: new Date().toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' }) + ' · Just now' });
-      renderAll();
-      closeModal('add-clinic');
-      ['new-clinic-name', 'new-clinic-owner', 'new-clinic-location', 'new-clinic-contact'].forEach(id => { document.getElementById(id).value = ''; });
-      showToast(name + ' added successfully.');
-    }
+  function doLogout() {
+    document.getElementById('login-user').value = '';
+    document.getElementById('login-pass').value = '';
+    document.getElementById('login-error').style.display = 'none';
+    document.getElementById('owner-greeting').textContent = 'Good morning, Ver. 👑';
+    document.getElementById('login-screen').style.display = 'flex';
+  }
 
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = '✓  ' + msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 3000);
-    }
-  </script>
+  // Sidebar toggle
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const main = document.getElementById('main');
+    const toggle = document.getElementById('sidebar-toggle');
+    sidebar.classList.toggle('collapsed');
+    main.classList.toggle('expanded');
+    toggle.classList.toggle('collapsed');
+    toggle.textContent = sidebar.classList.contains('collapsed') ? '☰' : '✕';
+  }
+
+  // Section switching
+  const sections = ['dashboard','clinics','revenue','activity'];
+  function showSection(name) {
+    sections.forEach(s => {
+      const sec = document.getElementById('section-' + s);
+      const nav = document.getElementById('nav-' + s);
+      if(sec) sec.className = 'section-content' + (s === name ? ' active' : '');
+      if(nav) nav.classList.toggle('active', s === name);
+    });
+    window.scrollTo(0,0);
+  }
+
+  // Modal
+  function openModal(id) { document.getElementById('modal-' + id).classList.add('open'); }
+  function closeModal(id) { document.getElementById('modal-' + id).classList.remove('open'); }
+
+  function addClinic() {
+    const name = document.getElementById('new-clinic-name').value.trim();
+    const owner = document.getElementById('new-clinic-owner').value.trim();
+    const location = document.getElementById('new-clinic-location').value.trim();
+    const planEl = document.getElementById('new-clinic-plan');
+    const plan = planEl.options[planEl.selectedIndex].text.split(' ')[0];
+    const fee = plan === 'Pilot' ? 1500 : 3000;
+    if(!name) { showToast('Please enter the clinic name.'); return; }
+    clinics.push({ name, owner: owner || '—', location: location || '—', plan, fee, patients:0, since: new Date().toLocaleDateString('en-PH', {month:'short', year:'numeric'}), status: plan === 'Pilot' ? 'trial' : 'active' });
+    activities.unshift({ type:'new', text: name + ' was added to DentAyos.', time: new Date().toLocaleDateString('en-PH', {month:'short', day:'numeric', year:'numeric'}) + ' · Just now' });
+    renderAll();
+    closeModal('add-clinic');
+    ['new-clinic-name','new-clinic-owner','new-clinic-location','new-clinic-contact'].forEach(id => { document.getElementById(id).value = ''; });
+    showToast(name + ' added successfully.');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = '✓  ' + msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+
+<!-- BACK TO TOP -->
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:fixed;bottom:2rem;right:2rem;width:40px;height:40px;background:var(--gold);border:none;color:var(--dark);font-size:18px;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:400;transition:background 0.2s;" onmouseover="this.style.background='#E8D5B0'" onmouseout="this.style.background='#B4966A'" title="Back to top">&#8679;</button>
+<script>
+  window.addEventListener('scroll', function() {
+    const btn = document.getElementById('back-to-top');
+    if(btn) btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+  });
+</script>
+
 </body>
-
 </html>

@@ -1001,5 +1001,15 @@
     setTimeout(() => t.classList.remove('show'), 3000);
   }
 </script>
+
+<!-- BACK TO TOP -->
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:fixed;bottom:2rem;right:2rem;width:40px;height:40px;background:var(--gold);border:none;color:var(--dark);font-size:18px;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:400;transition:background 0.2s;" onmouseover="this.style.background='#E8D5B0'" onmouseout="this.style.background='#B4966A'" title="Back to top">&#8679;</button>
+<script>
+  window.addEventListener('scroll', function() {
+    const btn = document.getElementById('back-to-top');
+    if(btn) btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+  });
+</script>
+
 </body>
 </html>
