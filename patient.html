@@ -1,461 +1,1169 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DentAyos — Patient Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --dark: #0D1B1A; --dark2: #1A2E2C; --dark3: #223330;
-    --gold: #B4966A; --cream: #E8D5B0; --teal: #6B8A87;
-    --muted: #5A7875; --success: #1D9E75; --border: rgba(180,150,106,0.15);
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:var(--dark); color:var(--cream); font-family:'DM Sans',sans-serif; font-weight:300; min-height:100vh; }
-  .login-screen { position:fixed; inset:0; background:var(--dark); display:flex; align-items:center; justify-content:center; z-index:500; }
-  .login-box { width:420px; max-width:90vw; border:0.5px solid rgba(180,150,106,0.3); padding:3rem; position:relative; }
-  .login-box::before { content:''; position:absolute; top:8px; left:8px; width:20px; height:20px; border-top:0.5px solid var(--gold); border-left:0.5px solid var(--gold); }
-  .login-box::after { content:''; position:absolute; bottom:8px; right:8px; width:20px; height:20px; border-bottom:0.5px solid var(--gold); border-right:0.5px solid var(--gold); }
-  .login-logo { font-family:'DM Serif Display',serif; font-size:22px; letter-spacing:3px; color:var(--cream); margin-bottom:0.25rem; }
-  .login-logo span { color:var(--gold); }
-  .login-subtitle { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--teal); margin-bottom:2.5rem; }
-  .login-box h2 { font-family:'DM Serif Display',serif; font-size:22px; color:var(--cream); margin-bottom:0.4rem; }
-  .login-box > p { font-size:13px; color:var(--teal); margin-bottom:2rem; }
-  .form-group { margin-bottom:1.25rem; }
-  .form-group label { display:block; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--teal); margin-bottom:0.5rem; }
-  .form-group input { width:100%; background:var(--dark2); border:0.5px solid var(--border); color:var(--cream); font-family:'DM Sans',sans-serif; font-size:14px; padding:0.85rem 1rem; outline:none; transition:border-color 0.2s; }
-  .form-group input:focus { border-color:var(--gold); }
-  .pw-wrap { position:relative; }
-  .pw-wrap input { padding-right:3rem; }
-  .pw-toggle { position:absolute; right:0.75rem; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--teal); cursor:pointer; font-size:12px; letter-spacing:1px; font-family:'DM Sans',sans-serif; }
-  .login-btn { width:100%; background:var(--gold); border:none; color:var(--dark); font-family:'DM Sans',sans-serif; font-size:12px; letter-spacing:2px; text-transform:uppercase; padding:1rem; cursor:pointer; margin-top:0.5rem; transition:background 0.2s; }
-  .login-btn:hover { background:var(--cream); }
-  .login-error { font-size:12px; color:#E24B4A; margin-top:0.75rem; display:none; }
-  .login-back { text-align:center; margin-top:1.5rem; }
-  .login-back a { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--teal); text-decoration:none; transition:color 0.2s; }
-  .login-back a:hover { color:var(--gold); }
-  .portal { display:none; }
-  .portal.active { display:block; }
-  nav { padding:1.5rem 3rem; border-bottom:0.5px solid var(--border); display:flex; justify-content:space-between; align-items:center; background:rgba(13,27,26,0.95); position:sticky; top:0; z-index:100; }
-  .nav-logo { font-family:'DM Serif Display',serif; font-size:20px; letter-spacing:2px; color:var(--cream); text-decoration:none; }
-  .nav-logo span { color:var(--gold); }
-  .nav-right { display:flex; align-items:center; gap:1.5rem; }
-  .nav-patient { display:flex; align-items:center; gap:10px; }
-  .patient-avatar { width:34px; height:34px; border-radius:50%; background:var(--dark3); border:0.5px solid rgba(180,150,106,0.3); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:500; color:var(--gold); }
-  .nav-patient p { font-size:13px; color:var(--cream); }
-  .nav-patient span { font-size:11px; color:var(--teal); display:block; }
-  .logout-link { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--teal); text-decoration:none; border:0.5px solid var(--border); padding:0.5rem 1rem; cursor:pointer; background:none; font-family:'DM Sans',sans-serif; transition:all 0.2s; }
-  .logout-link:hover { border-color:var(--gold); color:var(--gold); }
-  .patient-hero { background:var(--dark2); border-bottom:0.5px solid var(--border); padding:2.5rem 3rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.5rem; }
-  .patient-hero h1 { font-family:'DM Serif Display',serif; font-size:30px; color:var(--cream); }
-  .patient-hero h1 em { font-style:italic; color:var(--gold); }
-  .patient-hero p { font-size:13px; color:var(--teal); margin-top:6px; }
-  .next-appt { border:0.5px solid rgba(180,150,106,0.3); padding:1.25rem 2rem; text-align:center; }
-  .next-appt .label { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--teal); margin-bottom:6px; }
-  .next-appt .date { font-family:'DM Serif Display',serif; font-size:22px; color:var(--gold); }
-  .next-appt .time { font-size:12px; color:var(--teal); margin-top:4px; }
-  .container { max-width:1100px; margin:0 auto; padding:2.5rem 3rem; }
-  .grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
-  .full { grid-column:1/-1; }
-  .panel { background:var(--dark2); border:0.5px solid var(--border); }
-  .panel-header { padding:1.25rem 1.5rem; border-bottom:0.5px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
-  .panel-header h3 { font-size:14px; font-weight:500; color:var(--cream); letter-spacing:0.5px; }
-  .panel-header span { font-size:11px; color:var(--teal); }
-  .panel-body { padding:1.5rem; }
-  .record-row { display:flex; justify-content:space-between; align-items:flex-start; padding:1rem 0; border-bottom:0.5px solid var(--border); }
-  .record-row:last-child { border-bottom:none; padding-bottom:0; }
-  .record-label { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--teal); margin-bottom:4px; }
-  .record-value { font-size:14px; color:var(--cream); }
-  .record-badge { font-size:10px; letter-spacing:1px; text-transform:uppercase; padding:3px 10px; background:rgba(29,158,117,0.12); color:#1D9E75; align-self:center; }
-  .history-table { width:100%; border-collapse:collapse; }
-  .history-table th { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--teal); text-align:left; padding:0 1rem 1rem 0; font-weight:400; }
-  .history-table td { padding:0.85rem 1rem 0.85rem 0; border-top:0.5px solid var(--border); font-size:13px; color:var(--cream); }
-  .procedure-tag { font-size:10px; letter-spacing:1px; text-transform:uppercase; border:0.5px solid rgba(180,150,106,0.3); color:var(--gold); padding:3px 10px; display:inline-block; }
-  .note-text { font-size:12px; color:var(--teal); }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DentAyos — Patient Portal</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --dark: #0D1B1A;
+      --dark2: #1A2E2C;
+      --dark3: #223330;
+      --gold: #B4966A;
+      --cream: #E8D5B0;
+      --teal: #6B8A87;
+      --muted: #5A7875;
+      --success: #1D9E75;
+      --border: rgba(180, 150, 106, 0.15);
+    }
 
-  /* CALENDAR */
-  .cal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
-  .cal-month { font-family:'DM Serif Display',serif; font-size:16px; color:var(--cream); }
-  .cal-sub { font-size:11px; color:var(--teal); }
-  .cal-day-labels { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:6px; }
-  .cal-day-lbl { text-align:center; font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); padding:0.25rem 0; }
-  .date-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:1.5rem; }
-  .date-cell { text-align:center; padding:0.55rem 0.25rem; border:0.5px solid var(--border); cursor:pointer; font-size:13px; color:var(--teal); transition:all 0.2s; border-radius:2px; }
-  .date-cell:hover { border-color:rgba(180,150,106,0.45); color:var(--cream); background:rgba(180,150,106,0.05); }
-  .date-cell.selected { border-color:var(--gold); color:var(--dark); background:var(--gold); font-weight:500; }
-  .date-cell.today { border-color:rgba(29,158,117,0.4); color:var(--success); }
-  .date-cell.today.selected { background:var(--gold); color:var(--dark); border-color:var(--gold); }
-  .date-cell.past { opacity:0.25; cursor:default; pointer-events:none; }
-  .date-cell.empty { border-color:transparent; cursor:default; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  .time-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:1.5rem; }
-  .time-slot { text-align:center; padding:0.65rem; border:0.5px solid var(--border); cursor:pointer; font-size:12px; color:var(--teal); transition:all 0.2s; border-radius:2px; }
-  .time-slot:hover { border-color:rgba(180,150,106,0.4); color:var(--cream); background:rgba(180,150,106,0.05); }
-  .time-slot.selected { border-color:var(--gold); color:var(--dark); background:var(--gold); }
-  .time-slot.taken { opacity:0.25; cursor:default; pointer-events:none; text-decoration:line-through; }
-  .concern-select { width:100%; background:var(--dark3); border:0.5px solid var(--border); color:var(--cream); font-family:'DM Sans',sans-serif; font-size:13px; padding:0.75rem 1rem; outline:none; margin-bottom:1.5rem; transition:border-color 0.2s; }
-  .concern-select:focus { border-color:var(--gold); }
-  .concern-select option { background:var(--dark2); }
-  .book-btn { width:100%; background:var(--gold); border:none; color:var(--dark); font-family:'DM Sans',sans-serif; font-size:12px; letter-spacing:1.5px; text-transform:uppercase; padding:1rem; cursor:pointer; transition:background 0.2s; }
-  .book-btn:hover { background:var(--cream); }
+    body {
+      background: var(--dark);
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
 
-  /* TIMELINE */
-  .timeline { display:flex; flex-direction:column; gap:0; }
-  .tl-item { display:flex; gap:1.25rem; align-items:flex-start; padding-bottom:1.75rem; position:relative; }
-  .tl-item:last-child { padding-bottom:0; }
-  .tl-item:not(:last-child)::before { content:''; position:absolute; left:15px; top:32px; bottom:0; width:0.5px; background:var(--border); }
-  .tl-dot { width:32px; height:32px; border-radius:50%; border:0.5px solid rgba(180,150,106,0.4); background:var(--dark2); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:14px; position:relative; z-index:1; }
-  .tl-card { flex:1; background:var(--dark3); border:0.5px solid var(--border); padding:1rem 1.25rem; }
-  .tl-card-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; }
-  .tl-date { font-size:11px; letter-spacing:1px; color:var(--teal); }
-  .tl-note { font-size:13px; color:var(--teal); line-height:1.6; margin-top:0.4rem; }
-  .notif-list { display:flex; flex-direction:column; gap:0.75rem; }
-  .notif-item { display:flex; gap:1rem; align-items:flex-start; padding:1rem; border:0.5px solid var(--border); }
-  .notif-dot { width:8px; height:8px; border-radius:50%; background:var(--gold); flex-shrink:0; margin-top:4px; }
-  .notif-dot.read { background:var(--muted); }
-  .notif-text p { font-size:13px; color:var(--cream); line-height:1.5; }
-  .notif-text span { font-size:11px; color:var(--teal); margin-top:2px; display:block; }
-  .toast { position:fixed; bottom:2rem; right:2rem; background:var(--dark2); border:0.5px solid rgba(29,158,117,0.5); color:#1D9E75; font-size:13px; padding:1rem 1.5rem; display:none; z-index:300; }
-  .toast.show { display:block; animation:fadeUp 0.3s ease; }
-  @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-  @media(max-width:768px) {
-    nav, .patient-hero, .container { padding:1.25rem 1.5rem; }
-    .grid { grid-template-columns:1fr; }
-    .date-grid { grid-template-columns:repeat(4,1fr); }
-    .time-grid { grid-template-columns:repeat(3,1fr); }
-  }
-</style>
+    .login-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+    }
+
+    .login-box {
+      width: 420px;
+      max-width: 90vw;
+      border: 0.5px solid rgba(180, 150, 106, 0.3);
+      padding: 3rem;
+      position: relative;
+    }
+
+    .login-box::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      width: 20px;
+      height: 20px;
+      border-top: 0.5px solid var(--gold);
+      border-left: 0.5px solid var(--gold);
+    }
+
+    .login-box::after {
+      content: '';
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      width: 20px;
+      height: 20px;
+      border-bottom: 0.5px solid var(--gold);
+      border-right: 0.5px solid var(--gold);
+    }
+
+    .login-logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      letter-spacing: 3px;
+      color: var(--cream);
+      margin-bottom: 0.25rem;
+    }
+
+    .login-logo span {
+      color: var(--gold);
+    }
+
+    .login-subtitle {
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 2.5rem;
+    }
+
+    .login-box h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      color: var(--cream);
+      margin-bottom: 0.4rem;
+    }
+
+    .login-box>p {
+      font-size: 13px;
+      color: var(--teal);
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      background: var(--dark2);
+      border: 0.5px solid var(--border);
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      padding: 0.85rem 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: var(--gold);
+    }
+
+    .pw-wrap {
+      position: relative;
+    }
+
+    .pw-wrap input {
+      padding-right: 3rem;
+    }
+
+    .pw-toggle {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--teal);
+      cursor: pointer;
+      font-size: 12px;
+      letter-spacing: 1px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .login-btn {
+      width: 100%;
+      background: var(--gold);
+      border: none;
+      color: var(--dark);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 1rem;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background 0.2s;
+    }
+
+    .login-btn:hover {
+      background: var(--cream);
+    }
+
+    .login-error {
+      font-size: 12px;
+      color: #E24B4A;
+      margin-top: 0.75rem;
+      display: none;
+    }
+
+    .login-back {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    .login-back a {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .login-back a:hover {
+      color: var(--gold);
+    }
+
+    .portal {
+      display: none;
+    }
+
+    .portal.active {
+      display: block;
+    }
+
+    nav {
+      padding: 1.5rem 3rem;
+      border-bottom: 0.5px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(13, 27, 26, 0.95);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 20px;
+      letter-spacing: 2px;
+      color: var(--cream);
+      text-decoration: none;
+    }
+
+    .nav-logo span {
+      color: var(--gold);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-patient {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .patient-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--dark3);
+      border: 0.5px solid rgba(180, 150, 106, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gold);
+    }
+
+    .nav-patient p {
+      font-size: 13px;
+      color: var(--cream);
+    }
+
+    .nav-patient span {
+      font-size: 11px;
+      color: var(--teal);
+      display: block;
+    }
+
+    .logout-link {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--teal);
+      text-decoration: none;
+      border: 0.5px solid var(--border);
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      background: none;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .logout-link:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .patient-hero {
+      background: var(--dark2);
+      border-bottom: 0.5px solid var(--border);
+      padding: 2.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .patient-hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 30px;
+      color: var(--cream);
+    }
+
+    .patient-hero h1 em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .patient-hero p {
+      font-size: 13px;
+      color: var(--teal);
+      margin-top: 6px;
+    }
+
+    .next-appt {
+      border: 0.5px solid rgba(180, 150, 106, 0.3);
+      padding: 1.25rem 2rem;
+      text-align: center;
+    }
+
+    .next-appt .label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 6px;
+    }
+
+    .next-appt .date {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      color: var(--gold);
+    }
+
+    .next-appt .time {
+      font-size: 12px;
+      color: var(--teal);
+      margin-top: 4px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.5rem 3rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .full {
+      grid-column: 1/-1;
+    }
+
+    .panel {
+      background: var(--dark2);
+      border: 0.5px solid var(--border);
+    }
+
+    .panel-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 0.5px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-header h3 {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--cream);
+      letter-spacing: 0.5px;
+    }
+
+    .panel-header span {
+      font-size: 11px;
+      color: var(--teal);
+    }
+
+    .panel-body {
+      padding: 1.5rem;
+    }
+
+    .record-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 1rem 0;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .record-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .record-label {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 4px;
+    }
+
+    .record-value {
+      font-size: 14px;
+      color: var(--cream);
+    }
+
+    .record-badge {
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      background: rgba(29, 158, 117, 0.12);
+      color: #1D9E75;
+      align-self: center;
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .history-table th {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal);
+      text-align: left;
+      padding: 0 1rem 1rem 0;
+      font-weight: 400;
+    }
+
+    .history-table td {
+      padding: 0.85rem 1rem 0.85rem 0;
+      border-top: 0.5px solid var(--border);
+      font-size: 13px;
+      color: var(--cream);
+    }
+
+    .procedure-tag {
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border: 0.5px solid rgba(180, 150, 106, 0.3);
+      color: var(--gold);
+      padding: 3px 10px;
+      display: inline-block;
+    }
+
+    .note-text {
+      font-size: 12px;
+      color: var(--teal);
+    }
+
+    /* CALENDAR */
+    .cal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .cal-month {
+      font-family: 'DM Serif Display', serif;
+      font-size: 16px;
+      color: var(--cream);
+    }
+
+    .cal-sub {
+      font-size: 11px;
+      color: var(--teal);
+    }
+
+    .cal-day-labels {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+
+    .cal-day-lbl {
+      text-align: center;
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0.25rem 0;
+    }
+
+    .date-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 1.5rem;
+    }
+
+    .date-cell {
+      text-align: center;
+      padding: 0.55rem 0.25rem;
+      border: 0.5px solid var(--border);
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--teal);
+      transition: all 0.2s;
+      border-radius: 2px;
+    }
+
+    .date-cell:hover {
+      border-color: rgba(180, 150, 106, 0.45);
+      color: var(--cream);
+      background: rgba(180, 150, 106, 0.05);
+    }
+
+    .date-cell.selected {
+      border-color: var(--gold);
+      color: var(--dark);
+      background: var(--gold);
+      font-weight: 500;
+    }
+
+    .date-cell.today {
+      border-color: rgba(29, 158, 117, 0.4);
+      color: var(--success);
+    }
+
+    .date-cell.today.selected {
+      background: var(--gold);
+      color: var(--dark);
+      border-color: var(--gold);
+    }
+
+    .date-cell.past {
+      opacity: 0.25;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .date-cell.empty {
+      border-color: transparent;
+      cursor: default;
+    }
+
+    .time-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 1.5rem;
+    }
+
+    .time-slot {
+      text-align: center;
+      padding: 0.65rem;
+      border: 0.5px solid var(--border);
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--teal);
+      transition: all 0.2s;
+      border-radius: 2px;
+    }
+
+    .time-slot:hover {
+      border-color: rgba(180, 150, 106, 0.4);
+      color: var(--cream);
+      background: rgba(180, 150, 106, 0.05);
+    }
+
+    .time-slot.selected {
+      border-color: var(--gold);
+      color: var(--dark);
+      background: var(--gold);
+    }
+
+    .time-slot.taken {
+      opacity: 0.25;
+      cursor: default;
+      pointer-events: none;
+      text-decoration: line-through;
+    }
+
+    .concern-select {
+      width: 100%;
+      background: var(--dark3);
+      border: 0.5px solid var(--border);
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      padding: 0.75rem 1rem;
+      outline: none;
+      margin-bottom: 1.5rem;
+      transition: border-color 0.2s;
+    }
+
+    .concern-select:focus {
+      border-color: var(--gold);
+    }
+
+    .concern-select option {
+      background: var(--dark2);
+    }
+
+    .book-btn {
+      width: 100%;
+      background: var(--gold);
+      border: none;
+      color: var(--dark);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .book-btn:hover {
+      background: var(--cream);
+    }
+
+    /* TIMELINE */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .tl-item {
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+      padding-bottom: 1.75rem;
+      position: relative;
+    }
+
+    .tl-item:last-child {
+      padding-bottom: 0;
+    }
+
+    .tl-item:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 32px;
+      bottom: 0;
+      width: 0.5px;
+      background: var(--border);
+    }
+
+    .tl-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 0.5px solid rgba(180, 150, 106, 0.4);
+      background: var(--dark2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .tl-card {
+      flex: 1;
+      background: var(--dark3);
+      border: 0.5px solid var(--border);
+      padding: 1rem 1.25rem;
+    }
+
+    .tl-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .tl-date {
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: var(--teal);
+    }
+
+    .tl-note {
+      font-size: 13px;
+      color: var(--teal);
+      line-height: 1.6;
+      margin-top: 0.4rem;
+    }
+
+    .notif-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .notif-item {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      padding: 1rem;
+      border: 0.5px solid var(--border);
+    }
+
+    .notif-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .notif-dot.read {
+      background: var(--muted);
+    }
+
+    .notif-text p {
+      font-size: 13px;
+      color: var(--cream);
+      line-height: 1.5;
+    }
+
+    .notif-text span {
+      font-size: 11px;
+      color: var(--teal);
+      margin-top: 2px;
+      display: block;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--dark2);
+      border: 0.5px solid rgba(29, 158, 117, 0.5);
+      color: #1D9E75;
+      font-size: 13px;
+      padding: 1rem 1.5rem;
+      display: none;
+      z-index: 300;
+    }
+
+    .toast.show {
+      display: block;
+      animation: fadeUp 0.3s ease;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media(max-width:768px) {
+
+      nav,
+      .patient-hero,
+      .container {
+        padding: 1.25rem 1.5rem;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .date-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .time-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="login-screen" id="login-screen">
-  <div class="login-box">
-    <div class="login-logo">Dent<span>Ayos</span></div>
-    <div class="login-subtitle">Patient Portal</div>
-    <h2>Welcome back.</h2>
-    <p>Please log in to view your records and appointments.</p>
-    <div class="form-group">
-      <label>Username</label>
-      <input type="text" id="login-user" placeholder="Enter your username" onkeydown="if(event.key==='Enter') doLogin()">
-    </div>
-    <div class="form-group">
-      <label>Password</label>
-      <div class="pw-wrap">
-        <input type="password" id="login-pass" placeholder="Enter your password" onkeydown="if(event.key==='Enter') doLogin()">
-        <button class="pw-toggle" id="pw-toggle" onclick="togglePw()">Show</button>
-      </div>
-    </div>
-    <button class="login-btn" onclick="doLogin()">Enter Patient Portal</button>
-    <div class="login-error" id="login-error">Incorrect username or password.</div>
-    <div class="login-back" style="margin-top:1.25rem;display:flex;justify-content:space-between;align-items:center;">
-      <a href="javascript:void(0)" onclick="window.location.replace('/dentayos-website/index.html?ts='+Date.now())" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;">← Website</a>
-      <a href="#" onclick="showSignup()" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;">Create Account →</a>
-    </div>
-  </div>
-</div>
-
-<!-- CREATE ACCOUNT SCREEN -->
-<div class="login-screen" id="signup-screen" style="display:none;">
-  <div class="login-box">
-    <div class="login-logo">Dent<span>Ayos</span></div>
-    <div class="login-subtitle">Patient Portal</div>
-    <h2>Create account.</h2>
-    <p>Register to access your dental records and book appointments.</p>
-    <div class="form-group">
-      <label>Full Name</label>
-      <input type="text" id="signup-name" placeholder="e.g. Maria Santos">
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+  <div class="login-screen" id="login-screen">
+    <div class="login-box">
+      <div class="login-logo">Dent<span>Ayos</span></div>
+      <div class="login-subtitle">Patient Portal</div>
+      <h2>Welcome back.</h2>
+      <p>Please log in to view your records and appointments.</p>
       <div class="form-group">
-        <label>Age</label>
-        <input type="number" id="signup-age" placeholder="e.g. 32">
+        <label>Username</label>
+        <input type="text" id="login-user" placeholder="Enter your username"
+          onkeydown="if(event.key==='Enter') doLogin()">
       </div>
       <div class="form-group">
-        <label>Contact Number</label>
-        <input type="text" id="signup-contact" placeholder="09XX XXX XXXX">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Primary Concern</label>
-      <select id="signup-concern" style="width:100%;background:var(--dark2);border:0.5px solid var(--border);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:14px;padding:0.85rem 1rem;outline:none;">
-        <option>Dental Cleaning</option>
-        <option>Tooth Extraction</option>
-        <option>Braces Consultation</option>
-        <option>Veneers</option>
-        <option>Whitening</option>
-        <option>Filling</option>
-        <option>Root Canal</option>
-        <option>Aesthetic Consultation</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Username</label>
-      <input type="text" id="signup-user" placeholder="e.g. maria.santos">
-    </div>
-    <div class="form-group">
-      <label>Password</label>
-      <div class="pw-wrap">
-        <input type="password" id="signup-pass" placeholder="Create a password">
-        <button class="pw-toggle" onclick="toggleSignupPw()">Show</button>
-      </div>
-    </div>
-    <button class="login-btn" onclick="doSignup()">Create Account</button>
-    <div class="login-error" id="signup-error">Please fill in all fields.</div>
-    <div class="login-back" style="margin-top:1.25rem;display:flex;justify-content:space-between;align-items:center;">
-      <a href="javascript:void(0)" onclick="window.location.replace('/dentayos-website/index.html?ts='+Date.now())" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;">← Website</a>
-      <a href="#" onclick="showLogin()" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;">← Back to Login</a>
-    </div>
-  </div>
-</div>
-
-<div class="portal" id="portal">
-  <nav>
-    <a href="#" class="nav-logo">Dent<span>Ayos</span></a>
-    <div class="nav-right">
-      <div class="nav-patient">
-        <div class="patient-avatar" id="nav-avatar">?</div>
-        <div><p id="nav-name">—</p><span>Patient</span></div>
-      </div>
-      <button class="logout-link" onclick="doLogout()">Log Out</button>
-    </div>
-  </nav>
-
-  <div class="patient-hero">
-    <div>
-      <h1 id="hero-greeting">Welcome back, <em>—</em></h1>
-      <p>Your dental records and appointments are all in one place.</p>
-    </div>
-    <div class="next-appt">
-      <div class="label">Next Appointment</div>
-      <div class="date" id="next-date">—</div>
-      <div class="time" id="next-time">—</div>
-    </div>
-  </div>
-
-  <div class="container">
-    <div class="grid">
-      <div class="panel">
-        <div class="panel-header"><h3>My Record</h3><span>Up to date</span></div>
-        <div class="panel-body" id="record-body"></div>
-      </div>
-      <div class="panel">
-        <div class="panel-header"><h3>Reminders & Notifications</h3><span id="notif-count">—</span></div>
-        <div class="panel-body"><div class="notif-list" id="notif-list"></div></div>
-      </div>
-      <div class="panel full">
-        <div class="panel-header"><h3>Treatment History</h3><span id="history-count">—</span></div>
-        <div class="panel-body">
-          <div class="timeline" id="history-timeline"></div>
+        <label>Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="login-pass" placeholder="Enter your password"
+            onkeydown="if(event.key==='Enter') doLogin()">
+          <button class="pw-toggle" id="pw-toggle" onclick="togglePw()">Show</button>
         </div>
       </div>
-      <div class="panel full">
-        <div class="panel-header"><h3>Book an Appointment</h3><span>Select a date and time</span></div>
-        <div class="panel-body">
-          <div class="cal-header">
-            <div>
-              <div class="cal-month">March 2026</div>
-              <div class="cal-sub">Select an available date</div>
+      <button class="login-btn" onclick="doLogin()">Enter Patient Portal</button>
+      <div class="login-error" id="login-error">Incorrect username or password.</div>
+      <div class="login-back" style="margin-top:1.25rem;display:flex;justify-content:space-between;align-items:center;">
+        <a href="javascript:void(0)" onclick="window.location.replace('/dentayos-website/index.html?ts='+Date.now())"
+          style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;">←
+          Website</a>
+        <a href="#" onclick="showSignup()"
+          style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;">Create
+          Account →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATE ACCOUNT SCREEN -->
+  <div class="login-screen" id="signup-screen" style="display:none;">
+    <div class="login-box">
+      <div class="login-logo">Dent<span>Ayos</span></div>
+      <div class="login-subtitle">Patient Portal</div>
+      <h2>Create account.</h2>
+      <p>Register to access your dental records and book appointments.</p>
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="signup-name" placeholder="e.g. Maria Santos">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group">
+          <label>Age</label>
+          <input type="number" id="signup-age" placeholder="e.g. 32">
+        </div>
+        <div class="form-group">
+          <label>Contact Number</label>
+          <input type="text" id="signup-contact" placeholder="09XX XXX XXXX">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Primary Concern</label>
+        <select id="signup-concern"
+          style="width:100%;background:var(--dark2);border:0.5px solid var(--border);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:14px;padding:0.85rem 1rem;outline:none;">
+          <option>Dental Cleaning</option>
+          <option>Tooth Extraction</option>
+          <option>Braces Consultation</option>
+          <option>Veneers</option>
+          <option>Whitening</option>
+          <option>Filling</option>
+          <option>Root Canal</option>
+          <option>Aesthetic Consultation</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="signup-user" placeholder="e.g. maria.santos">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="signup-pass" placeholder="Create a password">
+          <button class="pw-toggle" onclick="toggleSignupPw()">Show</button>
+        </div>
+      </div>
+      <button class="login-btn" onclick="doSignup()">Create Account</button>
+      <div class="login-error" id="signup-error">Please fill in all fields.</div>
+      <div class="login-back" style="margin-top:1.25rem;display:flex;justify-content:space-between;align-items:center;">
+        <a href="javascript:void(0)" onclick="window.location.replace('/dentayos-website/index.html?ts='+Date.now())"
+          style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;">←
+          Website</a>
+        <a href="#" onclick="showLogin()"
+          style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;">←
+          Back to Login</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="portal" id="portal">
+    <nav>
+      <a href="#" class="nav-logo">Dent<span>Ayos</span></a>
+      <div class="nav-right">
+        <div class="nav-patient">
+          <div class="patient-avatar" id="nav-avatar">?</div>
+          <div>
+            <p id="nav-name">—</p><span>Patient</span>
+          </div>
+        </div>
+        <button class="logout-link" onclick="doLogout()">Log Out</button>
+      </div>
+    </nav>
+
+    <div class="patient-hero">
+      <div>
+        <h1 id="hero-greeting">Welcome back, <em>—</em></h1>
+        <p>Your dental records and appointments are all in one place.</p>
+      </div>
+      <div class="next-appt">
+        <div class="label">Next Appointment</div>
+        <div class="date" id="next-date">—</div>
+        <div class="time" id="next-time">—</div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="grid">
+        <div class="panel">
+          <div class="panel-header">
+            <h3>My Record</h3><span>Up to date</span>
+          </div>
+          <div class="panel-body" id="record-body"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Reminders & Notifications</h3><span id="notif-count">—</span>
+          </div>
+          <div class="panel-body">
+            <div class="notif-list" id="notif-list"></div>
+          </div>
+        </div>
+        <div class="panel full">
+          <div class="panel-header">
+            <h3>Treatment History</h3><span id="history-count">—</span>
+          </div>
+          <div class="panel-body">
+            <div class="timeline" id="history-timeline"></div>
+          </div>
+        </div>
+        <div class="panel full">
+          <div class="panel-header">
+            <h3>Book an Appointment</h3><span>Select a date and time</span>
+          </div>
+          <div class="panel-body">
+            <div class="cal-header">
+              <div>
+                <div class="cal-month">March 2026</div>
+                <div class="cal-sub">Select an available date</div>
+              </div>
+              <div
+                style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);border:0.5px solid var(--border);padding:.35rem .85rem;">
+                Mar 2026</div>
             </div>
-            <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);border:0.5px solid var(--border);padding:.35rem .85rem;">Mar 2026</div>
+            <div class="cal-day-labels">
+              <div class="cal-day-lbl">Sun</div>
+              <div class="cal-day-lbl">Mon</div>
+              <div class="cal-day-lbl">Tue</div>
+              <div class="cal-day-lbl">Wed</div>
+              <div class="cal-day-lbl">Thu</div>
+              <div class="cal-day-lbl">Fri</div>
+              <div class="cal-day-lbl">Sat</div>
+            </div>
+            <div class="date-grid" id="date-grid"></div>
+            <p
+              style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:.75rem;">
+              Available time slots</p>
+            <div class="time-grid">
+              <div class="time-slot taken">9:00 AM</div>
+              <div class="time-slot taken">10:00 AM</div>
+              <div class="time-slot taken">11:00 AM</div>
+              <div class="time-slot" onclick="selectTime(this)">1:00 PM</div>
+              <div class="time-slot" onclick="selectTime(this)">2:00 PM</div>
+              <div class="time-slot taken">3:00 PM</div>
+              <div class="time-slot" onclick="selectTime(this)">4:00 PM</div>
+              <div class="time-slot" onclick="selectTime(this)">5:00 PM</div>
+            </div>
+            <p
+              style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:.75rem;">
+              Concern / Procedure</p>
+            <select class="concern-select">
+              <option>Dental Cleaning</option>
+              <option>Tooth Extraction</option>
+              <option>Braces Consultation</option>
+              <option>Veneers</option>
+              <option>Whitening</option>
+              <option>Filling</option>
+              <option>Root Canal</option>
+              <option>Aesthetic Consultation</option>
+              <option>Follow-up / Checkup</option>
+            </select>
+            <div id="booking-summary"
+              style="display:none;background:var(--dark3);border:0.5px solid rgba(180,150,106,0.2);padding:.85rem 1rem;margin-bottom:1rem;font-size:13px;color:var(--teal);">
+            </div>
+            <button class="book-btn" onclick="bookAppointment()">Confirm Appointment</button>
           </div>
-          <div class="cal-day-labels">
-            <div class="cal-day-lbl">Sun</div><div class="cal-day-lbl">Mon</div><div class="cal-day-lbl">Tue</div>
-            <div class="cal-day-lbl">Wed</div><div class="cal-day-lbl">Thu</div><div class="cal-day-lbl">Fri</div><div class="cal-day-lbl">Sat</div>
-          </div>
-          <div class="date-grid" id="date-grid"></div>
-          <p style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:.75rem;">Available time slots</p>
-          <div class="time-grid">
-            <div class="time-slot taken">9:00 AM</div>
-            <div class="time-slot taken">10:00 AM</div>
-            <div class="time-slot taken">11:00 AM</div>
-            <div class="time-slot" onclick="selectTime(this)">1:00 PM</div>
-            <div class="time-slot" onclick="selectTime(this)">2:00 PM</div>
-            <div class="time-slot taken">3:00 PM</div>
-            <div class="time-slot" onclick="selectTime(this)">4:00 PM</div>
-            <div class="time-slot" onclick="selectTime(this)">5:00 PM</div>
-          </div>
-          <p style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:.75rem;">Concern / Procedure</p>
-          <select class="concern-select">
-            <option>Dental Cleaning</option><option>Tooth Extraction</option>
-            <option>Braces Consultation</option><option>Veneers</option>
-            <option>Whitening</option><option>Filling</option>
-            <option>Root Canal</option><option>Aesthetic Consultation</option>
-            <option>Follow-up / Checkup</option>
-          </select>
-          <div id="booking-summary" style="display:none;background:var(--dark3);border:0.5px solid rgba(180,150,106,0.2);padding:.85rem 1rem;margin-bottom:1rem;font-size:13px;color:var(--teal);"></div>
-          <button class="book-btn" onclick="bookAppointment()">Confirm Appointment</button>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="toast" id="toast"></div>
+  <div class="toast" id="toast"></div>
 
-<script>
-  const patientAccounts = [
-    { username:'maria.santos', password:'maria2026', name:'Maria B. Santos', firstName:'Maria', initials:'MS', age:'32 years old', contact:'0917 123 4567', concern:'Dental Cleaning', dentist:'Dr. Reyes', since:'January 2025', nextDate:'March 17, 2026', nextTime:'9:00 AM · Dental Cleaning',
-      notifications:[
-        { read:false, text:'Hi Maria! Reminder: your dental cleaning is tomorrow, March 17 at 9:00 AM.', time:'Today · 6:00 PM' },
-        { read:false, text:'Your appointment has been confirmed for March 17 at 9:00 AM. Please arrive 10 minutes early.', time:'March 14 · 10:00 AM' },
-        { read:false, text:'Thank you for your visit on March 1! Your next cleaning is on March 17. See you then! 🦷', time:'March 1 · 11:30 AM' },
-        { read:true, text:'Welcome to DentAyos! Your patient portal is now active.', time:'January 10, 2025' },
-      ],
-      history:[
-        { date:'Mar 1, 2026', procedure:'Cleaning', dentist:'Dr. Reyes', notes:'Routine cleaning. Mild tartar buildup. Next visit in 3 months.' },
-        { date:'Dec 5, 2025', procedure:'Cleaning', dentist:'Dr. Reyes', notes:'Routine cleaning completed. No cavities detected.' },
-        { date:'Sep 10, 2025', procedure:'Filling', dentist:'Dr. Reyes', notes:'Composite filling on lower left molar #36. Healing well.' },
-        { date:'Jan 10, 2025', procedure:'Consultation', dentist:'Dr. Reyes', notes:'Initial consultation. Full dental X-ray taken. Treatment plan discussed.' },
-      ]
-    },
-    { username:'jose.delacruz', password:'jose2026', name:'Jose Dela Cruz', firstName:'Jose', initials:'JD', age:'45 years old', contact:'0918 234 5678', concern:'Braces Consultation', dentist:'Dr. Reyes', since:'February 2026', nextDate:'March 20, 2026', nextTime:'9:00 AM · Braces Consultation',
-      notifications:[
-        { read:false, text:'Hi Jose! Reminder: your braces consultation is on March 20 at 9:00 AM.', time:'Today · 6:00 PM' },
-        { read:true, text:'Welcome to DentAyos! Your patient portal is now active.', time:'February 20, 2026' },
-      ],
-      history:[
-        { date:'Feb 20, 2026', procedure:'Consultation', dentist:'Dr. Reyes', notes:'Initial braces consultation. X-rays taken. Treatment plan: 18 months braces.' },
-      ]
-    },
-    { username:'ana.reyes', password:'ana2026', name:'Ana Reyes', firstName:'Ana', initials:'AR', age:'28 years old', contact:'0919 345 6789', concern:'Veneers', dentist:'Dr. Reyes', since:'March 2026', nextDate:'March 22, 2026', nextTime:'2:00 PM · Veneer Fitting',
-      notifications:[
-        { read:false, text:'Hi Ana! Reminder: your veneer fitting is on March 22 at 2:00 PM.', time:'Today · 6:00 PM' },
-        { read:true, text:'Welcome to DentAyos! Your patient portal is now active.', time:'March 5, 2026' },
-      ],
-      history:[
-        { date:'Mar 5, 2026', procedure:'Consultation', dentist:'Dr. Reyes', notes:'Veneer consultation. 4 upper front teeth. Shade selected: BL2.' },
-      ]
-    },
-  ];
+  <script>
+    const patientAccounts = [
+      {
+        username: 'maria.santos', password: 'maria2026', name: 'Maria B. Santos', firstName: 'Maria', initials: 'MS', age: '32 years old', contact: '0917 123 4567', concern: 'Dental Cleaning', dentist: 'Dr. Reyes', since: 'January 2025', nextDate: 'March 17, 2026', nextTime: '9:00 AM · Dental Cleaning',
+        notifications: [
+          { read: false, text: 'Hi Maria! Reminder: your dental cleaning is tomorrow, March 17 at 9:00 AM.', time: 'Today · 6:00 PM' },
+          { read: false, text: 'Your appointment has been confirmed for March 17 at 9:00 AM. Please arrive 10 minutes early.', time: 'March 14 · 10:00 AM' },
+          { read: false, text: 'Thank you for your visit on March 1! Your next cleaning is on March 17. See you then! 🦷', time: 'March 1 · 11:30 AM' },
+          { read: true, text: 'Welcome to DentAyos! Your patient portal is now active.', time: 'January 10, 2025' },
+        ],
+        history: [
+          { date: 'Mar 1, 2026', procedure: 'Cleaning', dentist: 'Dr. Reyes', notes: 'Routine cleaning. Mild tartar buildup. Next visit in 3 months.' },
+          { date: 'Dec 5, 2025', procedure: 'Cleaning', dentist: 'Dr. Reyes', notes: 'Routine cleaning completed. No cavities detected.' },
+          { date: 'Sep 10, 2025', procedure: 'Filling', dentist: 'Dr. Reyes', notes: 'Composite filling on lower left molar #36. Healing well.' },
+          { date: 'Jan 10, 2025', procedure: 'Consultation', dentist: 'Dr. Reyes', notes: 'Initial consultation. Full dental X-ray taken. Treatment plan discussed.' },
+        ]
+      },
+      {
+        username: 'jose.delacruz', password: 'jose2026', name: 'Jose Dela Cruz', firstName: 'Jose', initials: 'JD', age: '45 years old', contact: '0918 234 5678', concern: 'Braces Consultation', dentist: 'Dr. Reyes', since: 'February 2026', nextDate: 'March 20, 2026', nextTime: '9:00 AM · Braces Consultation',
+        notifications: [
+          { read: false, text: 'Hi Jose! Reminder: your braces consultation is on March 20 at 9:00 AM.', time: 'Today · 6:00 PM' },
+          { read: true, text: 'Welcome to DentAyos! Your patient portal is now active.', time: 'February 20, 2026' },
+        ],
+        history: [
+          { date: 'Feb 20, 2026', procedure: 'Consultation', dentist: 'Dr. Reyes', notes: 'Initial braces consultation. X-rays taken. Treatment plan: 18 months braces.' },
+        ]
+      },
+      {
+        username: 'ana.reyes', password: 'ana2026', name: 'Ana Reyes', firstName: 'Ana', initials: 'AR', age: '28 years old', contact: '0919 345 6789', concern: 'Veneers', dentist: 'Dr. Reyes', since: 'March 2026', nextDate: 'March 22, 2026', nextTime: '2:00 PM · Veneer Fitting',
+        notifications: [
+          { read: false, text: 'Hi Ana! Reminder: your veneer fitting is on March 22 at 2:00 PM.', time: 'Today · 6:00 PM' },
+          { read: true, text: 'Welcome to DentAyos! Your patient portal is now active.', time: 'March 5, 2026' },
+        ],
+        history: [
+          { date: 'Mar 5, 2026', procedure: 'Consultation', dentist: 'Dr. Reyes', notes: 'Veneer consultation. 4 upper front teeth. Shade selected: BL2.' },
+        ]
+      },
+    ];
 
-  let currentPatient = null;
+    let currentPatient = null;
 
-  // Load any previously registered accounts from localStorage
-  const savedAccounts = JSON.parse(localStorage.getItem('dentayos_patient_accounts') || '[]');
-  savedAccounts.forEach(a => {
-    if(!patientAccounts.find(p => p.username === a.username)) {
-      patientAccounts.push(a);
+    // Load any previously registered accounts from localStorage
+    const savedAccounts = JSON.parse(localStorage.getItem('dentayos_patient_accounts') || '[]');
+    savedAccounts.forEach(a => {
+      if (!patientAccounts.find(p => p.username === a.username)) {
+        patientAccounts.push(a);
+      }
+    });
+
+    function showSignup() {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('signup-screen').style.display = 'flex';
     }
-  });
 
-  function showSignup() {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('signup-screen').style.display = 'flex';
-  }
+    function showLogin() {
+      document.getElementById('signup-screen').style.display = 'none';
+      document.getElementById('login-screen').style.display = 'flex';
+    }
 
-  function showLogin() {
-    document.getElementById('signup-screen').style.display = 'none';
-    document.getElementById('login-screen').style.display = 'flex';
-  }
+    function toggleSignupPw() {
+      const pw = document.getElementById('signup-pass');
+      pw.type = pw.type === 'password' ? 'text' : 'password';
+    }
 
-  function toggleSignupPw() {
-    const pw = document.getElementById('signup-pass');
-    pw.type = pw.type === 'password' ? 'text' : 'password';
-  }
+    function doSignup() {
+      const name = document.getElementById('signup-name').value.trim();
+      const age = document.getElementById('signup-age').value.trim();
+      const contact = document.getElementById('signup-contact').value.trim();
+      const concern = document.getElementById('signup-concern').value;
+      const username = document.getElementById('signup-user').value.trim().toLowerCase();
+      const password = document.getElementById('signup-pass').value;
+      const err = document.getElementById('signup-error');
 
-  function doSignup() {
-    const name = document.getElementById('signup-name').value.trim();
-    const age = document.getElementById('signup-age').value.trim();
-    const contact = document.getElementById('signup-contact').value.trim();
-    const concern = document.getElementById('signup-concern').value;
-    const username = document.getElementById('signup-user').value.trim().toLowerCase();
-    const password = document.getElementById('signup-pass').value;
-    const err = document.getElementById('signup-error');
+      if (!name || !username || !password) { err.textContent = 'Please fill in all required fields.'; err.style.display = 'block'; return; }
+      if (password.length < 8) { err.textContent = 'Password must be at least 8 characters.'; err.style.display = 'block'; return; }
+      if (password.toLowerCase() === username.toLowerCase()) { err.textContent = 'Password cannot be the same as your username.'; err.style.display = 'block'; return; }
+      if (patientAccounts.find(p => p.username === username)) { err.textContent = 'Username already exists. Please choose another.'; err.style.display = 'block'; return; }
 
-    if(!name || !username || !password) { err.textContent = 'Please fill in all required fields.'; err.style.display = 'block'; return; }
-    if(password.length < 8) { err.textContent = 'Password must be at least 8 characters.'; err.style.display = 'block'; return; }
-    if(password.toLowerCase() === username.toLowerCase()) { err.textContent = 'Password cannot be the same as your username.'; err.style.display = 'block'; return; }
-    if(patientAccounts.find(p => p.username === username)) { err.textContent = 'Username already exists. Please choose another.'; err.style.display = 'block'; return; }
+      const firstName = name.split(' ')[0];
+      const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 
-    const firstName = name.split(' ')[0];
-    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+      const newPatient = {
+        username, password,
+        name, firstName, initials,
+        age: age ? age + ' years old' : '—',
+        contact: contact || '—',
+        concern,
+        dentist: 'Dr. Reyes',
+        since: new Date().toLocaleDateString('en-PH', { month: 'long', year: 'numeric' }),
+        nextDate: 'To be scheduled',
+        nextTime: 'Please book an appointment below',
+        notifications: [{ read: false, text: 'Welcome to DentAyos, ' + firstName + '! Your patient portal is now active. Book your first appointment below.', time: 'Just now' }],
+        history: []
+      };
 
-    const newPatient = {
-      username, password,
-      name, firstName, initials,
-      age: age ? age + ' years old' : '—',
-      contact: contact || '—',
-      concern,
-      dentist: 'Dr. Reyes',
-      since: new Date().toLocaleDateString('en-PH', { month: 'long', year: 'numeric' }),
-      nextDate: 'To be scheduled',
-      nextTime: 'Please book an appointment below',
-      notifications: [{ read: false, text: 'Welcome to DentAyos, ' + firstName + '! Your patient portal is now active. Book your first appointment below.', time: 'Just now' }],
-      history: []
-    };
-
-    patientAccounts.push(newPatient);
+      patientAccounts.push(newPatient);
 
 
-  function togglePw() {
-    // Persist new account to localStorage so it survives logout/refresh
-    const saved = JSON.parse(localStorage.getItem('dentayos_patient_accounts') || '[]');
-    saved.push(newPatient);
-    localStorage.setItem('dentayos_patient_accounts', JSON.stringify(saved));
+      function togglePw() {
+        // Persist new account to localStorage so it survives logout/refresh
+        const saved = JSON.parse(localStorage.getItem('dentayos_patient_accounts') || '[]');
+        saved.push(newPatient);
+        localStorage.setItem('dentayos_patient_accounts', JSON.stringify(saved));
 
-    err.style.display = 'none';
+        err.style.display = 'none';
 
-    // Auto login after signup
-    currentPatient = newPatient;
-    renderPortal(newPatient);
-    document.getElementById('signup-screen').style.display = 'none';
-    document.getElementById('portal').classList.add('active');
-    showToast('Account created! Welcome, ' + firstName + '.');
-  }
-    const pw = document.getElementById('login-pass');
-    const btn = document.getElementById('pw-toggle');
-    pw.type = pw.type === 'password' ? 'text' : 'password';
-    btn.textContent = pw.type === 'password' ? 'Show' : 'Hide';
-  }
+        // Auto login after signup
+        currentPatient = newPatient;
+        renderPortal(newPatient);
+        document.getElementById('signup-screen').style.display = 'none';
+        document.getElementById('portal').classList.add('active');
+        showToast('Account created! Welcome, ' + firstName + '.');
+      }
+      const pw = document.getElementById('login-pass');
+      const btn = document.getElementById('pw-toggle');
+      pw.type = pw.type === 'password' ? 'text' : 'password';
+      btn.textContent = pw.type === 'password' ? 'Show' : 'Hide';
+    }
 
-  function doLogin() {
-    const user = document.getElementById('login-user').value.trim().toLowerCase();
-    const pass = document.getElementById('login-pass').value;
-    const err = document.getElementById('login-error');
-    if(!user || !pass) { err.textContent = 'Please enter your credentials.'; err.style.display = 'block'; return; }
-    const patient = patientAccounts.find(p => p.username === user && p.password === pass);
-    if(!patient) { err.textContent = 'Incorrect username or password. Please try again.'; err.style.display = 'block'; return; }
-    err.style.display = 'none';
-    currentPatient = patient;
-    renderPortal(patient);
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('portal').classList.add('active');
-  }
+    function doLogin() {
+      const user = document.getElementById('login-user').value.trim().toLowerCase();
+      const pass = document.getElementById('login-pass').value;
+      const err = document.getElementById('login-error');
+      if (!user || !pass) { err.textContent = 'Please enter your credentials.'; err.style.display = 'block'; return; }
+      const patient = patientAccounts.find(p => p.username === user && p.password === pass);
+      if (!patient) { err.textContent = 'Incorrect username or password. Please try again.'; err.style.display = 'block'; return; }
+      err.style.display = 'none';
+      currentPatient = patient;
+      renderPortal(patient);
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('portal').classList.add('active');
+    }
 
-  function doLogout() {
-    currentPatient = null;
-    document.getElementById('login-user').value = '';
-    document.getElementById('login-pass').value = '';
-    document.getElementById('login-error').style.display = 'none';
-    document.getElementById('portal').classList.remove('active');
-    document.getElementById('signup-screen').style.display = 'none';
-    document.getElementById('login-screen').style.display = 'flex';
-  }
+    function doLogout() {
+      currentPatient = null;
+      document.getElementById('login-user').value = '';
+      document.getElementById('login-pass').value = '';
+      document.getElementById('login-error').style.display = 'none';
+      document.getElementById('portal').classList.remove('active');
+      document.getElementById('signup-screen').style.display = 'none';
+      document.getElementById('login-screen').style.display = 'flex';
+    }
 
-  function renderPortal(p) {
-    document.getElementById('nav-avatar').textContent = p.initials;
-    document.getElementById('nav-name').textContent = p.name;
-    document.getElementById('hero-greeting').innerHTML = 'Welcome back, <em>' + p.firstName + '.</em>';
-    document.getElementById('next-date').textContent = p.nextDate;
-    document.getElementById('next-time').textContent = p.nextTime;
-    document.getElementById('record-body').innerHTML = `
+    function renderPortal(p) {
+      document.getElementById('nav-avatar').textContent = p.initials;
+      document.getElementById('nav-name').textContent = p.name;
+      document.getElementById('hero-greeting').innerHTML = 'Welcome back, <em>' + p.firstName + '.</em>';
+      document.getElementById('next-date').textContent = p.nextDate;
+      document.getElementById('next-time').textContent = p.nextTime;
+      document.getElementById('record-body').innerHTML = `
       <div class="record-row"><div><div class="record-label">Full Name</div><div class="record-value">${p.name}</div></div><span class="record-badge">Active</span></div>
       <div class="record-row"><div><div class="record-label">Age</div><div class="record-value">${p.age}</div></div></div>
       <div class="record-row"><div><div class="record-label">Contact</div><div class="record-value">${p.contact}</div></div></div>
       <div class="record-row"><div><div class="record-label">Primary Concern</div><div class="record-value">${p.concern}</div></div></div>
       <div class="record-row"><div><div class="record-label">Attending Dentist</div><div class="record-value">${p.dentist}</div></div></div>
       <div class="record-row"><div><div class="record-label">Patient Since</div><div class="record-value">${p.since}</div></div></div>`;
-    const unread = p.notifications.filter(n => !n.read).length;
-    document.getElementById('notif-count').textContent = unread + ' unread';
-    document.getElementById('notif-list').innerHTML = p.notifications.map(n =>
-      `<div class="notif-item"><div class="notif-dot ${n.read ? 'read' : ''}"></div><div class="notif-text"><p>${n.text}</p><span>${n.time}</span></div></div>`
-    ).join('');
-    document.getElementById('history-count').textContent = p.history.length + ' visit' + (p.history.length !== 1 ? 's' : '');
-    // Timeline history
-    const icons = { 'Cleaning':'🦷', 'Filling':'🔩', 'Consultation':'📋', 'Extraction':'⚙️', 'Root Canal':'🔬', 'Veneers':'✨', 'Whitening':'⭐' };
-    document.getElementById('history-timeline').innerHTML = p.history.length
-      ? p.history.map(h => `
+      const unread = p.notifications.filter(n => !n.read).length;
+      document.getElementById('notif-count').textContent = unread + ' unread';
+      document.getElementById('notif-list').innerHTML = p.notifications.map(n =>
+        `<div class="notif-item"><div class="notif-dot ${n.read ? 'read' : ''}"></div><div class="notif-text"><p>${n.text}</p><span>${n.time}</span></div></div>`
+      ).join('');
+      document.getElementById('history-count').textContent = p.history.length + ' visit' + (p.history.length !== 1 ? 's' : '');
+      // Timeline history
+      const icons = { 'Cleaning': '🦷', 'Filling': '🔩', 'Consultation': '📋', 'Extraction': '⚙️', 'Root Canal': '🔬', 'Veneers': '✨', 'Whitening': '⭐' };
+      document.getElementById('history-timeline').innerHTML = p.history.length
+        ? p.history.map(h => `
         <div class="tl-item">
           <div class="tl-dot">${icons[h.procedure] || '🦷'}</div>
           <div class="tl-card">
@@ -467,108 +1175,112 @@
             <div class="tl-note">${h.notes}</div>
           </div>
         </div>`).join('')
-      : '<p style="font-size:13px;color:var(--teal);">No treatment history yet. Your visits will appear here.</p>';
-    buildDateGrid();
-  }
-
-  function buildDateGrid() {
-    // March 2026 starts on Sunday (day 0)
-    const grid = document.getElementById('date-grid');
-    grid.innerHTML = '';
-    const startDay = 0; // March 1, 2026 is a Sunday
-    const totalDays = 31;
-    const today = 17; // March 17, 2026
-
-    // Empty cells before March 1
-    for(let e = 0; e < startDay; e++) {
-      const empty = document.createElement('div');
-      empty.className = 'date-cell empty';
-      grid.appendChild(empty);
+        : '<p style="font-size:13px;color:var(--teal);">No treatment history yet. Your visits will appear here.</p>';
+      buildDateGrid();
     }
 
-    for(let i = 1; i <= totalDays; i++) {
-      const d = document.createElement('div');
-      const isPast = i < today;
-      const isToday = i === today;
-      d.className = 'date-cell' + (isPast ? ' past' : '') + (isToday ? ' today' : '');
-      d.textContent = i;
-      if(!isPast) d.onclick = function(){ selectDate(this); };
-      grid.appendChild(d);
+    function buildDateGrid() {
+      // March 2026 starts on Sunday (day 0)
+      const grid = document.getElementById('date-grid');
+      grid.innerHTML = '';
+      const startDay = 0; // March 1, 2026 is a Sunday
+      const totalDays = 31;
+      const today = 17; // March 17, 2026
+
+      // Empty cells before March 1
+      for (let e = 0; e < startDay; e++) {
+        const empty = document.createElement('div');
+        empty.className = 'date-cell empty';
+        grid.appendChild(empty);
+      }
+
+      for (let i = 1; i <= totalDays; i++) {
+        const d = document.createElement('div');
+        const isPast = i < today;
+        const isToday = i === today;
+        d.className = 'date-cell' + (isPast ? ' past' : '') + (isToday ? ' today' : '');
+        d.textContent = i;
+        if (!isPast) d.onclick = function () { selectDate(this); };
+        grid.appendChild(d);
+      }
     }
-  }
 
-  function updateBookingSummary() {
-    const date = document.querySelector('.date-cell.selected');
-    const time = document.querySelector('.time-slot.selected');
-    const concern = document.querySelector('.concern-select') ? document.querySelector('.concern-select').value : '';
-    const box = document.getElementById('booking-summary');
-    if(!box) return;
-    if(date && time) {
-      box.style.display = 'block';
-      box.innerHTML = `<span style="color:var(--cream);">📅 March ${date.textContent.trim()}, 2026 &nbsp;·&nbsp; ${time.textContent}</span>${concern ? ` &nbsp;·&nbsp; <span style="color:var(--gold);">${concern}</span>` : ''}`;
-    } else if(date) {
-      box.style.display = 'block';
-      box.innerHTML = `<span style="color:var(--cream);">📅 March ${date.textContent.trim()}, 2026</span> &nbsp;·&nbsp; <span style="color:var(--teal);">Select a time slot</span>`;
-    } else {
-      box.style.display = 'none';
+    function updateBookingSummary() {
+      const date = document.querySelector('.date-cell.selected');
+      const time = document.querySelector('.time-slot.selected');
+      const concern = document.querySelector('.concern-select') ? document.querySelector('.concern-select').value : '';
+      const box = document.getElementById('booking-summary');
+      if (!box) return;
+      if (date && time) {
+        box.style.display = 'block';
+        box.innerHTML = `<span style="color:var(--cream);">📅 March ${date.textContent.trim()}, 2026 &nbsp;·&nbsp; ${time.textContent}</span>${concern ? ` &nbsp;·&nbsp; <span style="color:var(--gold);">${concern}</span>` : ''}`;
+      } else if (date) {
+        box.style.display = 'block';
+        box.innerHTML = `<span style="color:var(--cream);">📅 March ${date.textContent.trim()}, 2026</span> &nbsp;·&nbsp; <span style="color:var(--teal);">Select a time slot</span>`;
+      } else {
+        box.style.display = 'none';
+      }
     }
-  }
 
-  function selectDate(el) {
-    document.querySelectorAll('.date-cell').forEach(c => c.classList.remove('selected'));
-    el.classList.add('selected');
-    updateBookingSummary();
-  }
+    function selectDate(el) {
+      document.querySelectorAll('.date-cell').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      updateBookingSummary();
+    }
 
-  function selectTime(el) {
-    document.querySelectorAll('.time-slot').forEach(t => t.classList.remove('selected'));
-    el.classList.add('selected');
-    updateBookingSummary();
-  }
+    function selectTime(el) {
+      document.querySelectorAll('.time-slot').forEach(t => t.classList.remove('selected'));
+      el.classList.add('selected');
+      updateBookingSummary();
+    }
 
-  function bookAppointment() {
-    const date = document.querySelector('.date-cell.selected');
-    const time = document.querySelector('.time-slot.selected');
-    const concern = document.querySelector('.concern-select').value;
-    if(!date || !time) { showToast('Please select a date and time.'); return; }
+    function bookAppointment() {
+      const date = document.querySelector('.date-cell.selected');
+      const time = document.querySelector('.time-slot.selected');
+      const concern = document.querySelector('.concern-select').value;
+      if (!date || !time) { showToast('Please select a date and time.'); return; }
 
-    const appt = {
-      patient: currentPatient.name,
-      concern: concern,
-      date: 'March ' + date.textContent.trim() + ', 2026',
-      time: time.textContent,
-      status: 'pending',
-      bookedAt: new Date().toLocaleString('en-PH')
-    };
+      const appt = {
+        patient: currentPatient.name,
+        concern: concern,
+        date: 'March ' + date.textContent.trim() + ', 2026',
+        time: time.textContent,
+        status: 'pending',
+        bookedAt: new Date().toLocaleString('en-PH')
+      };
 
-    const existing = JSON.parse(localStorage.getItem('dentayos_appointments') || '[]');
-    existing.push(appt);
-    localStorage.setItem('dentayos_appointments', JSON.stringify(existing));
+      const existing = JSON.parse(localStorage.getItem('dentayos_appointments') || '[]');
+      existing.push(appt);
+      localStorage.setItem('dentayos_appointments', JSON.stringify(existing));
 
-    // Reset selections
-    document.querySelectorAll('.date-cell').forEach(c => c.classList.remove('selected'));
-    document.querySelectorAll('.time-slot').forEach(t => t.classList.remove('selected'));
-    document.getElementById('booking-summary').style.display = 'none';
+      // Reset selections
+      document.querySelectorAll('.date-cell').forEach(c => c.classList.remove('selected'));
+      document.querySelectorAll('.time-slot').forEach(t => t.classList.remove('selected'));
+      document.getElementById('booking-summary').style.display = 'none';
 
-    showToast('✓ Appointment booked for ' + appt.date + ' at ' + appt.time + '. ' + currentPatient.dentist + ' will confirm shortly.');
-  }
+      showToast('✓ Appointment booked for ' + appt.date + ' at ' + appt.time + '. ' + currentPatient.dentist + ' will confirm shortly.');
+    }
 
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = '✓  ' + msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3500);
-  }
-</script>
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = '✓  ' + msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3500);
+    }
+  </script>
 
-<!-- BACK TO TOP -->
-<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:fixed;bottom:2rem;right:2rem;width:40px;height:40px;background:var(--gold);border:none;color:var(--dark);font-size:18px;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:400;transition:background 0.2s;" onmouseover="this.style.background='#E8D5B0'" onmouseout="this.style.background='#B4966A'" title="Back to top">&#8679;</button>
-<script>
-  window.addEventListener('scroll', function() {
-    const btn = document.getElementById('back-to-top');
-    if(btn) btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
-  });
-</script>
+  <!-- BACK TO TOP -->
+  <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"
+    style="position:fixed;bottom:2rem;right:2rem;width:40px;height:40px;background:var(--gold);border:none;color:var(--dark);font-size:18px;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:400;transition:background 0.2s;"
+    onmouseover="this.style.background='#E8D5B0'" onmouseout="this.style.background='#B4966A'"
+    title="Back to top">&#8679;</button>
+  <script>
+    window.addEventListener('scroll', function () {
+      const btn = document.getElementById('back-to-top');
+      if (btn) btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+    });
+  </script>
 
 </body>
+
 </html>
