@@ -32,8 +32,8 @@ em{font-style:italic;color:var(--gold);}
 
 /* LAYOUT */
 .container{max-width:1200px;margin:0 auto;padding:0 2rem;}
-.section{padding:7rem 0;}
-.section-sm{padding:4rem 0;}
+.section{padding:8rem 0;}
+.section-sm{padding:5rem 0;}
 .text-center{text-align:center;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;}
@@ -75,7 +75,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.2rem 2rem;displ
 
 /* HERO */
 .hero{min-height:100vh;display:flex;align-items:center;padding:10rem 2rem 6rem;position:relative;overflow:hidden;}
-.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;max-width:1200px;margin:0 auto;width:100%;}
+.hero-grid{display:grid;grid-template-columns:5fr 6fr;gap:4rem;align-items:center;max-width:1200px;margin:0 auto;width:100%;}
 .hero-bg{position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(180,150,106,.5) 39px,rgba(180,150,106,.5) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(180,150,106,.5) 39px,rgba(180,150,106,.5) 40px);}
 .hero-tag{display:inline-flex;align-items:center;gap:.75rem;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);border:0.5px solid rgba(180,150,106,.35);padding:.45rem 1rem;margin-bottom:2rem;opacity:0;animation:fadeUp .7s ease forwards .2s;}
 .hero-tagdot{width:6px;height:6px;border-radius:50%;background:var(--success);}
@@ -231,6 +231,7 @@ footer{border-top:.5px solid var(--border);padding:2.5rem 2rem;}
   .grid-4{grid-template-columns:1fr 1fr;}
   .nav-links{display:none;}
   .section{padding:5rem 0;}
+  .cs-grid{grid-template-columns:1fr !important;}
 }
 @media(max-width:600px){
   .feat-grid,.prob-grid,.grid-3,.grid-4,.wf-steps{grid-template-columns:1fr;}
@@ -250,6 +251,7 @@ footer{border-top:.5px solid var(--border);padding:2.5rem 2rem;}
     <a href="#features">Features</a>
     <a href="#how">Workflow</a>
     <a href="#pricing">Pricing</a>
+    <a href="#case-study">Case Study</a>
     <a href="#demo">Demo</a>
   </nav>
   <div class="nav-right">
@@ -267,8 +269,8 @@ footer{border-top:.5px solid var(--border);padding:2.5rem 2rem;}
   <div class="hero-grid">
     <div>
       <div class="hero-tag"><span class="hero-tagdot" aria-hidden="true"></span>Clinic Management Portal · Gawa sa 'Pinas</div>
-      <h1 class="t-hero hero-title" id="hero-heading">Manage your clinic.<br><em>Delight your patients.</em></h1>
-      <p class="hero-desc">DentAyos is a Filipino-built SaaS portal for dental and aesthetic clinics — patient records, appointments, and reminders in one place. No paper. No missed bookings.</p>
+      <h1 class="t-hero hero-title" id="hero-heading">The clinic portal<br>Filipino dentists<br><em>actually need.</em></h1>
+      <p class="hero-desc">DentAyos replaces paper records, missed calls, and manual scheduling with one clean portal — for your staff and your patients. Built in the Philippines, for Philippine clinics.</p>
       <div class="hero-actions btn-group">
         <a href="#contact" class="btn-primary">Request a Demo</a>
         <a href="#features" class="btn-secondary">See Features</a>
@@ -616,6 +618,98 @@ footer{border-top:.5px solid var(--border);padding:2.5rem 2rem;}
   </div>
 </section>
 
+<!-- CASE STUDY -->
+<section class="section band-white" id="case-study" aria-labelledby="cs-heading">
+  <div class="container">
+    <div class="text-center reveal" style="margin-bottom:4rem;">
+      <p class="t-label" style="color:var(--teal)">Case study</p>
+      <h2 class="t-section" style="color:var(--tx);margin-top:.75rem;" id="cs-heading">How DentAyos was built.</h2>
+      <div class="gold-rule"><div class="gold-dot"></div></div>
+    </div>
+    <div class="cs-grid" style="display:grid;grid-template-columns:1fr 2fr;gap:4rem;align-items:start;">
+      <div class="reveal">
+        <div style="border:0.5px solid rgba(26,46,44,.12);padding:2rem;background:var(--alt);">
+          <p class="t-label" style="color:var(--teal);margin-bottom:1.5rem;">Project snapshot</p>
+          <div style="display:flex;flex-direction:column;gap:1.25rem;">
+            <div>
+              <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem;">Project</div>
+              <div style="font-size:14px;color:var(--tx);font-weight:500;">DentAyos</div>
+            </div>
+            <div>
+              <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem;">Type</div>
+              <div style="font-size:14px;color:var(--tx);">Clinic Management SaaS Portal</div>
+            </div>
+            <div>
+              <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem;">Market</div>
+              <div style="font-size:14px;color:var(--tx);">Dental & Aesthetic Clinics · Metro Manila, PH</div>
+            </div>
+            <div>
+              <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem;">Status</div>
+              <div style="font-size:14px;color:var(--success);font-weight:500;">● Live — Pilot Phase</div>
+            </div>
+            <div>
+              <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem;">Current Stack</div>
+              <div style="font-size:14px;color:var(--tx);">HTML5 · CSS3 · JavaScript</div>
+            </div>
+            <div>
+              <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem;">Planned Stack</div>
+              <div style="font-size:14px;color:var(--tx);">Firebase · Node.js · PostgreSQL · JWT Auth</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="display:flex;flex-direction:column;gap:2.5rem;">
+          <div class="reveal">
+            <h3 style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--tx);margin-bottom:.75rem;">The Problem</h3>
+            <p style="font-size:15px;color:var(--tx2);line-height:1.8;margin-bottom:.75rem;">Most small dental and aesthetic clinics in Metro Manila still rely on paper records, manual scheduling, and group chats to run day-to-day operations. This leads to missed appointments, lost patient history, and staff spending hours on admin work instead of patient care.</p>
+            <p style="font-size:15px;color:var(--tx2);line-height:1.8;">Existing solutions are either too expensive, built for hospitals, or imported foreign software that doesn't fit the Filipino clinic context.</p>
+          </div>
+          <div style="height:.5px;background:rgba(26,46,44,.1);"></div>
+          <div class="reveal">
+            <h3 style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--tx);margin-bottom:.75rem;">The Solution</h3>
+            <p style="font-size:15px;color:var(--tx2);line-height:1.8;">DentAyos is a dual-portal web application — one system with two sides. The clinic portal gives staff a dashboard to manage records, appointments, and reminders. The patient portal lets patients self-register, book appointments, and view their own treatment history. Both portals are accessible from any device with a browser, with no app installation required.</p>
+          </div>
+          <div style="height:.5px;background:rgba(26,46,44,.1);"></div>
+          <div class="reveal">
+            <h3 style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--tx);margin-bottom:.75rem;">Key Design Decisions</h3>
+            <div style="display:flex;flex-direction:column;gap:.85rem;">
+              <div style="display:flex;gap:1rem;align-items:flex-start;">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:.4rem;"></div>
+                <p style="font-size:14px;color:var(--tx2);line-height:1.7;"><strong style="color:var(--tx);font-weight:500;">Dual portal architecture</strong> — Clinic staff and patients have separate logins, separate dashboards, and see only the data relevant to them.</p>
+              </div>
+              <div style="display:flex;gap:1rem;align-items:flex-start;">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:.4rem;"></div>
+                <p style="font-size:14px;color:var(--tx2);line-height:1.7;"><strong style="color:var(--tx);font-weight:500;">localStorage sync</strong> — Patient-booked appointments sync to the clinic portal in real time using browser localStorage, enabling a full booking workflow without a backend.</p>
+              </div>
+              <div style="display:flex;gap:1rem;align-items:flex-start;">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:.4rem;"></div>
+                <p style="font-size:14px;color:var(--tx2);line-height:1.7;"><strong style="color:var(--tx);font-weight:500;">Pilot-first pricing</strong> — The product was priced to land the first paying clinic, not to maximize margin. The pilot structure funds the next development phase.</p>
+              </div>
+              <div style="display:flex;gap:1rem;align-items:flex-start;">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:.4rem;"></div>
+                <p style="font-size:14px;color:var(--tx2);line-height:1.7;"><strong style="color:var(--tx);font-weight:500;">Filipino-first UX</strong> — Mixed Tagalog-English copy, peso pricing, and local clinic workflows were prioritized over generic international patterns.</p>
+              </div>
+            </div>
+          </div>
+          <div style="height:.5px;background:rgba(26,46,44,.1);"></div>
+          <div class="reveal">
+            <h3 style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--tx);margin-bottom:.75rem;">What's Next</h3>
+            <p style="font-size:15px;color:var(--tx2);line-height:1.8;margin-bottom:1.25rem;">The current prototype demonstrates the full product workflow. The next phase connects it to a real backend with Firebase authentication, persistent database storage, and SMS reminders via Twilio.</p>
+            <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+              <span style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:.35rem .9rem;border:0.5px solid rgba(26,46,44,.2);color:var(--tx2);">Firebase Auth</span>
+              <span style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:.35rem .9rem;border:0.5px solid rgba(26,46,44,.2);color:var(--tx2);">PostgreSQL</span>
+              <span style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:.35rem .9rem;border:0.5px solid rgba(26,46,44,.2);color:var(--tx2);">Twilio SMS</span>
+              <span style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:.35rem .9rem;border:0.5px solid rgba(26,46,44,.2);color:var(--tx2);">PayMongo</span>
+              <span style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:.35rem .9rem;border:0.5px solid rgba(26,46,44,.2);color:var(--tx2);">Multi-clinic support</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- CONTACT -->
 <section class="section band-dark" id="contact" aria-labelledby="contact-heading">
   <div class="container">
@@ -642,6 +736,7 @@ footer{border-top:.5px solid var(--border);padding:2.5rem 2rem;}
       <a href="#features">Features</a>
       <a href="#how">Workflow</a>
       <a href="#pricing">Pricing</a>
+      <a href="#case-study">Case Study</a>
       <a href="#contact">Contact</a>
     </nav>
     <p class="footer-copy">© 2026 DentAyos. All rights reserved.</p>
