@@ -950,6 +950,15 @@
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 3000);
   }
+
+  // Auto-refresh appointments list when a patient books an appointment in another tab
+  window.addEventListener('storage', (event) => {
+    if (event.key === 'dentayos_appointments') {
+      if (document.getElementById('section-appointments').style.display === 'block') {
+        loadBookedAppointments();
+      }
+    }
+  });
 </script>
 </body>
 </html>
