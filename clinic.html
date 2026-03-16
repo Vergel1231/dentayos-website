@@ -490,9 +490,9 @@
         <div class="panel-body"><div class="appt-list" id="appt-list-full"></div></div>
       </div>
       <div class="panel">
-        <div class="panel-header"><h3>Upcoming · This Week</h3><span>12 total</span></div>
+        <div class="panel-header"><h3>Upcoming · This Week</h3><span id="upcoming-count">5 total</span></div>
         <div class="panel-body">
-          <div class="appt-list">
+          <div class="appt-list" id="upcoming-list">
             <div class="appt-item">
               <div class="appt-time"><div class="hour">9</div><div class="ampm">AM</div></div>
               <div class="appt-divider"></div>
@@ -843,8 +843,33 @@
 
   function loadBookedAppointments() {
     const booked = JSON.parse(localStorage.getItem('dentayos_appointments') || '[]');
+    const confirmed = JSON.parse(localStorage.getItem('dentayos_confirmed') || '[]');
     const tbody = document.getElementById('booked-tbody');
     const count = document.getElementById('booked-count');
+
+    // Load confirmed into upcoming list
+    const upcomingList = document.getElementById('upcoming-list');
+    // Remove previously injected confirmed items to avoid duplicates
+    upcomingList.querySelectorAll('.confirmed-item').forEach(el => el.remove());
+    confirmed.forEach(appt => {
+      const timeParts = appt.time.split(':');
+      const hour = timeParts[0] || '—';
+      const ampm = appt.time.includes('PM') ? 'PM' : 'AM';
+      const div = document.createElement('div');
+      div.className = 'appt-item confirmed-item';
+      div.style.borderColor = 'rgba(29,158,117,0.3)';
+      div.innerHTML = `
+        <div class="appt-time"><div class="hour" style="color:#1D9E75;">${hour}</div><div class="ampm">${ampm}</div></div>
+        <div class="appt-divider"></div>
+        <div class="appt-info"><h4>${appt.patient}</h4><p>${appt.concern} · ${appt.date}</p></div>
+        <div class="appt-type" style="color:#1D9E75;border-color:rgba(29,158,117,0.3);">Confirmed</div>`;
+      upcomingList.appendChild(div);
+    });
+
+    // Update upcoming count
+    const countEl = document.getElementById('upcoming-count');
+    countEl.textContent = (5 + confirmed.length) + ' total';
+
     if(!booked.length) {
       tbody.innerHTML = '<tr><td colspan="7" style="color:var(--teal);font-size:13px;padding:1rem 0;">No patient-booked appointments yet.</td></tr>';
       count.textContent = '0 pending';
@@ -868,10 +893,35 @@
 
   function confirmAppt(i) {
     const booked = JSON.parse(localStorage.getItem('dentayos_appointments') || '[]');
+    const appt = booked[i];
     booked.splice(i, 1);
     localStorage.setItem('dentayos_appointments', JSON.stringify(booked));
+
+    // Save to confirmed list
+    const confirmed = JSON.parse(localStorage.getItem('dentayos_confirmed') || '[]');
+    confirmed.push(appt);
+    localStorage.setItem('dentayos_confirmed', JSON.stringify(confirmed));
+
+    // Add to upcoming list in UI
+    const upcomingList = document.getElementById('upcoming-list');
+    const timeParts = appt.time.split(':');
+    const hour = timeParts[0] || '—';
+    const ampm = appt.time.includes('PM') ? 'PM' : 'AM';
+    upcomingList.innerHTML += `
+      <div class="appt-item" style="border-color:rgba(29,158,117,0.3);">
+        <div class="appt-time"><div class="hour" style="color:#1D9E75;">${hour}</div><div class="ampm">${ampm}</div></div>
+        <div class="appt-divider"></div>
+        <div class="appt-info"><h4>${appt.patient}</h4><p>${appt.concern} · ${appt.date}</p></div>
+        <div class="appt-type" style="color:#1D9E75;border-color:rgba(29,158,117,0.3);">Confirmed</div>
+      </div>`;
+
+    // Update count
+    const countEl = document.getElementById('upcoming-count');
+    const currentCount = parseInt(countEl.textContent) || 5;
+    countEl.textContent = (currentCount + 1) + ' total';
+
     loadBookedAppointments();
-    showToast('Appointment confirmed.');
+    showToast('Appointment confirmed and added to upcoming.');
   }
 
   function declineAppt(i) {
@@ -950,15 +1000,6 @@
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 3000);
   }
-
-  // Auto-refresh appointments list when a patient books an appointment in another tab
-  window.addEventListener('storage', (event) => {
-    if (event.key === 'dentayos_appointments') {
-      if (document.getElementById('section-appointments').style.display === 'block') {
-        loadBookedAppointments();
-      }
-    }
-  });
 </script>
 </body>
 </html>
