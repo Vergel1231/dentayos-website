@@ -328,6 +328,8 @@
     const err = document.getElementById('signup-error');
 
     if(!name || !username || !password) { err.textContent = 'Please fill in all required fields.'; err.style.display = 'block'; return; }
+    if(password.length < 8) { err.textContent = 'Password must be at least 8 characters.'; err.style.display = 'block'; return; }
+    if(password.toLowerCase() === username.toLowerCase()) { err.textContent = 'Password cannot be the same as your username.'; err.style.display = 'block'; return; }
     if(patientAccounts.find(p => p.username === username)) { err.textContent = 'Username already exists. Please choose another.'; err.style.display = 'block'; return; }
 
     const firstName = name.split(' ')[0];
@@ -433,8 +435,24 @@
   function bookAppointment() {
     const date = document.querySelector('.date-cell.selected');
     const time = document.querySelector('.time-slot.selected');
+    const concern = document.querySelector('.concern-select').value;
     if(!date || !time) { showToast('Please select a date and time.'); return; }
-    showToast('Appointment booked! ' + (currentPatient ? currentPatient.dentist : 'Your dentist') + ' will confirm shortly.');
+
+    const appt = {
+      patient: currentPatient.name,
+      concern: concern,
+      date: 'March ' + date.textContent.replace(/[a-zA-Z]/g,'').trim() + ', 2026',
+      time: time.textContent,
+      status: 'pending',
+      bookedAt: new Date().toLocaleString('en-PH')
+    };
+
+    // Save to localStorage so clinic portal can read it
+    const existing = JSON.parse(localStorage.getItem('dentayos_appointments') || '[]');
+    existing.push(appt);
+    localStorage.setItem('dentayos_appointments', JSON.stringify(existing));
+
+    showToast('Appointment booked! ' + currentPatient.dentist + ' will confirm shortly.');
   }
 
   function showToast(msg) {

@@ -204,50 +204,6 @@
   }
 
   .btn-secondary:hover { border-color: var(--gold); color: var(--cream); transform: translateY(-2px); }
-
-  .hero-scroll {
-    position: absolute;
-    bottom: 2.5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    opacity: 0;
-    animation: fadeUp 0.8s ease forwards 1.4s;
-  }
-
-  .hero-scroll span {
-    font-size: 9px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  .scroll-line {
-    width: 0.5px;
-    height: 40px;
-    background: var(--gold);
-    opacity: 0.35;
-    transform-origin: top center;
-    animation: scrollPulse 2s ease infinite;
-    will-change: transform;
-  }
-
-  .hero-scroll {
-    position: absolute;
-    bottom: 2.5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    opacity: 0;
-    animation: fadeUp 0.8s ease forwards 1.4s;
-    isolation: isolate;
-  }
   section { position: relative; z-index: 1; }
 
   .section-label {
@@ -701,11 +657,6 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  @keyframes scrollPulse {
-    0%, 100% { transform: scaleY(0.4); }
-    50% { transform: scaleY(1); }
-  }
-
   .reveal {
     opacity: 1;
     transform: translateY(0);
@@ -764,15 +715,6 @@
       <a href="#contact" class="btn-primary">Book a free demo</a>
       <a href="#features" class="btn-secondary">See how it works</a>
     </div>
-    <div style="display:flex;gap:1rem;justify-content:center;margin-top:1.5rem;flex-wrap:wrap;">
-      <a href="clinic.html" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;border:0.5px solid rgba(107,138,135,0.3);padding:0.5rem 1.25rem;transition:all 0.3s;" onmouseover="this.style.color='#B4966A';this.style.borderColor='rgba(180,150,106,0.4)'" onmouseout="this.style.color='#6B8A87';this.style.borderColor='rgba(107,138,135,0.3)'">→ Clinic Portal</a>
-      <a href="patient.html" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;border:0.5px solid rgba(107,138,135,0.3);padding:0.5rem 1.25rem;transition:all 0.3s;" onmouseover="this.style.color='#B4966A';this.style.borderColor='rgba(180,150,106,0.4)'" onmouseout="this.style.color='#6B8A87';this.style.borderColor='rgba(107,138,135,0.3)'">→ Patient Portal</a>
-    </div>
-  </div>
-
-  <div class="hero-scroll">
-    <div class="scroll-line"></div>
-    <span>Scroll</span>
   </div>
 </section>
 
