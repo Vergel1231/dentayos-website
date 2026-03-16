@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DentAyos — Filipino Clinic Management Portal</title>
+<title>DentAyos — Clinic Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -231,9 +231,23 @@
     background: var(--gold);
     opacity: 0.4;
     animation: scrollPulse 2s ease infinite;
+    will-change: opacity;
+    isolation: isolate;
   }
 
-  /* SECTION SHARED */
+  .hero-scroll {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 1.4s;
+    isolation: isolate;
+  }
   section { position: relative; z-index: 1; }
 
   .section-label {
@@ -911,8 +925,7 @@
     <h2>Ready to be our first<br><em>pilot clinic?</em></h2>
     <p>We're onboarding a small number of Metro Manila dental and aesthetic clinics at a special pilot rate. You get full access, personal onboarding, and a direct line to our team.</p>
     <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:2rem;">
-      <a href="/cdn-cgi/l/email-protection#d6beb3babab996b2b3b8a2b7afb9a5f8a6be" class="btn-primary"><span class="__cf_email__" data-cfemail="6109040d0d0e2105040f1500180e124f1109">[email&#160;protected]</span></a>
-      <a href="https://facebook.com/DentAyosPH" class="btn-secondary">Message us on Facebook</a>
+      <a href="https://m.me/DentAyosPH" class="btn-primary">Message us on Facebook</a>
     </div>
     <p style="font-size:12px;letter-spacing:2px;color:var(--teal);text-transform:uppercase;">Gawa sa 'Pinas · Para sa mga Pilipinong Klinika</p>
   </div>
@@ -925,19 +938,17 @@
   <div class="footer-tagline">Clinic Portal · Gawa sa 'Pinas</div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
   const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
       if (entry.isIntersecting) {
-        setTimeout(() => {
-          entry.target.classList.add('reveal');
-        }, i * 100);
+        setTimeout(() => entry.target.classList.add('visible'), i * 100);
+        observer.unobserve(entry.target);
       }
     });
   }, { threshold: 0.1 });
-
-  reveals.forEach(reveal => observer.observe(reveal));
+  reveals.forEach(el => observer.observe(el));
 </script>
 </body>
 </html>
