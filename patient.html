@@ -490,9 +490,13 @@
       <div class="record-row"><div><div class="record-label">Primary Concern</div><div class="record-value">${p.concern}</div></div></div>
       <div class="record-row"><div><div class="record-label">Attending Dentist</div><div class="record-value">${p.dentist}</div></div></div>
       <div class="record-row"><div><div class="record-label">Patient Since</div><div class="record-value">${p.since}</div></div></div>`;
-    const unread = p.notifications.filter(n => !n.read).length;
+    // Merge localStorage notifications (from clinic reschedule/actions) with built-in ones
+    const notifKey = 'dentayos_notifications_' + p.username.toLowerCase().replace(/\s+/g, '.');
+    const storedNotifs = JSON.parse(localStorage.getItem(notifKey) || '[]');
+    const allNotifs = [...storedNotifs, ...p.notifications];
+    const unread = allNotifs.filter(n => !n.read).length;
     document.getElementById('notif-count').textContent = unread + ' unread';
-    document.getElementById('notif-list').innerHTML = p.notifications.map(n =>
+    document.getElementById('notif-list').innerHTML = allNotifs.map(n =>
       `<div class="notif-item"><div class="notif-dot ${n.read ? 'read' : ''}"></div><div class="notif-text"><p>${n.text}</p><span>${n.time}</span></div></div>`
     ).join('');
     document.getElementById('history-count').textContent = p.history.length + ' visit' + (p.history.length !== 1 ? 's' : '');
@@ -578,6 +582,7 @@
 
     const appt = {
       patient: currentPatient.name,
+      username: currentPatient.username,
       concern: concern,
       date: 'March ' + date.textContent.trim() + ', 2026',
       time: time.textContent,
