@@ -110,13 +110,34 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.2rem 2rem;displ
 @media(max-width:500px){
   .security-grid{grid-template-columns:1fr;}
 }
+
+  /* LOGOUT OVERLAY */
+  .logout-overlay {
+    display:none; position:fixed; inset:0;
+    background:var(--dark); z-index:999;
+    align-items:center; justify-content:center;
+    flex-direction:column; gap:1rem;
+  }
+  .logout-overlay.show { display:flex; }
+  .logout-spinner {
+    width:36px; height:36px;
+    border:1.5px solid var(--border);
+    border-top-color:var(--gold);
+    border-radius:50%;
+    animation:spin 0.7s linear infinite;
+  }
+  .logout-msg {
+    font-size:11px; letter-spacing:3px;
+    text-transform:uppercase; color:var(--teal);
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
 </style>
 </head>
 <body>
 
 <header role="banner">
-  <a href="javascript:void(0)" onclick="window.location.replace('/dentayos-website/index.html?ts='+Date.now())" class="nav-logo">Dent<span>Ayos</span></a>
-  <a href="javascript:void(0)" onclick="window.location.replace('/dentayos-website/index.html?ts='+Date.now())" class="nav-back">← Back to Website</a>
+  <a href="javascript:void(0)" onclick="goToWebsite()" class="nav-logo">Dent<span>Ayos</span></a>
+  <a href="javascript:void(0)" onclick="goToWebsite()" class="nav-back">← Back to Website</a>
 </header>
 
 <div class="page">
@@ -461,6 +482,12 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.2rem 2rem;displ
 <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">&#8679;</button>
 
 <script>
+  function goToWebsite() {
+    const overlay = document.getElementById('logout-overlay');
+    if(overlay) { overlay.classList.add('show'); }
+    setTimeout(() => { window.location.href = '/dentayos-website/?ts=' + Date.now(); }, 600);
+  }
+
   function showPhase(name, el) {
     document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.phase-panel').forEach(p => p.classList.remove('active'));
@@ -481,5 +508,8 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.2rem 2rem;displ
     if(b) b.style.display = window.scrollY > 300 ? 'flex' : 'none';
   });
 </script>
+
+<!-- LOGOUT OVERLAY -->
+<div class="logout-overlay" id="logout-overlay"><div class="logout-spinner"></div><div class="logout-msg">Returning to website...</div></div>
 </body>
 </html>

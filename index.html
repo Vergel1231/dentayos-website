@@ -1,2052 +1,773 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <title>DentAyos — Clinic Management Portal for Dental & Aesthetic Clinics</title>
-  <meta name="description"
-    content="DentAyos is a Filipino-built clinic management portal for dental and aesthetic clinics. Manage appointments, patient records, and clinic operations in one place.">
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap"
-    rel="stylesheet">
-  <style>
-    /* TOKENS */
-    :root {
-      --dark: #0D1B1A;
-      --dark2: #1A2E2C;
-      --dark3: #223330;
-      --gold: #B4966A;
-      --gold-lt: #D4B896;
-      --cream: #E8D5B0;
-      --teal: #6B8A87;
-      --success: #1D9E75;
-      --muted: #6B8A87;
-      --border: rgba(180, 150, 106, 0.18);
-      --alt: #F7F4EF;
-      --mid: #0F2220;
-      --tx: #1A1A1A;
-      --tx2: #4A4A4A;
-    }
-
-    *,
-    *::before,
-    *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      background: var(--dark);
-      color: var(--cream);
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      overflow-x: hidden;
-      line-height: 1.7;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    ul {
-      list-style: none;
-    }
-
-    :focus-visible {
-      outline: 2px solid var(--gold);
-      outline-offset: 3px;
-    }
-
-    /* TYPOGRAPHY */
-    .t-hero {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(40px, 5.5vw, 62px);
-      line-height: 1.08;
-    }
-
-    .t-section {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(28px, 3.5vw, 42px);
-      line-height: 1.15;
-    }
-
-    .t-sub {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(18px, 2.2vw, 24px);
-      line-height: 1.3;
-    }
-
-    .t-label {
-      font-size: 11px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-    }
-
-    em {
-      font-style: italic;
-      color: var(--gold);
-    }
-
-    /* LAYOUT */
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-
-    .section {
-      padding: 8rem 0;
-    }
-
-    .section-sm {
-      padding: 5rem 0;
-    }
-
-    .text-center {
-      text-align: center;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-      align-items: center;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
-    }
-
-    .grid-4 {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.5rem;
-    }
-
-    /* BANDS */
-    .band-dark {
-      background: var(--dark);
-      color: var(--cream);
-    }
-
-    .band-dark2 {
-      background: var(--dark2);
-      color: var(--cream);
-    }
-
-    .band-mid {
-      background: var(--mid);
-      color: var(--cream);
-    }
-
-    .band-light {
-      background: var(--alt);
-      color: var(--tx);
-    }
-
-    .band-white {
-      background: #fff;
-      color: var(--tx);
-    }
-
-    /* DIVIDER */
-    .gold-rule {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin: 1.5rem 0;
-    }
-
-    .gold-rule::before,
-    .gold-rule::after {
-      content: '';
-      flex: 1;
-      height: 0.5px;
-      background: var(--border);
-    }
-
-    .gold-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--gold);
-      opacity: .7;
-    }
-
-    /* BUTTONS */
-    .btn-primary {
-      display: inline-block;
-      font-size: 12px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 1rem 2.5rem;
-      background: var(--gold);
-      color: var(--dark);
-      transition: background .25s, transform .2s;
-      border: none;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-    }
-
-    .btn-primary:hover {
-      background: var(--cream);
-      transform: translateY(-2px);
-    }
-
-    .btn-secondary {
-      display: inline-block;
-      font-size: 12px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 1rem 2.5rem;
-      border: 0.5px solid rgba(180, 150, 106, .45);
-      color: var(--gold);
-      transition: all .25s;
-      background: transparent;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-    }
-
-    .btn-secondary:hover {
-      border-color: var(--gold);
-      color: var(--cream);
-      transform: translateY(-2px);
-    }
-
-    .btn-outline {
-      display: inline-block;
-      font-size: 12px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 1rem 2.5rem;
-      border: 0.5px solid rgba(26, 46, 44, .35);
-      color: var(--dark2);
-      transition: all .25s;
-      background: transparent;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-    }
-
-    .btn-outline:hover {
-      background: var(--dark2);
-      color: var(--cream);
-    }
-
-    .btn-group {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    /* HEADER */
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      padding: 1.2rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(13, 27, 26, .94);
-      border-bottom: 0.5px solid var(--border);
-      backdrop-filter: blur(14px);
-    }
-
-    .nav-logo {
-      font-family: 'DM Serif Display', serif;
-      font-size: 20px;
-      letter-spacing: 2.5px;
-      color: var(--cream);
-    }
-
-    .nav-logo span {
-      color: var(--gold);
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-    }
-
-    .nav-links a {
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--teal);
-      transition: color .2s;
-    }
-
-    .nav-links a:hover {
-      color: var(--gold);
-    }
-
-    .nav-right {
-      display: flex;
-      gap: .6rem;
-      align-items: center;
-    }
-
-    .btn-nav {
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: .45rem 1rem;
-      border: 0.5px solid var(--border);
-      color: var(--teal);
-      transition: all .2s;
-      background: transparent;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-    }
-
-    .btn-nav:hover {
-      border-color: var(--gold);
-      color: var(--gold);
-    }
-
-    .btn-nav-cta {
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: .45rem 1.1rem;
-      background: var(--gold);
-      color: var(--dark);
-      transition: background .2s;
-      border: none;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-    }
-
-    .btn-nav-cta:hover {
-      background: var(--cream);
-    }
-
-    /* HERO */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding: 10rem 2rem 6rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 5fr 6fr;
-      gap: 4rem;
-      align-items: center;
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      opacity: .05;
-      background-image: repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(180, 150, 106, .5) 39px, rgba(180, 150, 106, .5) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(180, 150, 106, .5) 39px, rgba(180, 150, 106, .5) 40px);
-    }
-
-    .hero-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: .75rem;
-      font-size: 11px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--gold);
-      border: 0.5px solid rgba(180, 150, 106, .35);
-      padding: .45rem 1rem;
-      margin-bottom: 2rem;
-      opacity: 0;
-      animation: fadeUp .7s ease forwards .2s;
-    }
-
-    .hero-tagdot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--success);
-    }
-
-    .hero-title {
-      opacity: 0;
-      animation: fadeUp .7s ease forwards .4s;
-      margin-bottom: 1.5rem;
-    }
-
-    .hero-desc {
-      font-size: 17px;
-      color: var(--teal);
-      line-height: 1.8;
-      max-width: 440px;
-      margin-bottom: 2.5rem;
-      opacity: 0;
-      animation: fadeUp .7s ease forwards .6s;
-    }
-
-    .hero-actions {
-      opacity: 0;
-      animation: fadeUp .7s ease forwards .8s;
-    }
-
-    .hero-stats {
-      display: flex;
-      gap: 2.5rem;
-      margin-top: 3rem;
-      padding-top: 2rem;
-      border-top: 0.5px solid var(--border);
-      opacity: 0;
-      animation: fadeUp .7s ease forwards 1s;
-    }
-
-    .stat-val {
-      font-family: 'DM Serif Display', serif;
-      font-size: 26px;
-      color: var(--cream);
-    }
-
-    .stat-lbl {
-      font-size: 11px;
-      color: var(--teal);
-      letter-spacing: 1px;
-      margin-top: 2px;
-    }
-
-    /* MOCKUP */
-    .hero-mockup {
-      opacity: 0;
-      animation: fadeUp .7s ease forwards .5s;
-      position: relative;
-    }
-
-    .m-frame {
-      background: var(--dark2);
-      border: 0.5px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 32px 80px rgba(0, 0, 0, .5);
-    }
-
-    .m-bar {
-      background: var(--dark3);
-      padding: .6rem 1rem;
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-      border-bottom: 0.5px solid var(--border);
-    }
-
-    .m-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-    }
-
-    .m-title {
-      font-size: 10px;
-      color: var(--teal);
-      letter-spacing: 1px;
-      margin-left: .5rem;
-    }
-
-    .m-body {
-      display: grid;
-      grid-template-columns: 155px 1fr;
-      min-height: 300px;
-    }
-
-    .m-sidebar {
-      background: var(--dark3);
-      border-right: 0.5px solid var(--border);
-      padding: 1rem 0;
-    }
-
-    .m-nav {
-      padding: .55rem 1rem;
-      font-size: 10px;
-      color: var(--teal);
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-    }
-
-    .m-nav.active {
-      color: var(--gold);
-      background: rgba(180, 150, 106, .08);
-      border-left: 2px solid var(--gold);
-    }
-
-    .m-navdot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: currentColor;
-      opacity: .5;
-      flex-shrink: 0;
-    }
-
-    .m-main {
-      padding: .9rem;
-    }
-
-    .m-stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: .4rem;
-      margin-bottom: .9rem;
-    }
-
-    .m-stat {
-      background: var(--dark3);
-      border: 0.5px solid var(--border);
-      padding: .5rem .65rem;
-      border-radius: 3px;
-    }
-
-    .m-sv {
-      font-family: 'DM Serif Display', serif;
-      font-size: 17px;
-      color: var(--gold);
-    }
-
-    .m-sl {
-      font-size: 8px;
-      color: var(--teal);
-      letter-spacing: 1px;
-      margin-top: 1px;
-    }
-
-    .m-thead {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr .7fr;
-      gap: .4rem;
-      padding: .35rem .4rem;
-      border-bottom: 0.5px solid var(--border);
-    }
-
-    .m-thead span {
-      font-size: 8px;
-      color: var(--teal);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .m-row {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr .7fr;
-      gap: .4rem;
-      padding: .4rem .4rem;
-      border-bottom: 0.5px solid rgba(180, 150, 106, .05);
-      align-items: center;
-    }
-
-    .m-row span {
-      font-size: 9px;
-      color: var(--cream);
-    }
-
-    .mbadge {
-      font-size: 8px;
-      padding: 2px 6px;
-      border-radius: 2px;
-      display: inline-block;
-    }
-
-    .mbadge.active {
-      background: rgba(29, 158, 117, .15);
-      color: #1D9E75;
-    }
-
-    .mbadge.pending {
-      background: rgba(186, 117, 23, .15);
-      color: #BA7517;
-    }
-
-    .mbadge.new {
-      background: rgba(180, 150, 106, .15);
-      color: var(--gold);
-    }
-
-    .m-float {
-      position: absolute;
-      bottom: -1.5rem;
-      right: -1.5rem;
-      background: var(--dark2);
-      border: 0.5px solid rgba(29, 158, 117, .4);
-      border-radius: 6px;
-      padding: .7rem .9rem;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, .4);
-    }
-
-    .m-fi {
-      font-size: 16px;
-      margin-bottom: 3px;
-    }
-
-    .m-ft {
-      font-size: 10px;
-      color: var(--success);
-      font-weight: 500;
-    }
-
-    .m-fs {
-      font-size: 9px;
-      color: var(--teal);
-      margin-top: 1px;
-    }
-
-    /* PROBLEM */
-    .prob-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-      margin-top: 4rem;
-    }
-
-    .prob-card {
-      padding: 2rem;
-      border: 0.5px solid rgba(26, 46, 44, .15);
-      background: #fff;
-      transition: border-color .3s;
-    }
-
-    .prob-card:hover {
-      border-color: rgba(180, 150, 106, .4);
-    }
-
-    .prob-num {
-      font-family: 'DM Serif Display', serif;
-      font-size: 46px;
-      color: rgba(180, 150, 106, .15);
-      line-height: 1;
-      margin-bottom: 1rem;
-    }
-
-    .prob-card h4 {
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--tx);
-      margin-bottom: .5rem;
-    }
-
-    .prob-card p {
-      font-size: 13px;
-      color: var(--tx2);
-      line-height: 1.7;
-    }
-
-    /* SOLUTION */
-    .portal-cards {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      margin-top: 4rem;
-    }
-
-    .portal-card {
-      border: 0.5px solid var(--border);
-      padding: 2.5rem;
-      transition: border-color .3s, transform .3s;
-      position: relative;
-    }
-
-    .portal-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--gold);
-      opacity: 0;
-      transition: opacity .3s;
-    }
-
-    .portal-card:hover {
-      border-color: rgba(180, 150, 106, .5);
-      transform: translateY(-4px);
-    }
-
-    .portal-card:hover::before {
-      opacity: 1;
-    }
-
-    .pbadge {
-      font-size: 10px;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      padding: .3rem .9rem;
-      display: inline-block;
-      margin-bottom: 1.5rem;
-    }
-
-    .pbadge.clinic {
-      background: var(--gold);
-      color: var(--dark);
-    }
-
-    .pbadge.patient {
-      background: transparent;
-      border: 0.5px solid rgba(180, 150, 106, .4);
-      color: var(--gold);
-    }
-
-    .portal-card h3 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 24px;
-      color: var(--cream);
-      margin-bottom: .5rem;
-    }
-
-    .portal-card>p {
-      font-size: 13px;
-      color: var(--teal);
-      margin-bottom: 1.75rem;
-      line-height: 1.7;
-    }
-
-    .flist {
-      display: flex;
-      flex-direction: column;
-      gap: .7rem;
-    }
-
-    .flist li {
-      display: flex;
-      align-items: center;
-      gap: .85rem;
-      font-size: 14px;
-      color: var(--cream);
-    }
-
-    .flist li::before {
-      content: '';
-      width: 16px;
-      height: .5px;
-      background: var(--gold);
-      flex-shrink: 0;
-    }
-
-    /* FEATURES */
-    .feat-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.75rem;
-      margin-top: 4rem;
-    }
-
-    .feat-card {
-      padding: 2rem;
-      border: 0.5px solid rgba(26, 46, 44, .15);
-      background: #fff;
-      transition: border-color .3s, transform .3s, box-shadow .3s;
-    }
-
-    .feat-card:hover {
-      border-color: rgba(180, 150, 106, .45);
-      transform: translateY(-3px);
-      box-shadow: 0 12px 32px rgba(180, 150, 106, .07);
-    }
-
-    .feat-icon {
-      width: 44px;
-      height: 44px;
-      margin-bottom: 1.25rem;
-    }
-
-    .feat-card h4 {
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--tx);
-      margin-bottom: .4rem;
-    }
-
-    .feat-card p {
-      font-size: 13px;
-      color: var(--tx2);
-      line-height: 1.7;
-    }
-
-    /* WORKFLOW */
-    .wf-steps {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 0;
-      margin-top: 4rem;
-      position: relative;
-    }
-
-    .wf-steps::before {
-      content: '';
-      position: absolute;
-      top: 28px;
-      left: 10%;
-      right: 10%;
-      height: .5px;
-      background: var(--border);
-    }
-
-    .wf-step {
-      text-align: center;
-      padding: 0 .5rem;
-    }
-
-    .wf-circle {
-      width: 56px;
-      height: 56px;
-      border: 0.5px solid rgba(180, 150, 106, .4);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1.25rem;
-      font-family: 'DM Serif Display', serif;
-      font-size: 20px;
-      color: var(--gold);
-      background: var(--mid);
-      position: relative;
-      z-index: 1;
-      transition: background .3s, border-color .3s;
-    }
-
-    .wf-step:hover .wf-circle {
-      background: var(--dark2);
-      border-color: var(--gold);
-    }
-
-    .wf-step h4 {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--cream);
-      margin-bottom: .4rem;
-    }
-
-    .wf-step p {
-      font-size: 12px;
-      color: var(--teal);
-      line-height: 1.5;
-    }
-
-    /* DEMO TABS */
-    .demo-tabs {
-      display: flex;
-      border-bottom: 0.5px solid rgba(26, 46, 44, .15);
-      margin-bottom: 2.5rem;
-    }
-
-    .demo-tab {
-      font-size: 12px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: .85rem 1.75rem;
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      color: var(--tx2);
-      transition: all .25s;
-      background: none;
-      border-left: none;
-      border-right: none;
-      border-top: none;
-      font-family: 'DM Sans', sans-serif;
-    }
-
-    .demo-tab.active {
-      color: var(--tx);
-      border-bottom-color: var(--gold);
-    }
-
-    .demo-panel {
-      display: none;
-    }
-
-    .demo-panel.active {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-      align-items: start;
-    }
-
-    .demo-feats {
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-    }
-
-    .demo-feat {
-      display: flex;
-      gap: 1rem;
-      padding: 1.25rem;
-      border: 0.5px solid rgba(26, 46, 44, .12);
-      transition: border-color .25s;
-    }
-
-    .demo-feat:hover {
-      border-color: rgba(180, 150, 106, .4);
-    }
-
-    .demo-feat-ico {
-      width: 36px;
-      height: 36px;
-      background: rgba(180, 150, 106, .1);
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .demo-feat h5 {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--tx);
-      margin-bottom: .25rem;
-    }
-
-    .demo-feat p {
-      font-size: 12px;
-      color: var(--tx2);
-      line-height: 1.6;
-    }
-
-    .demo-cta {
-      padding: 2rem;
-      background: var(--alt);
-      border: 0.5px solid rgba(26, 46, 44, .12);
-    }
-
-    .demo-cta h4 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 22px;
-      color: var(--tx);
-      margin-bottom: .5rem;
-    }
-
-    .demo-cta p {
-      font-size: 13px;
-      color: var(--tx2);
-      margin-bottom: 1.25rem;
-      line-height: 1.7;
-    }
-
-    .cred-box {
-      background: #fff;
-      border: 0.5px solid rgba(26, 46, 44, .1);
-      padding: .9rem 1rem;
-      margin-bottom: 1.25rem;
-      font-size: 13px;
-      color: var(--tx);
-    }
-
-    .cred-label {
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--teal);
-      margin-bottom: .4rem;
-    }
-
-    /* PRICING */
-    .price-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      max-width: 780px;
-      margin: 3.5rem auto 0;
-    }
-
-    .price-card {
-      border: 0.5px solid var(--border);
-      padding: 2.5rem;
-      position: relative;
-      transition: border-color .3s, transform .3s;
-    }
-
-    .price-card.featured {
-      border-color: rgba(180, 150, 106, .55);
-    }
-
-    .price-card.featured::before {
-      content: 'PILOT OFFER';
-      position: absolute;
-      top: -1px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 9px;
-      letter-spacing: 3px;
-      color: var(--dark);
-      background: var(--gold);
-      padding: .3rem 1rem;
-      white-space: nowrap;
-    }
-
-    .price-card:hover {
-      border-color: rgba(180, 150, 106, .5);
-      transform: translateY(-4px);
-    }
-
-    .price-card h3 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 22px;
-      color: var(--cream);
-      margin-bottom: .4rem;
-    }
-
-    .price-num {
-      font-family: 'DM Serif Display', serif;
-      font-size: 44px;
-      color: var(--gold);
-      line-height: 1;
-      margin: 1.25rem 0 .2rem;
-    }
-
-    .price-note {
-      font-size: 12px;
-      color: var(--teal);
-      margin-bottom: 1.75rem;
-    }
-
-    .price-hr {
-      height: .5px;
-      background: var(--border);
-      margin: 1.5rem 0;
-    }
-
-    .price-feats {
-      display: flex;
-      flex-direction: column;
-      gap: .7rem;
-      margin-bottom: 2rem;
-    }
-
-    .price-feats li {
-      font-size: 13px;
-      color: var(--teal);
-      display: flex;
-      gap: .65rem;
-      align-items: center;
-    }
-
-    .price-feats li::before {
-      content: '';
-      width: 12px;
-      height: .5px;
-      background: var(--gold);
-      flex-shrink: 0;
-    }
-
-    /* CLINIC CARD */
-    .clinic-card {
-      padding: 2.5rem;
-      border: 0.5px solid rgba(26, 46, 44, .15);
-      background: #fff;
-    }
-
-    .cl-row {
-      padding: .85rem 0;
-      border-bottom: .5px solid rgba(26, 46, 44, .08);
-    }
-
-    .cl-row:last-child {
-      border-bottom: none;
-    }
-
-    .cl-label {
-      font-size: 10px;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: var(--teal);
-      margin-bottom: .35rem;
-    }
-
-    .cl-val {
-      font-size: 15px;
-      color: var(--tx);
-    }
-
-    /* CONTACT */
-    .contact-box {
-      border: 0.5px solid rgba(180, 150, 106, .35);
-      padding: 4rem;
-      text-align: center;
-      position: relative;
-    }
-
-    .contact-box::before {
-      content: '';
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      width: 22px;
-      height: 22px;
-      border-top: .5px solid var(--gold);
-      border-left: .5px solid var(--gold);
-    }
-
-    .contact-box::after {
-      content: '';
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      width: 22px;
-      height: 22px;
-      border-bottom: .5px solid var(--gold);
-      border-right: .5px solid var(--gold);
-    }
-
-    /* FOOTER */
-    footer {
-      border-top: .5px solid var(--border);
-      padding: 2.5rem 2rem;
-    }
-
-    .footer-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .footer-logo {
-      font-family: 'DM Serif Display', serif;
-      font-size: 18px;
-      letter-spacing: 2px;
-      color: var(--cream);
-    }
-
-    .footer-logo span {
-      color: var(--gold);
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 2rem;
-    }
-
-    .footer-links a {
-      font-size: 12px;
-      color: var(--teal);
-      letter-spacing: .5px;
-      transition: color .2s;
-    }
-
-    .footer-links a:hover {
-      color: var(--gold);
-    }
-
-    .footer-copy {
-      font-size: 11px;
-      color: var(--teal);
-      letter-spacing: .5px;
-    }
-
-    /* CARD DARK */
-    .card-dark {
-      background: var(--dark2);
-      border: .5px solid var(--border);
-      padding: 1.75rem;
-    }
-
-    /* BACK TO TOP */
-    #back-to-top {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      width: 42px;
-      height: 42px;
-      background: var(--gold);
-      border: none;
-      color: var(--dark);
-      font-size: 20px;
-      cursor: pointer;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 400;
-      transition: background .2s;
-    }
-
-    #back-to-top:hover {
-      background: var(--cream);
-    }
-
-    /* ANIMATIONS */
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(22px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity .7s ease, transform .7s ease;
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* RESPONSIVE */
-    @media(max-width:900px) {
-
-      .hero-grid,
-      .grid-2,
-      .portal-cards,
-      .price-grid,
-      .demo-panel.active {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-mockup {
-        display: none;
-      }
-
-      .feat-grid,
-      .prob-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .wf-steps {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .wf-steps::before {
-        display: none;
-      }
-
-      .grid-4 {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .nav-links {
-        display: none;
-      }
-
-      .section {
-        padding: 5rem 0;
-      }
-
-      .cs-grid {
-        grid-template-columns: 1fr !important;
-      }
-    }
-
-    @media(max-width:600px) {
-
-      .feat-grid,
-      .prob-grid,
-      .grid-3,
-      .grid-4,
-      .wf-steps {
-        grid-template-columns: 1fr;
-      }
-
-      .btn-group {
-        flex-direction: column;
-      }
-
-      .contact-box {
-        padding: 2.5rem 1.5rem;
-      }
-
-      .footer-inner {
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .footer-links {
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>DentAyos — Clinic Management Portal for Dental & Aesthetic Clinics</title>
+<meta name="description" content="DentAyos is a Filipino-built clinic management portal for dental and aesthetic clinics. Manage appointments, patient records, and clinic operations in one place.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* TOKENS */
+:root {
+  --dark:#0D1B1A; --dark2:#1A2E2C; --dark3:#223330;
+  --gold:#B4966A; --gold-lt:#D4B896; --cream:#E8D5B0;
+  --teal:#6B8A87; --success:#1D9E75; --muted:#6B8A87;
+  --border:rgba(180,150,106,0.18);
+  --alt:#F7F4EF; --mid:#0F2220;
+  --tx:#1A1A1A; --tx2:#4A4A4A;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--dark);color:var(--cream);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;line-height:1.7;}
+a{color:inherit;text-decoration:none;}
+ul{list-style:none;}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+
+/* TYPOGRAPHY */
+.t-hero{font-family:'DM Serif Display',serif;font-size:clamp(40px,5.5vw,62px);line-height:1.08;}
+.t-section{font-family:'DM Serif Display',serif;font-size:clamp(28px,3.5vw,42px);line-height:1.15;}
+.t-sub{font-family:'DM Serif Display',serif;font-size:clamp(18px,2.2vw,24px);line-height:1.3;}
+.t-label{font-size:11px;letter-spacing:3px;text-transform:uppercase;}
+em{font-style:italic;color:var(--gold);}
+
+/* LAYOUT */
+.container{max-width:1200px;margin:0 auto;padding:0 2rem;}
+.section{padding:8rem 0;}
+.section-sm{padding:5rem 0;}
+.text-center{text-align:center;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;}
+
+/* BANDS */
+.band-dark{background:var(--dark);color:var(--cream);}
+.band-dark2{background:var(--dark2);color:var(--cream);}
+.band-mid{background:var(--mid);color:var(--cream);}
+.band-light{background:var(--alt);color:var(--tx);}
+.band-white{background:#fff;color:var(--tx);}
+
+/* DIVIDER */
+.gold-rule{display:flex;align-items:center;gap:1rem;margin:1.5rem 0;}
+.gold-rule::before,.gold-rule::after{content:'';flex:1;height:0.5px;background:var(--border);}
+.gold-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:.7;}
+
+/* BUTTONS */
+.btn-primary{display:inline-block;font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:1rem 2.5rem;background:var(--gold);color:var(--dark);transition:background .25s,transform .2s;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.btn-primary:hover{background:var(--cream);transform:translateY(-2px);}
+.btn-secondary{display:inline-block;font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:1rem 2.5rem;border:0.5px solid rgba(180,150,106,.45);color:var(--gold);transition:all .25s;background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.btn-secondary:hover{border-color:var(--gold);color:var(--cream);transform:translateY(-2px);}
+.btn-outline{display:inline-block;font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:1rem 2.5rem;border:0.5px solid rgba(26,46,44,.35);color:var(--dark2);transition:all .25s;background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.btn-outline:hover{background:var(--dark2);color:var(--cream);}
+.btn-group{display:flex;gap:1rem;flex-wrap:wrap;}
+
+/* HEADER */
+header{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.2rem 2rem;display:flex;justify-content:space-between;align-items:center;background:rgba(13,27,26,.94);border-bottom:0.5px solid var(--border);backdrop-filter:blur(14px);}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:20px;letter-spacing:2.5px;color:var(--cream);}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:2rem;}
+.nav-links a{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);transition:color .2s;}
+.nav-links a:hover{color:var(--gold);}
+.nav-right{display:flex;gap:.6rem;align-items:center;}
+.btn-nav{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:.45rem 1rem;border:0.5px solid var(--border);color:var(--teal);transition:all .2s;background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.btn-nav:hover{border-color:var(--gold);color:var(--gold);}
+.btn-nav-cta{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:.45rem 1.1rem;background:var(--gold);color:var(--dark);transition:background .2s;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.btn-nav-cta:hover{background:var(--cream);}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding:10rem 2rem 6rem;position:relative;overflow:hidden;}
+.hero-grid{display:grid;grid-template-columns:5fr 6fr;gap:4rem;align-items:center;max-width:1200px;margin:0 auto;width:100%;}
+.hero-bg{position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(180,150,106,.5) 39px,rgba(180,150,106,.5) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(180,150,106,.5) 39px,rgba(180,150,106,.5) 40px);}
+.hero-tag{display:inline-flex;align-items:center;gap:.75rem;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);border:0.5px solid rgba(180,150,106,.35);padding:.45rem 1rem;margin-bottom:2rem;opacity:0;animation:fadeUp .7s ease forwards .2s;}
+.hero-tagdot{width:6px;height:6px;border-radius:50%;background:var(--success);}
+.hero-title{opacity:0;animation:fadeUp .7s ease forwards .4s;margin-bottom:1.5rem;}
+.hero-desc{font-size:17px;color:var(--teal);line-height:1.8;max-width:440px;margin-bottom:2.5rem;opacity:0;animation:fadeUp .7s ease forwards .6s;}
+.hero-actions{opacity:0;animation:fadeUp .7s ease forwards .8s;}
+.hero-stats{display:flex;gap:2.5rem;margin-top:3rem;padding-top:2rem;border-top:0.5px solid var(--border);opacity:0;animation:fadeUp .7s ease forwards 1s;}
+.stat-val{font-family:'DM Serif Display',serif;font-size:26px;color:var(--cream);}
+.stat-lbl{font-size:11px;color:var(--teal);letter-spacing:1px;margin-top:2px;}
+
+/* MOCKUP */
+.hero-mockup{opacity:0;animation:fadeUp .7s ease forwards .5s;position:relative;}
+.m-frame{background:var(--dark2);border:0.5px solid var(--border);border-radius:8px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.5);}
+.m-bar{background:var(--dark3);padding:.6rem 1rem;display:flex;align-items:center;gap:.5rem;border-bottom:0.5px solid var(--border);}
+.m-dot{width:8px;height:8px;border-radius:50%;}
+.m-title{font-size:10px;color:var(--teal);letter-spacing:1px;margin-left:.5rem;}
+.m-body{display:grid;grid-template-columns:155px 1fr;min-height:300px;}
+.m-sidebar{background:var(--dark3);border-right:0.5px solid var(--border);padding:1rem 0;}
+.m-nav{padding:.55rem 1rem;font-size:10px;color:var(--teal);display:flex;align-items:center;gap:.5rem;}
+.m-nav.active{color:var(--gold);background:rgba(180,150,106,.08);border-left:2px solid var(--gold);}
+.m-navdot{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.5;flex-shrink:0;}
+.m-main{padding:.9rem;}
+.m-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-bottom:.9rem;}
+.m-stat{background:var(--dark3);border:0.5px solid var(--border);padding:.5rem .65rem;border-radius:3px;}
+.m-sv{font-family:'DM Serif Display',serif;font-size:17px;color:var(--gold);}
+.m-sl{font-size:8px;color:var(--teal);letter-spacing:1px;margin-top:1px;}
+.m-thead{display:grid;grid-template-columns:2fr 1fr 1fr .7fr;gap:.4rem;padding:.35rem .4rem;border-bottom:0.5px solid var(--border);}
+.m-thead span{font-size:8px;color:var(--teal);letter-spacing:1px;text-transform:uppercase;}
+.m-row{display:grid;grid-template-columns:2fr 1fr 1fr .7fr;gap:.4rem;padding:.4rem .4rem;border-bottom:0.5px solid rgba(180,150,106,.05);align-items:center;}
+.m-row span{font-size:9px;color:var(--cream);}
+.mbadge{font-size:8px;padding:2px 6px;border-radius:2px;display:inline-block;}
+.mbadge.active{background:rgba(29,158,117,.15);color:#1D9E75;}
+.mbadge.pending{background:rgba(186,117,23,.15);color:#BA7517;}
+.mbadge.new{background:rgba(180,150,106,.15);color:var(--gold);}
+.m-float{position:absolute;bottom:-1.5rem;right:-1.5rem;background:var(--dark2);border:0.5px solid rgba(29,158,117,.4);border-radius:6px;padding:.7rem .9rem;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.m-fi{font-size:16px;margin-bottom:3px;}
+.m-ft{font-size:10px;color:var(--success);font-weight:500;}
+.m-fs{font-size:9px;color:var(--teal);margin-top:1px;}
+
+/* PROBLEM */
+.prob-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:4rem;}
+.prob-card{padding:2rem;border:0.5px solid rgba(26,46,44,.15);background:#fff;transition:border-color .3s;}
+.prob-card:hover{border-color:rgba(180,150,106,.4);}
+.prob-num{font-family:'DM Serif Display',serif;font-size:46px;color:rgba(180,150,106,.15);line-height:1;margin-bottom:1rem;}
+.prob-card h4{font-size:15px;font-weight:500;color:var(--tx);margin-bottom:.5rem;}
+.prob-card p{font-size:13px;color:var(--tx2);line-height:1.7;}
+
+/* SOLUTION */
+.portal-cards{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:4rem;}
+.portal-card{border:0.5px solid var(--border);padding:2.5rem;transition:border-color .3s,transform .3s;position:relative;}
+.portal-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);opacity:0;transition:opacity .3s;}
+.portal-card:hover{border-color:rgba(180,150,106,.5);transform:translateY(-4px);}
+.portal-card:hover::before{opacity:1;}
+.pbadge{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;padding:.3rem .9rem;display:inline-block;margin-bottom:1.5rem;}
+.pbadge.clinic{background:var(--gold);color:var(--dark);}
+.pbadge.patient{background:transparent;border:0.5px solid rgba(180,150,106,.4);color:var(--gold);}
+.portal-card h3{font-family:'DM Serif Display',serif;font-size:24px;color:var(--cream);margin-bottom:.5rem;}
+.portal-card>p{font-size:13px;color:var(--teal);margin-bottom:1.75rem;line-height:1.7;}
+.flist{display:flex;flex-direction:column;gap:.7rem;}
+.flist li{display:flex;align-items:center;gap:.85rem;font-size:14px;color:var(--cream);}
+.flist li::before{content:'';width:16px;height:.5px;background:var(--gold);flex-shrink:0;}
+
+/* FEATURES */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.75rem;margin-top:4rem;}
+.feat-card{padding:2rem;border:0.5px solid rgba(26,46,44,.15);background:#fff;transition:border-color .3s,transform .3s,box-shadow .3s;}
+.feat-card:hover{border-color:rgba(180,150,106,.45);transform:translateY(-3px);box-shadow:0 12px 32px rgba(180,150,106,.07);}
+.feat-icon{width:44px;height:44px;margin-bottom:1.25rem;}
+.feat-card h4{font-size:15px;font-weight:500;color:var(--tx);margin-bottom:.4rem;}
+.feat-card p{font-size:13px;color:var(--tx2);line-height:1.7;}
+
+/* WORKFLOW */
+.wf-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:4rem;position:relative;}
+.wf-steps::before{content:'';position:absolute;top:28px;left:10%;right:10%;height:.5px;background:var(--border);}
+.wf-step{text-align:center;padding:0 .5rem;}
+.wf-circle{width:56px;height:56px;border:0.5px solid rgba(180,150,106,.4);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold);background:var(--mid);position:relative;z-index:1;transition:background .3s,border-color .3s;}
+.wf-step:hover .wf-circle{background:var(--dark2);border-color:var(--gold);}
+.wf-step h4{font-size:13px;font-weight:500;color:var(--cream);margin-bottom:.4rem;}
+.wf-step p{font-size:12px;color:var(--teal);line-height:1.5;}
+
+/* DEMO TABS */
+.demo-tabs{display:flex;border-bottom:0.5px solid rgba(26,46,44,.15);margin-bottom:2.5rem;}
+.demo-tab{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;padding:.85rem 1.75rem;cursor:pointer;border-bottom:2px solid transparent;color:var(--tx2);transition:all .25s;background:none;border-left:none;border-right:none;border-top:none;font-family:'DM Sans',sans-serif;}
+.demo-tab.active{color:var(--tx);border-bottom-color:var(--gold);}
+.demo-panel{display:none;}
+.demo-panel.active{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;}
+.demo-feats{display:flex;flex-direction:column;gap:1.25rem;}
+.demo-feat{display:flex;gap:1rem;padding:1.25rem;border:0.5px solid rgba(26,46,44,.12);transition:border-color .25s;}
+.demo-feat:hover{border-color:rgba(180,150,106,.4);}
+.demo-feat-ico{width:36px;height:36px;background:rgba(180,150,106,.1);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.demo-feat h5{font-size:14px;font-weight:500;color:var(--tx);margin-bottom:.25rem;}
+.demo-feat p{font-size:12px;color:var(--tx2);line-height:1.6;}
+.demo-cta{padding:2rem;background:var(--alt);border:0.5px solid rgba(26,46,44,.12);}
+.demo-cta h4{font-family:'DM Serif Display',serif;font-size:22px;color:var(--tx);margin-bottom:.5rem;}
+.demo-cta p{font-size:13px;color:var(--tx2);margin-bottom:1.25rem;line-height:1.7;}
+.cred-box{background:#fff;border:0.5px solid rgba(26,46,44,.1);padding:.9rem 1rem;margin-bottom:1.25rem;font-size:13px;color:var(--tx);}
+.cred-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.4rem;}
+
+/* PRICING */
+.price-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;max-width:780px;margin:3.5rem auto 0;}
+.price-card{border:0.5px solid var(--border);padding:2.5rem;position:relative;transition:border-color .3s,transform .3s;}
+.price-card.featured{border-color:rgba(180,150,106,.55);}
+.price-card.featured::before{content:'PILOT OFFER';position:absolute;top:-1px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:3px;color:var(--dark);background:var(--gold);padding:.3rem 1rem;white-space:nowrap;}
+.price-card:hover{border-color:rgba(180,150,106,.5);transform:translateY(-4px);}
+.price-card h3{font-family:'DM Serif Display',serif;font-size:22px;color:var(--cream);margin-bottom:.4rem;}
+.price-num{font-family:'DM Serif Display',serif;font-size:44px;color:var(--gold);line-height:1;margin:1.25rem 0 .2rem;}
+.price-note{font-size:12px;color:var(--teal);margin-bottom:1.75rem;}
+.price-hr{height:.5px;background:var(--border);margin:1.5rem 0;}
+.price-feats{display:flex;flex-direction:column;gap:.7rem;margin-bottom:2rem;}
+.price-feats li{font-size:13px;color:var(--teal);display:flex;gap:.65rem;align-items:center;}
+.price-feats li::before{content:'';width:12px;height:.5px;background:var(--gold);flex-shrink:0;}
+
+/* CLINIC CARD */
+.clinic-card{padding:2.5rem;border:0.5px solid rgba(26,46,44,.15);background:#fff;}
+.cl-row{padding:.85rem 0;border-bottom:.5px solid rgba(26,46,44,.08);}
+.cl-row:last-child{border-bottom:none;}
+.cl-label{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:.35rem;}
+.cl-val{font-size:15px;color:var(--tx);}
+
+/* CONTACT */
+.contact-box{border:0.5px solid rgba(180,150,106,.35);padding:4rem;text-align:center;position:relative;}
+.contact-box::before{content:'';position:absolute;top:10px;left:10px;width:22px;height:22px;border-top:.5px solid var(--gold);border-left:.5px solid var(--gold);}
+.contact-box::after{content:'';position:absolute;bottom:10px;right:10px;width:22px;height:22px;border-bottom:.5px solid var(--gold);border-right:.5px solid var(--gold);}
+
+/* FOOTER */
+footer{border-top:.5px solid var(--border);padding:2.5rem 2rem;}
+.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.footer-logo{font-family:'DM Serif Display',serif;font-size:18px;letter-spacing:2px;color:var(--cream);}
+.footer-logo span{color:var(--gold);}
+.footer-links{display:flex;gap:2rem;}
+.footer-links a{font-size:12px;color:var(--teal);letter-spacing:.5px;transition:color .2s;}
+.footer-links a:hover{color:var(--gold);}
+.footer-copy{font-size:11px;color:var(--teal);letter-spacing:.5px;}
+
+/* CARD DARK */
+.card-dark{background:var(--dark2);border:.5px solid var(--border);padding:1.75rem;}
+
+/* BACK TO TOP */
+#back-to-top{position:fixed;bottom:2rem;right:2rem;width:42px;height:42px;background:var(--gold);border:none;color:var(--dark);font-size:20px;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:400;transition:background .2s;}
+#back-to-top:hover{background:var(--cream);}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .hero-grid,.grid-2,.portal-cards,.price-grid,.demo-panel.active{grid-template-columns:1fr;}
+  .hero-mockup{display:none;}
+  .feat-grid,.prob-grid{grid-template-columns:1fr 1fr;}
+  .wf-steps{grid-template-columns:1fr 1fr;}
+  .wf-steps::before{display:none;}
+  .grid-4{grid-template-columns:1fr 1fr;}
+  .nav-links{display:none;}
+  .section{padding:5rem 0;}
+  .cs-grid{grid-template-columns:1fr !important;}
+}
+@media(max-width:600px){
+  .feat-grid,.prob-grid,.grid-3,.grid-4,.wf-steps{grid-template-columns:1fr;}
+  .btn-group{flex-direction:column;}
+  .contact-box{padding:2.5rem 1.5rem;}
+  .footer-inner{flex-direction:column;text-align:center;}
+  .footer-links{flex-wrap:wrap;justify-content:center;}
+}
+</style>
 </head>
-
 <body>
 
-  <header role="banner">
-    <a href="#" class="nav-logo" aria-label="DentAyos home">Dent<span>Ayos</span></a>
-    <nav class="nav-links" role="navigation" aria-label="Main navigation">
+<header role="banner">
+  <a href="#" class="nav-logo" aria-label="DentAyos home">Dent<span>Ayos</span></a>
+  <nav class="nav-links" role="navigation" aria-label="Main navigation">
+    <a href="#problem">Problem</a>
+    <a href="#features">Features</a>
+    <a href="#how">Workflow</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#case-study">Case Study</a>
+    <a href="#demo">Demo</a>
+  </nav>
+  <div class="nav-right">
+    <a href="clinic.html" class="btn-nav">Clinic Login</a>
+    <a href="patient.html" class="btn-nav">Patient Login</a>
+    <a href="#contact" class="btn-nav-cta">Book Demo</a>
+  </div>
+</header>
+
+<main>
+
+<!-- HERO -->
+<section class="hero band-dark" aria-labelledby="hero-heading">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="hero-grid">
+    <div>
+      <div class="hero-tag"><span class="hero-tagdot" aria-hidden="true"></span>Clinic Management Portal · Gawa sa 'Pinas</div>
+      <h1 class="t-hero hero-title" id="hero-heading">The clinic portal<br>Filipino dentists<br><em>actually need.</em></h1>
+      <p class="hero-desc">DentAyos replaces paper records, missed calls, and manual scheduling with one clean portal — for your staff and your patients. Built in the Philippines, for Philippine clinics.</p>
+      <div class="hero-actions btn-group">
+        <a href="#contact" class="btn-primary">Request a Demo</a>
+        <a href="#features" class="btn-secondary">See Features</a>
+      </div>
+      <div class="hero-stats">
+        <div><div class="stat-val">2</div><div class="stat-lbl">Active portals</div></div>
+        <div><div class="stat-val">100%</div><div class="stat-lbl">Filipino-built</div></div>
+        <div><div class="stat-val">₱0</div><div class="stat-lbl">Setup for pilot clinics</div></div>
+      </div>
+    </div>
+    <div class="hero-mockup" aria-hidden="true">
+      <div class="m-frame">
+        <div class="m-bar">
+          <span class="m-dot" style="background:#E24B4A"></span>
+          <span class="m-dot" style="background:#BA7517"></span>
+          <span class="m-dot" style="background:#1D9E75"></span>
+          <span class="m-title">DentAyos — Clinic Portal</span>
+        </div>
+        <div class="m-body">
+          <div class="m-sidebar">
+            <div class="m-nav active"><span class="m-navdot"></span>Dashboard</div>
+            <div class="m-nav"><span class="m-navdot"></span>Patients</div>
+            <div class="m-nav"><span class="m-navdot"></span>Appointments</div>
+            <div class="m-nav"><span class="m-navdot"></span>Reminders</div>
+          </div>
+          <div class="m-main">
+            <div class="m-stats">
+              <div class="m-stat"><div class="m-sv">24</div><div class="m-sl">Patients</div></div>
+              <div class="m-stat"><div class="m-sv">5</div><div class="m-sl">Today</div></div>
+              <div class="m-stat"><div class="m-sv">18</div><div class="m-sl">Reminders</div></div>
+            </div>
+            <div class="m-thead"><span>Patient</span><span>Next Appt</span><span>Concern</span><span>Status</span></div>
+            <div class="m-row"><span>Maria Santos</span><span>Mar 17</span><span>Cleaning</span><span class="mbadge active">Active</span></div>
+            <div class="m-row"><span>Jose Dela Cruz</span><span>Mar 20</span><span>Braces</span><span class="mbadge pending">Pending</span></div>
+            <div class="m-row"><span>Ana Reyes</span><span>Mar 22</span><span>Veneers</span><span class="mbadge active">Active</span></div>
+            <div class="m-row"><span>Liza Garcia</span><span>Mar 19</span><span>Whitening</span><span class="mbadge new">New</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="m-float"><div class="m-fi">🦷</div><div class="m-ft">Appointment Confirmed</div><div class="m-fs">Maria Santos · Mar 17 · 9:00 AM</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="section band-light" id="problem" aria-labelledby="prob-heading">
+  <div class="container">
+    <div class="text-center reveal">
+      <p class="t-label" style="color:var(--teal)">The problem</p>
+      <h2 class="t-section" style="color:var(--tx);margin-top:.75rem;" id="prob-heading">Most Filipino clinics still run<br><em>on paper and memory.</em></h2>
+      <div class="gold-rule"><div class="gold-dot"></div></div>
+      <p style="font-size:16px;color:var(--tx2);max-width:540px;margin:0 auto;line-height:1.8;">Missed appointments, lost records, and manual follow-ups cost clinics time and money every single day.</p>
+    </div>
+    <div class="prob-grid">
+      <div class="prob-card reveal">
+        <div class="prob-num">01</div>
+        <h4>Lost patient records</h4>
+        <p>Paper files get misplaced, treatment history disappears, and staff wastes hours searching for basic patient information.</p>
+      </div>
+      <div class="prob-card reveal">
+        <div class="prob-num">02</div>
+        <h4>Missed appointments</h4>
+        <p>No automated reminders means patients forget. No-shows hurt revenue and disrupt your clinic's schedule every week.</p>
+      </div>
+      <div class="prob-card reveal">
+        <div class="prob-num">03</div>
+        <h4>No patient self-service</h4>
+        <p>Patients call just to ask when their next visit is. Your staff answers the same five questions every single day.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section class="section band-dark2" aria-labelledby="sol-heading">
+  <div class="container">
+    <div class="text-center reveal">
+      <p class="t-label" style="color:var(--gold)">The solution</p>
+      <h2 class="t-section" style="margin-top:.75rem;" id="sol-heading">One system.<br><em>Two powerful sides.</em></h2>
+      <div class="gold-rule"><div class="gold-dot"></div></div>
+      <p style="font-size:16px;color:var(--teal);max-width:520px;margin:0 auto;line-height:1.8;">DentAyos gives your clinic a professional portal — your staff manages everything on one side, your patients access everything they need on the other.</p>
+    </div>
+    <div class="portal-cards">
+      <div class="portal-card reveal">
+        <span class="pbadge clinic">Clinic Portal</span>
+        <h3>For your team</h3>
+        <p>Everything your staff needs to run the clinic — in one secure, organized dashboard.</p>
+        <ul class="flist">
+          <li>Add and manage patient records</li>
+          <li>View and manage appointments</li>
+          <li>Send automated reminders</li>
+          <li>Secure per-staff login with roles</li>
+          <li>Confirm patient-booked appointments</li>
+          <li>Patient history at a glance</li>
+        </ul>
+      </div>
+      <div class="portal-card reveal">
+        <span class="pbadge patient">Patient Portal</span>
+        <h3>For your patients</h3>
+        <p>Give your patients a professional, convenient way to manage their own dental care online.</p>
+        <ul class="flist">
+          <li>Secure login and self-registration</li>
+          <li>View own dental records</li>
+          <li>Book appointments online</li>
+          <li>Receive visit reminders</li>
+          <li>Full treatment history</li>
+          <li>Access anytime, anywhere</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section band-light" id="features" aria-labelledby="feat-heading">
+  <div class="container">
+    <div class="text-center reveal">
+      <p class="t-label" style="color:var(--teal)">Platform features</p>
+      <h2 class="t-section" style="color:var(--tx);margin-top:.75rem;" id="feat-heading">Everything a modern<br><em>clinic needs.</em></h2>
+      <div class="gold-rule"><div class="gold-dot"></div></div>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card reveal">
+        <svg class="feat-icon" viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect width="44" height="44" rx="4" fill="rgba(180,150,106,.1)"/><rect x="10" y="14" width="24" height="18" rx="2" stroke="#B4966A" stroke-width="1.2"/><path d="M16 12v4M28 12v4M10 20h24" stroke="#B4966A" stroke-width="1.2" stroke-linecap="round"/></svg>
+        <h4>Appointment Management</h4>
+        <p>Schedule, confirm, and manage all clinic appointments. Patients book online — staff approves instantly.</p>
+      </div>
+      <div class="feat-card reveal">
+        <svg class="feat-icon" viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect width="44" height="44" rx="4" fill="rgba(180,150,106,.1)"/><circle cx="22" cy="18" r="6" stroke="#B4966A" stroke-width="1.2"/><path d="M10 36c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="#B4966A" stroke-width="1.2" stroke-linecap="round"/></svg>
+        <h4>Patient Records</h4>
+        <p>Add, manage, and search patient profiles. Full treatment history, notes, and contact info in one place.</p>
+      </div>
+      <div class="feat-card reveal">
+        <svg class="feat-icon" viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect width="44" height="44" rx="4" fill="rgba(180,150,106,.1)"/><path d="M22 12a8 8 0 018 8v5l2.5 4H11.5L14 25v-5a8 8 0 018-8z" stroke="#B4966A" stroke-width="1.2"/><path d="M19 33a3 3 0 006 0" stroke="#B4966A" stroke-width="1.2" stroke-linecap="round"/></svg>
+        <h4>Automated Reminders</h4>
+        <p>Send appointment reminders with one click. Reduce no-shows without manual follow-up calls.</p>
+      </div>
+      <div class="feat-card reveal">
+        <svg class="feat-icon" viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect width="44" height="44" rx="4" fill="rgba(180,150,106,.1)"/><rect x="10" y="10" width="24" height="24" rx="2" stroke="#B4966A" stroke-width="1.2"/><path d="M16 22h12M16 17h8M16 27h6" stroke="#B4966A" stroke-width="1.2" stroke-linecap="round"/></svg>
+        <h4>Treatment History</h4>
+        <p>Every procedure, every visit, every note — stored and searchable. Patients view their own history anytime.</p>
+      </div>
+      <div class="feat-card reveal">
+        <svg class="feat-icon" viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect width="44" height="44" rx="4" fill="rgba(180,150,106,.1)"/><rect x="10" y="14" width="10" height="10" rx="1" stroke="#B4966A" stroke-width="1.2"/><rect x="24" y="14" width="10" height="10" rx="1" stroke="#B4966A" stroke-width="1.2"/><rect x="10" y="28" width="10" height="6" rx="1" stroke="#B4966A" stroke-width="1.2"/><rect x="24" y="28" width="10" height="6" rx="1" stroke="#B4966A" stroke-width="1.2"/></svg>
+        <h4>Clinic Dashboard</h4>
+        <p>Today's appointments, total patients, reminders sent, and no-show stats — at a glance on login.</p>
+      </div>
+      <div class="feat-card reveal">
+        <svg class="feat-icon" viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect width="44" height="44" rx="4" fill="rgba(180,150,106,.1)"/><circle cx="22" cy="22" r="10" stroke="#B4966A" stroke-width="1.2"/><path d="M22 16v6l4 2" stroke="#B4966A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h4>Secure Multi-staff Login</h4>
+        <p>Each staff member — dentist, receptionist, assistant — gets their own secure login with role-based access.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORKFLOW -->
+<section class="section band-mid" id="how" aria-labelledby="wf-heading">
+  <div class="container">
+    <div class="text-center reveal">
+      <p class="t-label" style="color:var(--gold)">How it works</p>
+      <h2 class="t-section" style="margin-top:.75rem;" id="wf-heading">From booking to<br><em>treatment — automated.</em></h2>
+      <div class="gold-rule"><div class="gold-dot"></div></div>
+    </div>
+    <div class="wf-steps">
+      <div class="wf-step reveal">
+        <div class="wf-circle">1</div>
+        <h4>Patient books online</h4>
+        <p>Patient logs in, selects date, time, and concern, then submits the request.</p>
+      </div>
+      <div class="wf-step reveal">
+        <div class="wf-circle">2</div>
+        <h4>Clinic receives request</h4>
+        <p>Staff sees the pending appointment in the Appointments dashboard instantly.</p>
+      </div>
+      <div class="wf-step reveal">
+        <div class="wf-circle">3</div>
+        <h4>Doctor confirms</h4>
+        <p>Staff reviews and confirms. The appointment moves to the upcoming schedule.</p>
+      </div>
+      <div class="wf-step reveal">
+        <div class="wf-circle">4</div>
+        <h4>Patient gets reminded</h4>
+        <p>Staff sends a reminder. Patient receives it directly in their portal.</p>
+      </div>
+      <div class="wf-step reveal">
+        <div class="wf-circle">5</div>
+        <h4>Record updated</h4>
+        <p>After the visit, staff logs treatment notes. Patient views history anytime.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section class="section band-white" id="demo" aria-labelledby="demo-heading">
+  <div class="container">
+    <div class="text-center reveal">
+      <p class="t-label" style="color:var(--teal)">Live demo</p>
+      <h2 class="t-section" style="color:var(--tx);margin-top:.75rem;" id="demo-heading">See DentAyos<br><em>in action.</em></h2>
+      <div class="gold-rule"><div class="gold-dot"></div></div>
+    </div>
+    <div style="margin-top:2.5rem;">
+      <div class="demo-tabs" role="tablist">
+        <button class="demo-tab active" role="tab" aria-selected="true" onclick="switchTab('clinic',this)">Clinic Portal</button>
+        <button class="demo-tab" role="tab" aria-selected="false" onclick="switchTab('patient',this)">Patient Portal</button>
+      </div>
+      <div id="tab-clinic" class="demo-panel active" role="tabpanel">
+        <div class="demo-feats">
+          <div class="demo-feat">
+            <div class="demo-feat-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="13" rx="1.5" stroke="#B4966A" stroke-width="1.2"/><path d="M6 2v4M14 2v4M2 9h16" stroke="#B4966A" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+            <div><h5>Smart Dashboard</h5><p>Login and instantly see today's appointments, patient count, reminders sent, and no-show rate.</p></div>
+          </div>
+          <div class="demo-feat">
+            <div class="demo-feat-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="7" r="4" stroke="#B4966A" stroke-width="1.2"/><path d="M2 18c0-4.418 3.582-8 8-8s8 3.582 8 8" stroke="#B4966A" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+            <div><h5>Patient Records Management</h5><p>Add new patients, view full history, update records, and send appointment reminders in one panel.</p></div>
+          </div>
+          <div class="demo-feat">
+            <div class="demo-feat-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2a6 6 0 016 6v4l2 3H2l2-3V8a6 6 0 016-6z" stroke="#B4966A" stroke-width="1.2"/><path d="M8 17a2 2 0 004 0" stroke="#B4966A" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+            <div><h5>Appointment Confirmation Queue</h5><p>Patient-booked appointments arrive in a pending queue. Confirm or decline with one click.</p></div>
+          </div>
+        </div>
+        <div>
+          <div class="demo-cta">
+            <h4>Try the Clinic Portal</h4>
+            <p>Use the demo credentials below to explore the full clinic dashboard, patient records, and appointment management.</p>
+            <div class="cred-box">
+              <div class="cred-label">Demo credentials</div>
+              <div>Username: <strong>admin</strong> &nbsp;·&nbsp; Password: <strong>admin2026</strong></div>
+            </div>
+            <a href="clinic.html" class="btn-primary">Open Clinic Portal →</a>
+          </div>
+        </div>
+      </div>
+      <div id="tab-patient" class="demo-panel" role="tabpanel">
+        <div class="demo-feats">
+          <div class="demo-feat">
+            <div class="demo-feat-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="2" stroke="#B4966A" stroke-width="1.2"/><path d="M7 10h6M7 7h4M7 13h3" stroke="#B4966A" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+            <div><h5>Personal Health Records</h5><p>Patients log in and see their full dental history — procedures, dentist notes, and dates — all in one place.</p></div>
+          </div>
+          <div class="demo-feat">
+            <div class="demo-feat-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="13" rx="1.5" stroke="#B4966A" stroke-width="1.2"/><path d="M6 2v4M14 2v4M2 9h16" stroke="#B4966A" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+            <div><h5>Online Appointment Booking</h5><p>Pick a date, time, and concern. Submit and wait for clinic confirmation — no phone calls needed.</p></div>
+          </div>
+          <div class="demo-feat">
+            <div class="demo-feat-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2a6 6 0 016 6v4l2 3H2l2-3V8a6 6 0 016-6z" stroke="#B4966A" stroke-width="1.2"/><path d="M8 17a2 2 0 004 0" stroke="#B4966A" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+            <div><h5>Reminders & Notifications</h5><p>Patients receive appointment reminders directly in their portal notification feed.</p></div>
+          </div>
+        </div>
+        <div>
+          <div class="demo-cta">
+            <h4>Try the Patient Portal</h4>
+            <p>Log in as a demo patient to see records, book an appointment, and experience the patient side of DentAyos.</p>
+            <div class="cred-box">
+              <div class="cred-label">Demo credentials</div>
+              <div>Username: <strong>maria.santos</strong> &nbsp;·&nbsp; Password: <strong>maria2026</strong></div>
+            </div>
+            <a href="patient.html" class="btn-primary">Open Patient Portal →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section band-dark" id="pricing" aria-labelledby="price-heading">
+  <div class="container">
+    <div class="text-center reveal">
+      <p class="t-label" style="color:var(--gold)">Pricing</p>
+      <h2 class="t-section" style="margin-top:.75rem;" id="price-heading">Priced fairly.<br><em>Built sustainably.</em></h2>
+      <div class="gold-rule"><div class="gold-dot"></div></div>
+      <p style="font-size:16px;color:var(--teal);max-width:480px;margin:0 auto;line-height:1.8;">No hidden fees, no complicated contracts. Made for small clinics, not hospitals.</p>
+    </div>
+    <div class="price-grid">
+      <div class="price-card featured reveal">
+        <h3>Pilot Plan</h3>
+        <p style="font-size:13px;color:var(--teal);margin-top:.4rem;">For our first Metro Manila clinics</p>
+        <div class="price-num">₱1,500</div>
+        <div class="price-note">/ month for first 3 months · then ₱3,000/mo</div>
+        <div class="price-hr"></div>
+        <ul class="price-feats">
+          <li>Full clinic + patient portal</li>
+          <li>Onboarding and setup included</li>
+          <li>30-day dedicated support</li>
+          <li>Rate locked in for life</li>
+          <li>Direct input on features</li>
+        </ul>
+        <a href="#contact" class="btn-primary" style="width:100%;text-align:center;display:block;">Apply for Pilot</a>
+      </div>
+      <div class="price-card reveal">
+        <h3>Standard Plan</h3>
+        <p style="font-size:13px;color:var(--teal);margin-top:.4rem;">For clinics joining after pilot</p>
+        <div class="price-num">₱3,000</div>
+        <div class="price-note">/ month · one-time setup fee applies</div>
+        <div class="price-hr"></div>
+        <ul class="price-feats">
+          <li>Full clinic + patient portal</li>
+          <li>Setup fee: ₱6,500 one-time</li>
+          <li>Onboarding and training</li>
+          <li>Email and chat support</li>
+          <li>Regular feature updates</li>
+        </ul>
+        <a href="#contact" class="btn-secondary" style="width:100%;text-align:center;display:block;">Book a Demo</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT CLINIC -->
+<section class="section band-light" id="about" aria-labelledby="about-heading">
+  <div class="container">
+    <div class="grid-2">
+      <div class="reveal">
+        <p class="t-label" style="color:var(--teal)">Our first pilot clinic</p>
+        <h2 class="t-section" style="color:var(--tx);margin-top:.75rem;" id="about-heading">Built with a<br><em>real clinic in mind.</em></h2>
+        <div class="gold-rule"><div class="gold-dot"></div></div>
+        <p style="font-size:16px;color:var(--tx2);margin-bottom:2rem;line-height:1.8;">DentAyos was built alongside a real Metro Manila dental clinic — not just designed in theory, but tested with actual clinic workflows and patient scenarios from day one.</p>
+        <a href="#contact" class="btn-outline">Partner with us</a>
+      </div>
+      <div class="clinic-card reveal">
+        <div class="cl-row"><div class="cl-label">Clinic Type</div><div class="cl-val">Dental & Aesthetic Clinic</div></div>
+        <div class="cl-row"><div class="cl-label">Location</div><div class="cl-val">Metro Manila, Philippines</div></div>
+        <div class="cl-row"><div class="cl-label">Services</div><div class="cl-val">Cleaning, Braces, Veneers, Whitening, Extraction, Root Canal</div></div>
+        <div class="cl-row"><div class="cl-label">Portal Plan</div><div class="cl-val">Pilot — ₱1,500/month</div></div>
+        <div class="cl-row"><div class="cl-label">Status</div><div class="cl-val" style="color:var(--success);font-weight:500;">● Active Pilot</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section class="section-sm band-dark2" aria-labelledby="tech-heading">
+  <div class="container">
+    <div class="text-center reveal" style="margin-bottom:2.5rem;">
+      <p class="t-label" style="color:var(--gold)">Product architecture</p>
+      <h2 class="t-sub" style="margin-top:.75rem;" id="tech-heading">Built on a solid foundation.</h2>
+    </div>
+    <div class="grid-4">
+      <div class="card-dark reveal text-center"><p class="t-label" style="color:var(--gold);margin-bottom:.5rem;">Frontend</p><p style="font-size:13px;color:var(--cream)">HTML5 · CSS3 · JavaScript</p></div>
+      <div class="card-dark reveal text-center"><p class="t-label" style="color:var(--gold);margin-bottom:.5rem;">Backend (Planned)</p><p style="font-size:13px;color:var(--cream)">Firebase · Node.js</p></div>
+      <div class="card-dark reveal text-center"><p class="t-label" style="color:var(--gold);margin-bottom:.5rem;">Notifications</p><p style="font-size:13px;color:var(--cream)">Twilio · Resend</p></div>
+      <div class="card-dark reveal text-center"><p class="t-label" style="color:var(--gold);margin-bottom:.5rem;">Hosting</p><p style="font-size:13px;color:var(--cream)">GitHub Pages · Netlify</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CASE STUDY -->
+<section class="section band-white" id="case-study" aria-labelledby="cs-heading">
+  <div class="container">
+    <div class="text-center reveal" style="margin-bottom:4rem;">
+      <p class="t-label" style="color:var(--teal)">Case study</p>
+      <h2 class="t-section" style="color:var(--tx);margin-top:.75rem;" id="cs-heading">How DentAyos was built.</h2>
+      <div class="gold-rule"><div class="gold-dot"></div></div>
+    </div>
+    <div class="cs-grid" style="display:grid;grid-template-columns:1fr 2fr;gap:4rem;align-items:start;">
+      <div class="reveal">
+        <div style="border:0.5px solid rgba(26,46,44,.12);padding:2rem;background:var(--alt);">
+          <p class="t-label" style="color:var(--teal);margin-bottom:1.5rem;">Project snapshot</p>
+          <div style="display:flex;flex-direction:column;gap:1.25rem;">
+            <div>
+              <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem;">Project</div>
+              <div style="font-size:14px;color:var(--tx);font-weight:500;">DentAyos</div>
+            </div>
+            <div>
+              <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem;">Type</div>
+              <div style="font-size:14px;color:var(--tx);">Clinic Management SaaS Portal</div>
+            </div>
+            <div>
+              <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem;">Market</div>
+              <div style="font-size:14px;color:var(--tx);">Dental & Aesthetic Clinics · Metro Manila, PH</div>
+            </div>
+            <div>
+              <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem;">Status</div>
+              <div style="font-size:14px;color:var(--success);font-weight:500;">● Live — Pilot Phase</div>
+            </div>
+            <div>
+              <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem;">Current Stack</div>
+              <div style="font-size:14px;color:var(--tx);">HTML5 · CSS3 · JavaScript</div>
+            </div>
+            <div>
+              <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem;">Planned Stack</div>
+              <div style="font-size:14px;color:var(--tx);">Firebase · Node.js · PostgreSQL · JWT Auth</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="display:flex;flex-direction:column;gap:2.5rem;">
+          <div class="reveal">
+            <h3 style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--tx);margin-bottom:.75rem;">The Problem</h3>
+            <p style="font-size:15px;color:var(--tx2);line-height:1.8;margin-bottom:.75rem;">Most small dental and aesthetic clinics in Metro Manila still rely on paper records, manual scheduling, and group chats to run day-to-day operations. This leads to missed appointments, lost patient history, and staff spending hours on admin work instead of patient care.</p>
+            <p style="font-size:15px;color:var(--tx2);line-height:1.8;">Existing solutions are either too expensive, built for hospitals, or imported foreign software that doesn't fit the Filipino clinic context.</p>
+          </div>
+          <div style="height:.5px;background:rgba(26,46,44,.1);"></div>
+          <div class="reveal">
+            <h3 style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--tx);margin-bottom:.75rem;">The Solution</h3>
+            <p style="font-size:15px;color:var(--tx2);line-height:1.8;">DentAyos is a dual-portal web application — one system with two sides. The clinic portal gives staff a dashboard to manage records, appointments, and reminders. The patient portal lets patients self-register, book appointments, and view their own treatment history. Both portals are accessible from any device with a browser, with no app installation required.</p>
+          </div>
+          <div style="height:.5px;background:rgba(26,46,44,.1);"></div>
+          <div class="reveal">
+            <h3 style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--tx);margin-bottom:.75rem;">Key Design Decisions</h3>
+            <div style="display:flex;flex-direction:column;gap:.85rem;">
+              <div style="display:flex;gap:1rem;align-items:flex-start;">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:.4rem;"></div>
+                <p style="font-size:14px;color:var(--tx2);line-height:1.7;"><strong style="color:var(--tx);font-weight:500;">Dual portal architecture</strong> — Clinic staff and patients have separate logins, separate dashboards, and see only the data relevant to them.</p>
+              </div>
+              <div style="display:flex;gap:1rem;align-items:flex-start;">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:.4rem;"></div>
+                <p style="font-size:14px;color:var(--tx2);line-height:1.7;"><strong style="color:var(--tx);font-weight:500;">localStorage sync</strong> — Patient-booked appointments sync to the clinic portal using browser localStorage — no backend required for the prototype. Important limitation: data is browser-specific (different browsers or incognito show an empty state), there is no multi-user isolation, and data persists across sessions until manually cleared. This is an intentional prototype trade-off documented here for transparency, not an oversight.</p>
+              </div>
+              <div style="display:flex;gap:1rem;align-items:flex-start;">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:.4rem;"></div>
+                <p style="font-size:14px;color:var(--tx2);line-height:1.7;"><strong style="color:var(--tx);font-weight:500;">Pilot-first pricing</strong> — The product was priced to land the first paying clinic, not to maximize margin. The pilot structure funds the next development phase.</p>
+              </div>
+              <div style="display:flex;gap:1rem;align-items:flex-start;">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:.4rem;"></div>
+                <p style="font-size:14px;color:var(--tx2);line-height:1.7;"><strong style="color:var(--tx);font-weight:500;">Filipino-first UX</strong> — Mixed Tagalog-English copy, peso pricing, and local clinic workflows were prioritized over generic international patterns.</p>
+              </div>
+            </div>
+          </div>
+          <div style="height:.5px;background:rgba(26,46,44,.1);"></div>
+          <div class="reveal">
+            <h3 style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--tx);margin-bottom:.75rem;">What's Next</h3>
+            <p style="font-size:15px;color:var(--tx2);line-height:1.8;margin-bottom:1.25rem;">The current prototype demonstrates the full product workflow. The next phase connects it to a real backend with Firebase authentication, persistent database storage, and SMS reminders via Twilio.</p>
+            <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+              <span style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:.35rem .9rem;border:0.5px solid rgba(26,46,44,.2);color:var(--tx2);">Firebase Auth</span>
+              <span style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:.35rem .9rem;border:0.5px solid rgba(26,46,44,.2);color:var(--tx2);">PostgreSQL</span>
+              <span style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:.35rem .9rem;border:0.5px solid rgba(26,46,44,.2);color:var(--tx2);">Twilio SMS</span>
+              <span style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:.35rem .9rem;border:0.5px solid rgba(26,46,44,.2);color:var(--tx2);">PayMongo</span>
+              <span style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:.35rem .9rem;border:0.5px solid rgba(26,46,44,.2);color:var(--tx2);">Multi-clinic support</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section band-dark" id="contact" aria-labelledby="contact-heading">
+  <div class="container">
+    <div class="contact-box reveal">
+      <p class="t-label" style="color:var(--gold);margin-bottom:.75rem;">Limited pilot slots</p>
+      <h2 class="t-section" id="contact-heading">Ready to be our first<br><em>pilot clinic?</em></h2>
+      <p style="font-size:16px;color:var(--teal);max-width:520px;margin:1.5rem auto 2.5rem;line-height:1.8;">We're onboarding a small number of Metro Manila dental and aesthetic clinics at a special pilot rate. You get full access, personal onboarding, and a direct line to our team.</p>
+      <div class="btn-group" style="justify-content:center;margin-bottom:1.5rem;">
+        <a href="https://m.me/DentAyosPH" class="btn-primary" target="_blank" rel="noopener noreferrer">Message us on Facebook</a>
+        <a href="https://facebook.com/DentAyosPH" class="btn-secondary" target="_blank" rel="noopener noreferrer">Visit DentAyosPH</a>
+      </div>
+      <p class="t-label" style="color:var(--teal)">Gawa sa 'Pinas · Para sa mga Pilipinong Klinika</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-logo">Dent<span>Ayos</span></div>
+    <nav class="footer-links" aria-label="Footer navigation">
       <a href="#problem">Problem</a>
       <a href="#features">Features</a>
       <a href="#how">Workflow</a>
       <a href="#pricing">Pricing</a>
       <a href="#case-study">Case Study</a>
-      <a href="#demo">Demo</a>
+      <a href="#contact">Contact</a>
     </nav>
-    <div class="nav-right">
-      <a href="clinic.html" class="btn-nav">Clinic Login</a>
-      <a href="patient.html" class="btn-nav">Patient Login</a>
-      <a href="#contact" class="btn-nav-cta">Book Demo</a>
-    </div>
-  </header>
+    <p class="footer-copy">© 2026 DentAyos. All rights reserved.</p>
+  </div>
+</footer>
 
-  <main>
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">&#8679;</button>
 
-    <!-- HERO -->
-    <section class="hero band-dark" aria-labelledby="hero-heading">
-      <div class="hero-bg" aria-hidden="true"></div>
-      <div class="hero-grid">
-        <div>
-          <div class="hero-tag"><span class="hero-tagdot" aria-hidden="true"></span>Clinic Management Portal · Gawa sa
-            'Pinas</div>
-          <h1 class="t-hero hero-title" id="hero-heading">The clinic portal<br>Filipino dentists<br><em>actually
-              need.</em></h1>
-          <p class="hero-desc">DentAyos replaces paper records, missed calls, and manual scheduling with one clean
-            portal — for your staff and your patients. Built in the Philippines, for Philippine clinics.</p>
-          <div class="hero-actions btn-group">
-            <a href="#contact" class="btn-primary">Request a Demo</a>
-            <a href="#features" class="btn-secondary">See Features</a>
-          </div>
-          <div class="hero-stats">
-            <div>
-              <div class="stat-val">2</div>
-              <div class="stat-lbl">Active portals</div>
-            </div>
-            <div>
-              <div class="stat-val">100%</div>
-              <div class="stat-lbl">Filipino-built</div>
-            </div>
-            <div>
-              <div class="stat-val">₱0</div>
-              <div class="stat-lbl">Setup for pilot clinics</div>
-            </div>
-          </div>
-        </div>
-        <div class="hero-mockup" aria-hidden="true">
-          <div class="m-frame">
-            <div class="m-bar">
-              <span class="m-dot" style="background:#E24B4A"></span>
-              <span class="m-dot" style="background:#BA7517"></span>
-              <span class="m-dot" style="background:#1D9E75"></span>
-              <span class="m-title">DentAyos — Clinic Portal</span>
-            </div>
-            <div class="m-body">
-              <div class="m-sidebar">
-                <div class="m-nav active"><span class="m-navdot"></span>Dashboard</div>
-                <div class="m-nav"><span class="m-navdot"></span>Patients</div>
-                <div class="m-nav"><span class="m-navdot"></span>Appointments</div>
-                <div class="m-nav"><span class="m-navdot"></span>Reminders</div>
-              </div>
-              <div class="m-main">
-                <div class="m-stats">
-                  <div class="m-stat">
-                    <div class="m-sv">24</div>
-                    <div class="m-sl">Patients</div>
-                  </div>
-                  <div class="m-stat">
-                    <div class="m-sv">5</div>
-                    <div class="m-sl">Today</div>
-                  </div>
-                  <div class="m-stat">
-                    <div class="m-sv">18</div>
-                    <div class="m-sl">Reminders</div>
-                  </div>
-                </div>
-                <div class="m-thead"><span>Patient</span><span>Next Appt</span><span>Concern</span><span>Status</span>
-                </div>
-                <div class="m-row"><span>Maria Santos</span><span>Mar 17</span><span>Cleaning</span><span
-                    class="mbadge active">Active</span></div>
-                <div class="m-row"><span>Jose Dela Cruz</span><span>Mar 20</span><span>Braces</span><span
-                    class="mbadge pending">Pending</span></div>
-                <div class="m-row"><span>Ana Reyes</span><span>Mar 22</span><span>Veneers</span><span
-                    class="mbadge active">Active</span></div>
-                <div class="m-row"><span>Liza Garcia</span><span>Mar 19</span><span>Whitening</span><span
-                    class="mbadge new">New</span></div>
-              </div>
-            </div>
-          </div>
-          <div class="m-float">
-            <div class="m-fi">🦷</div>
-            <div class="m-ft">Appointment Confirmed</div>
-            <div class="m-fs">Maria Santos · Mar 17 · 9:00 AM</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PROBLEM -->
-    <section class="section band-light" id="problem" aria-labelledby="prob-heading">
-      <div class="container">
-        <div class="text-center reveal">
-          <p class="t-label" style="color:var(--teal)">The problem</p>
-          <h2 class="t-section" style="color:var(--tx);margin-top:.75rem;" id="prob-heading">Most Filipino clinics still
-            run<br><em>on paper and memory.</em></h2>
-          <div class="gold-rule">
-            <div class="gold-dot"></div>
-          </div>
-          <p style="font-size:16px;color:var(--tx2);max-width:540px;margin:0 auto;line-height:1.8;">Missed appointments,
-            lost records, and manual follow-ups cost clinics time and money every single day.</p>
-        </div>
-        <div class="prob-grid">
-          <div class="prob-card reveal">
-            <div class="prob-num">01</div>
-            <h4>Lost patient records</h4>
-            <p>Paper files get misplaced, treatment history disappears, and staff wastes hours searching for basic
-              patient information.</p>
-          </div>
-          <div class="prob-card reveal">
-            <div class="prob-num">02</div>
-            <h4>Missed appointments</h4>
-            <p>No automated reminders means patients forget. No-shows hurt revenue and disrupt your clinic's schedule
-              every week.</p>
-          </div>
-          <div class="prob-card reveal">
-            <div class="prob-num">03</div>
-            <h4>No patient self-service</h4>
-            <p>Patients call just to ask when their next visit is. Your staff answers the same five questions every
-              single day.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SOLUTION -->
-    <section class="section band-dark2" aria-labelledby="sol-heading">
-      <div class="container">
-        <div class="text-center reveal">
-          <p class="t-label" style="color:var(--gold)">The solution</p>
-          <h2 class="t-section" style="margin-top:.75rem;" id="sol-heading">One system.<br><em>Two powerful sides.</em>
-          </h2>
-          <div class="gold-rule">
-            <div class="gold-dot"></div>
-          </div>
-          <p style="font-size:16px;color:var(--teal);max-width:520px;margin:0 auto;line-height:1.8;">DentAyos gives your
-            clinic a professional portal — your staff manages everything on one side, your patients access everything
-            they need on the other.</p>
-        </div>
-        <div class="portal-cards">
-          <div class="portal-card reveal">
-            <span class="pbadge clinic">Clinic Portal</span>
-            <h3>For your team</h3>
-            <p>Everything your staff needs to run the clinic — in one secure, organized dashboard.</p>
-            <ul class="flist">
-              <li>Add and manage patient records</li>
-              <li>View and manage appointments</li>
-              <li>Send automated reminders</li>
-              <li>Secure per-staff login with roles</li>
-              <li>Confirm patient-booked appointments</li>
-              <li>Patient history at a glance</li>
-            </ul>
-          </div>
-          <div class="portal-card reveal">
-            <span class="pbadge patient">Patient Portal</span>
-            <h3>For your patients</h3>
-            <p>Give your patients a professional, convenient way to manage their own dental care online.</p>
-            <ul class="flist">
-              <li>Secure login and self-registration</li>
-              <li>View own dental records</li>
-              <li>Book appointments online</li>
-              <li>Receive visit reminders</li>
-              <li>Full treatment history</li>
-              <li>Access anytime, anywhere</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FEATURES -->
-    <section class="section band-light" id="features" aria-labelledby="feat-heading">
-      <div class="container">
-        <div class="text-center reveal">
-          <p class="t-label" style="color:var(--teal)">Platform features</p>
-          <h2 class="t-section" style="color:var(--tx);margin-top:.75rem;" id="feat-heading">Everything a
-            modern<br><em>clinic needs.</em></h2>
-          <div class="gold-rule">
-            <div class="gold-dot"></div>
-          </div>
-        </div>
-        <div class="feat-grid">
-          <div class="feat-card reveal">
-            <svg class="feat-icon" viewBox="0 0 44 44" fill="none" aria-hidden="true">
-              <rect width="44" height="44" rx="4" fill="rgba(180,150,106,.1)" />
-              <rect x="10" y="14" width="24" height="18" rx="2" stroke="#B4966A" stroke-width="1.2" />
-              <path d="M16 12v4M28 12v4M10 20h24" stroke="#B4966A" stroke-width="1.2" stroke-linecap="round" />
-            </svg>
-            <h4>Appointment Management</h4>
-            <p>Schedule, confirm, and manage all clinic appointments. Patients book online — staff approves instantly.
-            </p>
-          </div>
-          <div class="feat-card reveal">
-            <svg class="feat-icon" viewBox="0 0 44 44" fill="none" aria-hidden="true">
-              <rect width="44" height="44" rx="4" fill="rgba(180,150,106,.1)" />
-              <circle cx="22" cy="18" r="6" stroke="#B4966A" stroke-width="1.2" />
-              <path d="M10 36c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="#B4966A" stroke-width="1.2"
-                stroke-linecap="round" />
-            </svg>
-            <h4>Patient Records</h4>
-            <p>Add, manage, and search patient profiles. Full treatment history, notes, and contact info in one place.
-            </p>
-          </div>
-          <div class="feat-card reveal">
-            <svg class="feat-icon" viewBox="0 0 44 44" fill="none" aria-hidden="true">
-              <rect width="44" height="44" rx="4" fill="rgba(180,150,106,.1)" />
-              <path d="M22 12a8 8 0 018 8v5l2.5 4H11.5L14 25v-5a8 8 0 018-8z" stroke="#B4966A" stroke-width="1.2" />
-              <path d="M19 33a3 3 0 006 0" stroke="#B4966A" stroke-width="1.2" stroke-linecap="round" />
-            </svg>
-            <h4>Automated Reminders</h4>
-            <p>Send appointment reminders with one click. Reduce no-shows without manual follow-up calls.</p>
-          </div>
-          <div class="feat-card reveal">
-            <svg class="feat-icon" viewBox="0 0 44 44" fill="none" aria-hidden="true">
-              <rect width="44" height="44" rx="4" fill="rgba(180,150,106,.1)" />
-              <rect x="10" y="10" width="24" height="24" rx="2" stroke="#B4966A" stroke-width="1.2" />
-              <path d="M16 22h12M16 17h8M16 27h6" stroke="#B4966A" stroke-width="1.2" stroke-linecap="round" />
-            </svg>
-            <h4>Treatment History</h4>
-            <p>Every procedure, every visit, every note — stored and searchable. Patients view their own history
-              anytime.</p>
-          </div>
-          <div class="feat-card reveal">
-            <svg class="feat-icon" viewBox="0 0 44 44" fill="none" aria-hidden="true">
-              <rect width="44" height="44" rx="4" fill="rgba(180,150,106,.1)" />
-              <rect x="10" y="14" width="10" height="10" rx="1" stroke="#B4966A" stroke-width="1.2" />
-              <rect x="24" y="14" width="10" height="10" rx="1" stroke="#B4966A" stroke-width="1.2" />
-              <rect x="10" y="28" width="10" height="6" rx="1" stroke="#B4966A" stroke-width="1.2" />
-              <rect x="24" y="28" width="10" height="6" rx="1" stroke="#B4966A" stroke-width="1.2" />
-            </svg>
-            <h4>Clinic Dashboard</h4>
-            <p>Today's appointments, total patients, reminders sent, and no-show stats — at a glance on login.</p>
-          </div>
-          <div class="feat-card reveal">
-            <svg class="feat-icon" viewBox="0 0 44 44" fill="none" aria-hidden="true">
-              <rect width="44" height="44" rx="4" fill="rgba(180,150,106,.1)" />
-              <circle cx="22" cy="22" r="10" stroke="#B4966A" stroke-width="1.2" />
-              <path d="M22 16v6l4 2" stroke="#B4966A" stroke-width="1.2" stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
-            <h4>Secure Multi-staff Login</h4>
-            <p>Each staff member — dentist, receptionist, assistant — gets their own secure login with role-based
-              access.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- WORKFLOW -->
-    <section class="section band-mid" id="how" aria-labelledby="wf-heading">
-      <div class="container">
-        <div class="text-center reveal">
-          <p class="t-label" style="color:var(--gold)">How it works</p>
-          <h2 class="t-section" style="margin-top:.75rem;" id="wf-heading">From booking to<br><em>treatment —
-              automated.</em></h2>
-          <div class="gold-rule">
-            <div class="gold-dot"></div>
-          </div>
-        </div>
-        <div class="wf-steps">
-          <div class="wf-step reveal">
-            <div class="wf-circle">1</div>
-            <h4>Patient books online</h4>
-            <p>Patient logs in, selects date, time, and concern, then submits the request.</p>
-          </div>
-          <div class="wf-step reveal">
-            <div class="wf-circle">2</div>
-            <h4>Clinic receives request</h4>
-            <p>Staff sees the pending appointment in the Appointments dashboard instantly.</p>
-          </div>
-          <div class="wf-step reveal">
-            <div class="wf-circle">3</div>
-            <h4>Doctor confirms</h4>
-            <p>Staff reviews and confirms. The appointment moves to the upcoming schedule.</p>
-          </div>
-          <div class="wf-step reveal">
-            <div class="wf-circle">4</div>
-            <h4>Patient gets reminded</h4>
-            <p>Staff sends a reminder. Patient receives it directly in their portal.</p>
-          </div>
-          <div class="wf-step reveal">
-            <div class="wf-circle">5</div>
-            <h4>Record updated</h4>
-            <p>After the visit, staff logs treatment notes. Patient views history anytime.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- DEMO -->
-    <section class="section band-white" id="demo" aria-labelledby="demo-heading">
-      <div class="container">
-        <div class="text-center reveal">
-          <p class="t-label" style="color:var(--teal)">Live demo</p>
-          <h2 class="t-section" style="color:var(--tx);margin-top:.75rem;" id="demo-heading">See DentAyos<br><em>in
-              action.</em></h2>
-          <div class="gold-rule">
-            <div class="gold-dot"></div>
-          </div>
-        </div>
-        <div style="margin-top:2.5rem;">
-          <div class="demo-tabs" role="tablist">
-            <button class="demo-tab active" role="tab" aria-selected="true" onclick="switchTab('clinic',this)">Clinic
-              Portal</button>
-            <button class="demo-tab" role="tab" aria-selected="false" onclick="switchTab('patient',this)">Patient
-              Portal</button>
-          </div>
-          <div id="tab-clinic" class="demo-panel active" role="tabpanel">
-            <div class="demo-feats">
-              <div class="demo-feat">
-                <div class="demo-feat-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"
-                    fill="none">
-                    <rect x="2" y="4" width="16" height="13" rx="1.5" stroke="#B4966A" stroke-width="1.2" />
-                    <path d="M6 2v4M14 2v4M2 9h16" stroke="#B4966A" stroke-width="1.2" stroke-linecap="round" />
-                  </svg></div>
-                <div>
-                  <h5>Smart Dashboard</h5>
-                  <p>Login and instantly see today's appointments, patient count, reminders sent, and no-show rate.</p>
-                </div>
-              </div>
-              <div class="demo-feat">
-                <div class="demo-feat-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"
-                    fill="none">
-                    <circle cx="10" cy="7" r="4" stroke="#B4966A" stroke-width="1.2" />
-                    <path d="M2 18c0-4.418 3.582-8 8-8s8 3.582 8 8" stroke="#B4966A" stroke-width="1.2"
-                      stroke-linecap="round" />
-                  </svg></div>
-                <div>
-                  <h5>Patient Records Management</h5>
-                  <p>Add new patients, view full history, update records, and send appointment reminders in one panel.
-                  </p>
-                </div>
-              </div>
-              <div class="demo-feat">
-                <div class="demo-feat-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"
-                    fill="none">
-                    <path d="M10 2a6 6 0 016 6v4l2 3H2l2-3V8a6 6 0 016-6z" stroke="#B4966A" stroke-width="1.2" />
-                    <path d="M8 17a2 2 0 004 0" stroke="#B4966A" stroke-width="1.2" stroke-linecap="round" />
-                  </svg></div>
-                <div>
-                  <h5>Appointment Confirmation Queue</h5>
-                  <p>Patient-booked appointments arrive in a pending queue. Confirm or decline with one click.</p>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div class="demo-cta">
-                <h4>Try the Clinic Portal</h4>
-                <p>Use the demo credentials below to explore the full clinic dashboard, patient records, and appointment
-                  management.</p>
-                <div class="cred-box">
-                  <div class="cred-label">Demo credentials</div>
-                  <div>Username: <strong>admin</strong> &nbsp;·&nbsp; Password: <strong>admin2026</strong></div>
-                </div>
-                <a href="clinic.html" class="btn-primary">Open Clinic Portal →</a>
-              </div>
-            </div>
-          </div>
-          <div id="tab-patient" class="demo-panel" role="tabpanel">
-            <div class="demo-feats">
-              <div class="demo-feat">
-                <div class="demo-feat-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"
-                    fill="none">
-                    <rect x="3" y="3" width="14" height="14" rx="2" stroke="#B4966A" stroke-width="1.2" />
-                    <path d="M7 10h6M7 7h4M7 13h3" stroke="#B4966A" stroke-width="1.2" stroke-linecap="round" />
-                  </svg></div>
-                <div>
-                  <h5>Personal Health Records</h5>
-                  <p>Patients log in and see their full dental history — procedures, dentist notes, and dates — all in
-                    one place.</p>
-                </div>
-              </div>
-              <div class="demo-feat">
-                <div class="demo-feat-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"
-                    fill="none">
-                    <rect x="2" y="4" width="16" height="13" rx="1.5" stroke="#B4966A" stroke-width="1.2" />
-                    <path d="M6 2v4M14 2v4M2 9h16" stroke="#B4966A" stroke-width="1.2" stroke-linecap="round" />
-                  </svg></div>
-                <div>
-                  <h5>Online Appointment Booking</h5>
-                  <p>Pick a date, time, and concern. Submit and wait for clinic confirmation — no phone calls needed.
-                  </p>
-                </div>
-              </div>
-              <div class="demo-feat">
-                <div class="demo-feat-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"
-                    fill="none">
-                    <path d="M10 2a6 6 0 016 6v4l2 3H2l2-3V8a6 6 0 016-6z" stroke="#B4966A" stroke-width="1.2" />
-                    <path d="M8 17a2 2 0 004 0" stroke="#B4966A" stroke-width="1.2" stroke-linecap="round" />
-                  </svg></div>
-                <div>
-                  <h5>Reminders & Notifications</h5>
-                  <p>Patients receive appointment reminders directly in their portal notification feed.</p>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div class="demo-cta">
-                <h4>Try the Patient Portal</h4>
-                <p>Log in as a demo patient to see records, book an appointment, and experience the patient side of
-                  DentAyos.</p>
-                <div class="cred-box">
-                  <div class="cred-label">Demo credentials</div>
-                  <div>Username: <strong>maria.santos</strong> &nbsp;·&nbsp; Password: <strong>maria2026</strong></div>
-                </div>
-                <a href="patient.html" class="btn-primary">Open Patient Portal →</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PRICING -->
-    <section class="section band-dark" id="pricing" aria-labelledby="price-heading">
-      <div class="container">
-        <div class="text-center reveal">
-          <p class="t-label" style="color:var(--gold)">Pricing</p>
-          <h2 class="t-section" style="margin-top:.75rem;" id="price-heading">Priced fairly.<br><em>Built
-              sustainably.</em></h2>
-          <div class="gold-rule">
-            <div class="gold-dot"></div>
-          </div>
-          <p style="font-size:16px;color:var(--teal);max-width:480px;margin:0 auto;line-height:1.8;">No hidden fees, no
-            complicated contracts. Made for small clinics, not hospitals.</p>
-        </div>
-        <div class="price-grid">
-          <div class="price-card featured reveal">
-            <h3>Pilot Plan</h3>
-            <p style="font-size:13px;color:var(--teal);margin-top:.4rem;">For our first Metro Manila clinics</p>
-            <div class="price-num">₱1,500</div>
-            <div class="price-note">/ month for first 3 months · then ₱3,000/mo</div>
-            <div class="price-hr"></div>
-            <ul class="price-feats">
-              <li>Full clinic + patient portal</li>
-              <li>Onboarding and setup included</li>
-              <li>30-day dedicated support</li>
-              <li>Rate locked in for life</li>
-              <li>Direct input on features</li>
-            </ul>
-            <a href="#contact" class="btn-primary" style="width:100%;text-align:center;display:block;">Apply for
-              Pilot</a>
-          </div>
-          <div class="price-card reveal">
-            <h3>Standard Plan</h3>
-            <p style="font-size:13px;color:var(--teal);margin-top:.4rem;">For clinics joining after pilot</p>
-            <div class="price-num">₱3,000</div>
-            <div class="price-note">/ month · one-time setup fee applies</div>
-            <div class="price-hr"></div>
-            <ul class="price-feats">
-              <li>Full clinic + patient portal</li>
-              <li>Setup fee: ₱6,500 one-time</li>
-              <li>Onboarding and training</li>
-              <li>Email and chat support</li>
-              <li>Regular feature updates</li>
-            </ul>
-            <a href="#contact" class="btn-secondary" style="width:100%;text-align:center;display:block;">Book a Demo</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ABOUT CLINIC -->
-    <section class="section band-light" id="about" aria-labelledby="about-heading">
-      <div class="container">
-        <div class="grid-2">
-          <div class="reveal">
-            <p class="t-label" style="color:var(--teal)">Our first pilot clinic</p>
-            <h2 class="t-section" style="color:var(--tx);margin-top:.75rem;" id="about-heading">Built with a<br><em>real
-                clinic in mind.</em></h2>
-            <div class="gold-rule">
-              <div class="gold-dot"></div>
-            </div>
-            <p style="font-size:16px;color:var(--tx2);margin-bottom:2rem;line-height:1.8;">DentAyos was built alongside
-              a real Metro Manila dental clinic — not just designed in theory, but tested with actual clinic workflows
-              and patient scenarios from day one.</p>
-            <a href="#contact" class="btn-outline">Partner with us</a>
-          </div>
-          <div class="clinic-card reveal">
-            <div class="cl-row">
-              <div class="cl-label">Clinic Type</div>
-              <div class="cl-val">Dental & Aesthetic Clinic</div>
-            </div>
-            <div class="cl-row">
-              <div class="cl-label">Location</div>
-              <div class="cl-val">Metro Manila, Philippines</div>
-            </div>
-            <div class="cl-row">
-              <div class="cl-label">Services</div>
-              <div class="cl-val">Cleaning, Braces, Veneers, Whitening, Extraction, Root Canal</div>
-            </div>
-            <div class="cl-row">
-              <div class="cl-label">Portal Plan</div>
-              <div class="cl-val">Pilot — ₱1,500/month</div>
-            </div>
-            <div class="cl-row">
-              <div class="cl-label">Status</div>
-              <div class="cl-val" style="color:var(--success);font-weight:500;">● Active Pilot</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- TECH STACK -->
-    <section class="section-sm band-dark2" aria-labelledby="tech-heading">
-      <div class="container">
-        <div class="text-center reveal" style="margin-bottom:2.5rem;">
-          <p class="t-label" style="color:var(--gold)">Product architecture</p>
-          <h2 class="t-sub" style="margin-top:.75rem;" id="tech-heading">Built on a solid foundation.</h2>
-        </div>
-        <div class="grid-4">
-          <div class="card-dark reveal text-center">
-            <p class="t-label" style="color:var(--gold);margin-bottom:.5rem;">Frontend</p>
-            <p style="font-size:13px;color:var(--cream)">HTML5 · CSS3 · JavaScript</p>
-          </div>
-          <div class="card-dark reveal text-center">
-            <p class="t-label" style="color:var(--gold);margin-bottom:.5rem;">Backend (Planned)</p>
-            <p style="font-size:13px;color:var(--cream)">Firebase · Node.js</p>
-          </div>
-          <div class="card-dark reveal text-center">
-            <p class="t-label" style="color:var(--gold);margin-bottom:.5rem;">Notifications</p>
-            <p style="font-size:13px;color:var(--cream)">Twilio · Resend</p>
-          </div>
-          <div class="card-dark reveal text-center">
-            <p class="t-label" style="color:var(--gold);margin-bottom:.5rem;">Hosting</p>
-            <p style="font-size:13px;color:var(--cream)">GitHub Pages · Netlify</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CASE STUDY -->
-    <section class="section band-white" id="case-study" aria-labelledby="cs-heading">
-      <div class="container">
-        <div class="text-center reveal" style="margin-bottom:4rem;">
-          <p class="t-label" style="color:var(--teal)">Case study</p>
-          <h2 class="t-section" style="color:var(--tx);margin-top:.75rem;" id="cs-heading">How DentAyos was built.</h2>
-          <div class="gold-rule">
-            <div class="gold-dot"></div>
-          </div>
-        </div>
-        <div class="cs-grid" style="display:grid;grid-template-columns:1fr 2fr;gap:4rem;align-items:start;">
-          <div class="reveal">
-            <div style="border:0.5px solid rgba(26,46,44,.12);padding:2rem;background:var(--alt);">
-              <p class="t-label" style="color:var(--teal);margin-bottom:1.5rem;">Project snapshot</p>
-              <div style="display:flex;flex-direction:column;gap:1.25rem;">
-                <div>
-                  <div
-                    style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem;">
-                    Project</div>
-                  <div style="font-size:14px;color:var(--tx);font-weight:500;">DentAyos</div>
-                </div>
-                <div>
-                  <div
-                    style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem;">
-                    Type</div>
-                  <div style="font-size:14px;color:var(--tx);">Clinic Management SaaS Portal</div>
-                </div>
-                <div>
-                  <div
-                    style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem;">
-                    Market</div>
-                  <div style="font-size:14px;color:var(--tx);">Dental & Aesthetic Clinics · Metro Manila, PH</div>
-                </div>
-                <div>
-                  <div
-                    style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem;">
-                    Status</div>
-                  <div style="font-size:14px;color:var(--success);font-weight:500;">● Live — Pilot Phase</div>
-                </div>
-                <div>
-                  <div
-                    style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem;">
-                    Current Stack</div>
-                  <div style="font-size:14px;color:var(--tx);">HTML5 · CSS3 · JavaScript</div>
-                </div>
-                <div>
-                  <div
-                    style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem;">
-                    Planned Stack</div>
-                  <div style="font-size:14px;color:var(--tx);">Firebase · Node.js · PostgreSQL · JWT Auth</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div style="display:flex;flex-direction:column;gap:2.5rem;">
-              <div class="reveal">
-                <h3 style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--tx);margin-bottom:.75rem;">
-                  The Problem</h3>
-                <p style="font-size:15px;color:var(--tx2);line-height:1.8;margin-bottom:.75rem;">Most small dental and
-                  aesthetic clinics in Metro Manila still rely on paper records, manual scheduling, and group chats to
-                  run day-to-day operations. This leads to missed appointments, lost patient history, and staff spending
-                  hours on admin work instead of patient care.</p>
-                <p style="font-size:15px;color:var(--tx2);line-height:1.8;">Existing solutions are either too expensive,
-                  built for hospitals, or imported foreign software that doesn't fit the Filipino clinic context.</p>
-              </div>
-              <div style="height:.5px;background:rgba(26,46,44,.1);"></div>
-              <div class="reveal">
-                <h3 style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--tx);margin-bottom:.75rem;">
-                  The Solution</h3>
-                <p style="font-size:15px;color:var(--tx2);line-height:1.8;">DentAyos is a dual-portal web application —
-                  one system with two sides. The clinic portal gives staff a dashboard to manage records, appointments,
-                  and reminders. The patient portal lets patients self-register, book appointments, and view their own
-                  treatment history. Both portals are accessible from any device with a browser, with no app
-                  installation required.</p>
-              </div>
-              <div style="height:.5px;background:rgba(26,46,44,.1);"></div>
-              <div class="reveal">
-                <h3 style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--tx);margin-bottom:.75rem;">
-                  Key Design Decisions</h3>
-                <div style="display:flex;flex-direction:column;gap:.85rem;">
-                  <div style="display:flex;gap:1rem;align-items:flex-start;">
-                    <div
-                      style="width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:.4rem;">
-                    </div>
-                    <p style="font-size:14px;color:var(--tx2);line-height:1.7;"><strong
-                        style="color:var(--tx);font-weight:500;">Dual portal architecture</strong> — Clinic staff and
-                      patients have separate logins, separate dashboards, and see only the data relevant to them.</p>
-                  </div>
-                  <div style="display:flex;gap:1rem;align-items:flex-start;">
-                    <div
-                      style="width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:.4rem;">
-                    </div>
-                    <p style="font-size:14px;color:var(--tx2);line-height:1.7;"><strong
-                        style="color:var(--tx);font-weight:500;">localStorage sync</strong> — Patient-booked
-                      appointments sync to the clinic portal in real time using browser localStorage, enabling a full
-                      booking workflow without a backend. Note: this means data is browser-specific — different browsers
-                      or incognito mode will show an empty state. This is an intentional prototype trade-off, not a bug.
-                    </p>
-                  </div>
-                  <div style="display:flex;gap:1rem;align-items:flex-start;">
-                    <div
-                      style="width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:.4rem;">
-                    </div>
-                    <p style="font-size:14px;color:var(--tx2);line-height:1.7;"><strong
-                        style="color:var(--tx);font-weight:500;">Pilot-first pricing</strong> — The product was priced
-                      to land the first paying clinic, not to maximize margin. The pilot structure funds the next
-                      development phase.</p>
-                  </div>
-                  <div style="display:flex;gap:1rem;align-items:flex-start;">
-                    <div
-                      style="width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:.4rem;">
-                    </div>
-                    <p style="font-size:14px;color:var(--tx2);line-height:1.7;"><strong
-                        style="color:var(--tx);font-weight:500;">Filipino-first UX</strong> — Mixed Tagalog-English
-                      copy, peso pricing, and local clinic workflows were prioritized over generic international
-                      patterns.</p>
-                  </div>
-                </div>
-              </div>
-              <div style="height:.5px;background:rgba(26,46,44,.1);"></div>
-              <div class="reveal">
-                <h3 style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--tx);margin-bottom:.75rem;">
-                  What's Next</h3>
-                <p style="font-size:15px;color:var(--tx2);line-height:1.8;margin-bottom:1.25rem;">The current prototype
-                  demonstrates the full product workflow. The next phase connects it to a real backend with Firebase
-                  authentication, persistent database storage, and SMS reminders via Twilio.</p>
-                <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
-                  <span
-                    style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:.35rem .9rem;border:0.5px solid rgba(26,46,44,.2);color:var(--tx2);">Firebase
-                    Auth</span>
-                  <span
-                    style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:.35rem .9rem;border:0.5px solid rgba(26,46,44,.2);color:var(--tx2);">PostgreSQL</span>
-                  <span
-                    style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:.35rem .9rem;border:0.5px solid rgba(26,46,44,.2);color:var(--tx2);">Twilio
-                    SMS</span>
-                  <span
-                    style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:.35rem .9rem;border:0.5px solid rgba(26,46,44,.2);color:var(--tx2);">PayMongo</span>
-                  <span
-                    style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:.35rem .9rem;border:0.5px solid rgba(26,46,44,.2);color:var(--tx2);">Multi-clinic
-                    support</span>
-                </div>
-                <a href="architecture.html" class="btn-outline" style="margin-top:1.25rem;display:inline-block;">View
-                  System Architecture →</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTACT -->
-    <section class="section band-dark" id="contact" aria-labelledby="contact-heading">
-      <div class="container">
-        <div class="contact-box reveal">
-          <p class="t-label" style="color:var(--gold);margin-bottom:.75rem;">Limited pilot slots</p>
-          <h2 class="t-section" id="contact-heading">Ready to be our first<br><em>pilot clinic?</em></h2>
-          <p style="font-size:16px;color:var(--teal);max-width:520px;margin:1.5rem auto 2.5rem;line-height:1.8;">We're
-            onboarding a small number of Metro Manila dental and aesthetic clinics at a special pilot rate. You get full
-            access, personal onboarding, and a direct line to our team.</p>
-          <div class="btn-group" style="justify-content:center;margin-bottom:1.5rem;">
-            <a href="https://m.me/DentAyosPH" class="btn-primary" target="_blank" rel="noopener noreferrer">Message us
-              on Facebook</a>
-            <a href="https://facebook.com/DentAyosPH" class="btn-secondary" target="_blank"
-              rel="noopener noreferrer">Visit DentAyosPH</a>
-          </div>
-          <p class="t-label" style="color:var(--teal)">Gawa sa 'Pinas · Para sa mga Pilipinong Klinika</p>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <footer role="contentinfo">
-    <div class="footer-inner">
-      <div class="footer-logo">Dent<span>Ayos</span></div>
-      <nav class="footer-links" aria-label="Footer navigation">
-        <a href="#problem">Problem</a>
-        <a href="#features">Features</a>
-        <a href="#how">Workflow</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#case-study">Case Study</a>
-        <a href="#contact">Contact</a>
-      </nav>
-      <p class="footer-copy">© 2026 DentAyos. All rights reserved.</p>
-    </div>
-  </footer>
-
-  <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"
-    aria-label="Back to top">&#8679;</button>
-
-  <script>
-    const reveals = document.querySelectorAll('.reveal');
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e, i) => {
-        if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 80); io.unobserve(e.target); }
-      });
-    }, { threshold: .1 });
-    reveals.forEach(el => io.observe(el));
-
-    window.addEventListener('scroll', () => {
-      const b = document.getElementById('back-to-top');
-      if (b) b.style.display = window.scrollY > 400 ? 'flex' : 'none';
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if(e.isIntersecting){ setTimeout(() => e.target.classList.add('visible'), i * 80); io.unobserve(e.target); }
     });
+  }, {threshold:.1});
+  reveals.forEach(el => io.observe(el));
 
-    function switchTab(name, el) {
-      document.querySelectorAll('.demo-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
-      document.querySelectorAll('.demo-panel').forEach(p => p.classList.remove('active'));
-      el.classList.add('active'); el.setAttribute('aria-selected', 'true');
-      document.getElementById('tab-' + name).classList.add('active');
-    }
-  </script>
+  window.addEventListener('scroll', () => {
+    const b = document.getElementById('back-to-top');
+    if(b) b.style.display = window.scrollY > 400 ? 'flex' : 'none';
+  });
+
+  function switchTab(name, el) {
+    document.querySelectorAll('.demo-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+    document.querySelectorAll('.demo-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active'); el.setAttribute('aria-selected','true');
+    document.getElementById('tab-'+name).classList.add('active');
+  }
+</script>
 </body>
-
 </html>
