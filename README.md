@@ -50,6 +50,8 @@ DentAyos provides a complete four-portal solution connecting the clinic owner, c
 
 ## Demo Credentials
 
+> ⚠️ **Security Disclaimer:** These are demo accounts for prototype demonstration purposes only. Credentials are hardcoded in client-side JavaScript and provide no real security or data protection. Do not use real personal information when testing this prototype. These accounts will be replaced with proper authentication (Firebase Auth with server-side validation) in the production version.
+
 ### Clinic Portal
 | Username | Password | Name | Role |
 |---|---|---|---|
@@ -69,6 +71,8 @@ DentAyos provides a complete four-portal solution connecting the clinic owner, c
 | Username | Password |
 |---|---|
 | `ver` | `dentayos2026` |
+
+> ⚠️ **Note:** All credentials above are intentionally public for demo purposes. They are not connected to any real database, authentication system, or personal data. Never use real passwords or patient information in this prototype.
 
 ---
 
