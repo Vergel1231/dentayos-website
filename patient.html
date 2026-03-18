@@ -455,8 +455,38 @@
     document.getElementById('portal').classList.add('active');
   }
 
+  let notifPollInterval = null;
+
+  function startNotifPolling(p) {
+    // Clear any existing poll
+    if(notifPollInterval) clearInterval(notifPollInterval);
+    const notifKey = 'dentayos_notifications_' + p.username.toLowerCase().replace(/\s+/g, '.');
+    let lastCount = JSON.parse(localStorage.getItem(notifKey) || '[]').length;
+
+    notifPollInterval = setInterval(() => {
+      if(!currentPatient) { clearInterval(notifPollInterval); return; }
+      const stored = JSON.parse(localStorage.getItem(notifKey) || '[]');
+      if(stored.length !== lastCount) {
+        lastCount = stored.length;
+        // Refresh notification panel
+        const allNotifs = [...stored, ...p.notifications];
+        const unread = allNotifs.filter(n => !n.read).length;
+        document.getElementById('notif-count').textContent = unread + ' unread';
+        document.getElementById('notif-list').innerHTML = allNotifs.map(n =>
+          `<div class="notif-item"><div class="notif-dot ${n.read ? 'read' : ''}"></div><div class="notif-text"><p>${n.text}</p><span>${n.time}</span></div></div>`
+        ).join('');
+        // Flash the notif count to draw attention
+        const countEl = document.getElementById('notif-count');
+        countEl.style.color = 'var(--gold)';
+        setTimeout(() => countEl.style.color = '', 2000);
+      }
+    }, 2000); // check every 2 seconds
+  }
+
   function doLogout() {
     currentPatient = null;
+    // Stop notification polling
+    if(notifPollInterval) { clearInterval(notifPollInterval); notifPollInterval = null; }
     // Reset login fields
     document.getElementById('login-user').value = '';
     const loginPass = document.getElementById('login-pass');
@@ -500,6 +530,9 @@
     document.getElementById('notif-list').innerHTML = allNotifs.map(n =>
       `<div class="notif-item"><div class="notif-dot ${n.read ? 'read' : ''}"></div><div class="notif-text"><p>${n.text}</p><span>${n.time}</span></div></div>`
     ).join('');
+
+    // Start live polling so new notifications from clinic appear without re-login
+    startNotifPolling(p);
     document.getElementById('history-count').textContent = p.history.length + ' visit' + (p.history.length !== 1 ? 's' : '');
     // Timeline history
     const icons = { 'Cleaning':'🦷', 'Filling':'🔩', 'Consultation':'📋', 'Extraction':'⚙️', 'Root Canal':'🔬', 'Veneers':'✨', 'Whitening':'⭐' };
