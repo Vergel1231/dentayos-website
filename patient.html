@@ -523,7 +523,6 @@
     // Merge localStorage notifications (from clinic reschedule/actions) with built-in ones
     const notifKey = 'dentayos_notifications_' + p.username.toLowerCase().replace(/\s+/g, '.');
     const storedNotifs = JSON.parse(localStorage.getItem(notifKey) || '[]');
-    console.log('[DentAyos] Patient reading notifications from key:', notifKey, '| Found:', storedNotifs.length, 'stored notifs');
     const allNotifs = [...storedNotifs, ...p.notifications];
     const unread = allNotifs.filter(n => !n.read).length;
     document.getElementById('notif-count').textContent = unread + ' unread';

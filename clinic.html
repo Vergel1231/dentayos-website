@@ -1122,7 +1122,6 @@
       time: new Date().toLocaleString('en-PH', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })
     });
     localStorage.setItem(notifKey, JSON.stringify(notifs));
-    console.log('[DentAyos] Reschedule notification written to key:', notifKey, '| Value:', notifs[0].text);
 
     rescheduleApptData = null;
     closeModal('reschedule');
