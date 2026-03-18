@@ -1,0 +1,47 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor and IDE
+.vscode/
+.idea/
+*.suo
+*.user
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+
+# Dependencies (for future use when backend is added)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Environment variables (never commit secrets)
+.env
+.env.local
+.env.development
+.env.production
+
+# Build output (for future use)
+dist/
+build/
+.cache/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Firebase (for future use)
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# Local test files
+test-*.html
+debug-*.html
