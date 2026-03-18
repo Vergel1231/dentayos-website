@@ -1067,11 +1067,12 @@
     showToast('Appointment declined.');
   }
 
-  let rescheduleIndex = -1;
+  let rescheduleApptData = null;
   function rescheduleAppt(i) {
     const booked = JSON.parse(localStorage.getItem('dentayos_appointments') || '[]');
     const appt = booked[i];
-    rescheduleIndex = i;
+    if(!appt) { showToast('Could not find appointment. Please refresh.'); return; }
+    rescheduleApptData = { ...appt, index: i };
     document.getElementById('reschedule-patient-name').textContent = 'Proposing new schedule for ' + appt.patient + ' — original: ' + appt.date + ' at ' + appt.time + '.';
     document.getElementById('reschedule-date').value = '';
     document.getElementById('reschedule-reason').value = '';
@@ -1080,9 +1081,9 @@
 
   // Map patient names to their portal usernames for notification routing
   const patientUsernameMap = {
-    'Maria Santos':    'maria.santos',
-    'Jose Dela Cruz':  'jose.delacruz',
-    'Ana Reyes':       'ana.reyes',
+    'Maria Santos':   'maria.santos',
+    'Jose Dela Cruz': 'jose.delacruz',
+    'Ana Reyes':      'ana.reyes',
   };
 
   function confirmReschedule() {
@@ -1090,35 +1091,40 @@
     const newTime = document.getElementById('reschedule-time').value;
     const reason = document.getElementById('reschedule-reason').value.trim();
     if(!newDate) { showToast('Please enter a new date.'); return; }
+    if(!rescheduleApptData) { showToast('No appointment selected.'); return; }
 
+    const appt = rescheduleApptData;
+    const patientName = appt.patient;
+    const originalDate = appt.date;
+    const originalTime = appt.time;
+
+    // Remove from pending queue using stored index
     const booked = JSON.parse(localStorage.getItem('dentayos_appointments') || '[]');
-    if(rescheduleIndex >= 0 && booked[rescheduleIndex]) {
-      const appt = booked[rescheduleIndex];
-      const patientName = appt.patient;
-      const originalDate = appt.date;
-      const originalTime = appt.time;
-
-      // Remove from pending queue — it's been actioned
-      booked.splice(rescheduleIndex, 1);
+    const idx = booked.findIndex(b =>
+      b.patient === patientName && b.date === originalDate && b.time === originalTime
+    );
+    if(idx !== -1) {
+      booked.splice(idx, 1);
       localStorage.setItem('dentayos_appointments', JSON.stringify(booked));
-
-      // Derive the correct notification key:
-      // 1. Use username stored on appt (for newly registered patients)
-      // 2. Fall back to the name→username map (for demo patients)
-      // 3. Last resort: convert name to lowercase.dot format
-      const username = appt.username
-        || patientUsernameMap[patientName]
-        || patientName.toLowerCase().replace(/\s+/g, '.');
-      const notifKey = 'dentayos_notifications_' + username;
-
-      const notifs = JSON.parse(localStorage.getItem(notifKey) || '[]');
-      notifs.unshift({
-        read: false,
-        text: '📅 Reschedule notice: Your appointment on ' + originalDate + ' at ' + originalTime + ' has been moved to ' + newDate + ' at ' + newTime + '.' + (reason ? ' Reason: ' + reason + '.' : '') + ' Please confirm by contacting the clinic.',
-        time: new Date().toLocaleString('en-PH', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })
-      });
-      localStorage.setItem(notifKey, JSON.stringify(notifs));
     }
+
+    // Derive correct notification key
+    const username = appt.username
+      || patientUsernameMap[patientName]
+      || patientName.toLowerCase().replace(/\s+/g, '.');
+    const notifKey = 'dentayos_notifications_' + username;
+
+    // Write notification for patient
+    const notifs = JSON.parse(localStorage.getItem(notifKey) || '[]');
+    notifs.unshift({
+      read: false,
+      text: '📅 Reschedule notice: Your appointment on ' + originalDate + ' at ' + originalTime + ' has been moved to ' + newDate + ' at ' + newTime + '.' + (reason ? ' Reason: ' + reason + '.' : '') + ' Please confirm by contacting the clinic.',
+      time: new Date().toLocaleString('en-PH', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+    });
+    localStorage.setItem(notifKey, JSON.stringify(notifs));
+    console.log('[DentAyos] Reschedule notification written to key:', notifKey, '| Value:', notifs[0].text);
+
+    rescheduleApptData = null;
     closeModal('reschedule');
     loadBookedAppointments();
     showToast('Reschedule request sent to patient.');
