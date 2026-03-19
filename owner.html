@@ -105,25 +105,25 @@
     <p>This portal is for DentAyos administrators only.</p>
     <div class="login-form-group">
       <label>Username</label>
-      <input type="text" id="login-user" placeholder="Enter owner username" onkeydown="if(event.key==='Enter') doLogin()">
+      <input type="text" id="login-user" placeholder="Enter owner username">
     </div>
     <div class="login-form-group">
       <label>Password</label>
       <div style="position:relative;">
-        <input type="password" id="login-pass" placeholder="Enter password" onkeydown="if(event.key==='Enter') doLogin()" style="padding-right:3rem;">
-        <button onclick="togglePw()" style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--teal);cursor:pointer;font-size:12px;letter-spacing:1px;" id="toggle-pw">Show</button>
+        <input type="password" id="login-pass" placeholder="Enter password" style="padding-right:3rem;">
+        <button id="toggle-pw" style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--teal);cursor:pointer;font-size:12px;letter-spacing:1px;">Show</button>
       </div>
     </div>
-    <button class="login-btn" onclick="doLogin()">Access Owner Portal</button>
+    <button class="login-btn" id="login-btn">Access Owner Portal</button>
     <div class="login-error" id="login-error">Incorrect credentials.</div>
     <div style="text-align:center;margin-top:1.5rem;">
-      <a href="javascript:void(0)" onclick="window.location.href = 'index.html?ts=' + Date.now()" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#B4966A'" onmouseout="this.style.color='#6B8A87'">← Back to Website</a>
+      <a href="javascript:void(0)" id="back-to-website" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;transition:color 0.2s;">← Back to Website</a>
     </div>
   </div>
 </div>
 
 <!-- SIDEBAR TOGGLE -->
-<button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">☰</button>
+<button class="sidebar-toggle" id="sidebar-toggle" title="Toggle sidebar">☰</button>
 
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
@@ -132,19 +132,19 @@
     <p>Owner Portal</p>
   </div>
   <nav class="sidebar-nav">
-    <div class="nav-item active" id="nav-dashboard" onclick="showSection('dashboard')">
+    <div class="nav-item active" id="nav-dashboard">
       <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
       Dashboard
     </div>
-    <div class="nav-item" id="nav-clinics" onclick="showSection('clinics')">
+    <div class="nav-item" id="nav-clinics">
       <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 14V6l6-4 6 4v8"/><rect x="5" y="9" width="3" height="5"/><rect x="8" y="9" width="3" height="5"/></svg>
       Clinics
     </div>
-    <div class="nav-item" id="nav-revenue" onclick="showSection('revenue')">
+    <div class="nav-item" id="nav-revenue">
       <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M8 1v14M4 5h6a2 2 0 010 4H6a2 2 0 000 4h6"/></svg>
       Revenue
     </div>
-    <div class="nav-item" id="nav-activity" onclick="showSection('activity')">
+    <div class="nav-item" id="nav-activity">
       <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><polyline points="1,8 4,4 7,9 10,5 13,8 15,6"/></svg>
       Activity
     </div>
@@ -157,8 +157,8 @@
         <span>DentAyos Owner</span>
       </div>
     </div>
-    <a href="javascript:void(0)" onclick="goToWebsite()" class="logout-btn" style="display:inline-block;text-align:center;text-decoration:none;margin-bottom:.5rem;">← Website</a>
-    <button class="logout-btn" onclick="doLogout()">← Log Out</button>
+    <a href="javascript:void(0)" id="btn-website" class="logout-btn" style="display:inline-block;text-align:center;text-decoration:none;margin-bottom:.5rem;">← Website</a>
+    <button class="logout-btn" id="btn-logout">← Log Out</button>
   </div>
 </aside>
 
@@ -174,7 +174,7 @@
       </div>
       <div class="topbar-right">
         <div class="date-badge" id="today-date"></div>
-        <button class="add-btn" onclick="openModal('add-clinic')">+ Add Clinic</button>
+        <button class="add-btn" id="btn-add-clinic-dash">+ Add Clinic</button>
       </div>
     </div>
     <div class="stats">
@@ -228,7 +228,7 @@
       <div><h2>Clinics</h2><p>All registered clinic accounts on DentAyos.</p></div>
       <div class="topbar-right">
         <div class="date-badge" id="today-date-c"></div>
-        <button class="add-btn" onclick="openModal('add-clinic')">+ Add Clinic</button>
+        <button class="add-btn" id="btn-add-clinic-clinics">+ Add Clinic</button>
       </div>
     </div>
     <div class="panel">
@@ -295,7 +295,7 @@
 <!-- ADD CLINIC MODAL -->
 <div class="modal-overlay" id="modal-add-clinic">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('add-clinic')">✕</button>
+    <button class="modal-close" id="btn-close-add-clinic">✕</button>
     <h3>Add New Clinic</h3>
     <p>Register a new clinic account on DentAyos.</p>
     <div class="form-row">
@@ -326,8 +326,8 @@
       <input type="text" id="new-clinic-contact" placeholder="09XX XXX XXXX">
     </div>
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('add-clinic')">Cancel</button>
-      <button class="btn-save" onclick="addClinic()">Add Clinic</button>
+      <button class="btn-cancel" id="btn-cancel-add-clinic">Cancel</button>
+      <button class="btn-save" id="btn-save-add-clinic">Add Clinic</button>
     </div>
   </div>
 </div>
@@ -335,214 +335,12 @@
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<script>
-  // Owner credentials
-  const OWNER = { username: 'ver', password: 'dentayos2026' };
-
-  // Clinic data
-  const clinics = [
-    { name:'Smile Dental Clinic', owner:'Dr. Ana Santos', location:'Makati', plan:'Standard', fee:3000, patients:24, since:'Jan 2026', status:'active' },
-    { name:'BrightSmile Aesthetics', owner:'Dr. Carlo Reyes', location:'BGC', plan:'Standard', fee:3000, patients:31, since:'Feb 2026', status:'active' },
-    { name:'PearlWhite Dental', owner:'Dr. Liza Cruz', location:'Quezon City', plan:'Pilot', fee:1500, patients:17, since:'Mar 2026', status:'trial' },
-  ];
-
-  const activities = [
-    { type:'new', text:'PearlWhite Dental joined as a pilot clinic.', time:'Mar 16, 2026 · 9:00 AM' },
-    { type:'payment', text:'BrightSmile Aesthetics paid ₱3,000 for March.', time:'Mar 15, 2026 · 2:30 PM' },
-    { type:'payment', text:'Smile Dental Clinic paid ₱3,000 for March.', time:'Mar 14, 2026 · 11:00 AM' },
-    { type:'alert', text:'PearlWhite Dental payment due in 15 days.', time:'Mar 13, 2026 · 8:00 AM' },
-    { type:'info', text:'BrightSmile Aesthetics added 5 new patients.', time:'Mar 12, 2026 · 4:00 PM' },
-    { type:'info', text:'Smile Dental Clinic sent 18 reminders this week.', time:'Mar 11, 2026 · 10:00 AM' },
-    { type:'new', text:'BrightSmile Aesthetics joined on Standard plan.', time:'Feb 1, 2026 · 9:00 AM' },
-    { type:'new', text:'Smile Dental Clinic joined on Standard plan.', time:'Jan 5, 2026 · 9:00 AM' },
-  ];
-
-  function clinicRow(c, full) {
-    const statusClass = c.status === 'active' ? 'active' : c.status === 'trial' ? 'trial' : 'overdue';
-    const statusLabel = c.status === 'active' ? 'Active' : c.status === 'trial' ? 'Trial' : 'Overdue';
-    return `<tr>
-      <td><div class="clinic-name">${c.name}</div><div class="clinic-meta">${c.location}</div></td>
-      ${full ? `<td style="font-size:12px;color:var(--teal);">${c.owner}</td>` : ''}
-      <td style="font-size:12px;">${c.plan}</td>
-      <td style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--gold);">₱${c.fee.toLocaleString()}</td>
-      <td>${c.patients}</td>
-      <td style="font-size:12px;color:var(--teal);">${c.since}</td>
-      <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
-      <td>
-        <button class="action-btn">View</button>
-        <button class="action-btn danger">Remove</button>
-      </td>
-    </tr>`;
-  }
-
-  function revenueRow(c) {
-    const paid = c.status !== 'overdue';
-    return `<div class="revenue-row">
-      <div><div class="revenue-clinic">${c.name}</div><div class="revenue-plan">${c.plan} Plan · ${c.location}</div></div>
-      <div style="text-align:right;">
-        <div class="revenue-amount">₱${c.fee.toLocaleString()}</div>
-        <div class="revenue-status" style="color:${paid ? 'var(--success)' : '#E24B4A'}">${paid ? 'Paid' : 'Overdue'}</div>
-      </div>
-    </div>`;
-  }
-
-  function activityItem(a) {
-    return `<div class="activity-item">
-      <div class="activity-dot ${a.type}"></div>
-      <div class="activity-text"><p>${a.text}</p><span>${a.time}</span></div>
-    </div>`;
-  }
-
-  function renderAll() {
-    // Clinic tables
-    ['clinic-tbody-dash','clinic-tbody-full'].forEach(id => {
-      const el = document.getElementById(id);
-      if(el) { el.innerHTML = ''; clinics.forEach(c => { el.innerHTML += clinicRow(c, id === 'clinic-tbody-full'); }); }
-    });
-    // Revenue
-    ['revenue-breakdown','revenue-full'].forEach(id => {
-      const el = document.getElementById(id);
-      if(el) { el.innerHTML = ''; clinics.forEach(c => { el.innerHTML += revenueRow(c); }); }
-    });
-    // Activity
-    ['activity-dash','activity-full'].forEach(id => {
-      const el = document.getElementById(id);
-      if(el) { el.innerHTML = ''; const items = id === 'activity-dash' ? activities.slice(0,4) : activities; items.forEach(a => { el.innerHTML += activityItem(a); }); }
-    });
-    // Counts
-    updateCounts();
-  }
-
-  function updateCounts() {
-    const count = clinics.length;
-    const total = clinics.reduce((sum, c) => sum + c.fee, 0);
-    const overdue = clinics.filter(c => c.status === 'overdue');
-    const paid = clinics.filter(c => c.status !== 'overdue');
-    const overdueTotal = overdue.reduce((sum, c) => sum + c.fee, 0);
-    const paidTotal = paid.reduce((sum, c) => sum + c.fee, 0);
-    const setupTotal = clinics.reduce((sum, c) => sum + (c.plan === 'Standard' ? 6500 : 0), 0);
-
-    document.querySelectorAll('#clinic-count, #clinic-count-full').forEach(el => el.textContent = count + ' total');
-    document.getElementById('stat-clinics').textContent = count;
-    document.getElementById('stat-revenue').textContent = '₱' + total.toLocaleString();
-
-    // Revenue section stats
-    const revTotal = document.getElementById('rev-total');
-    const revCollected = document.getElementById('rev-collected');
-    const revPending = document.getElementById('rev-pending');
-    const revSetup = document.getElementById('rev-setup');
-    if(revTotal) revTotal.textContent = '₱' + total.toLocaleString();
-    if(revCollected) { revCollected.textContent = '₱' + paidTotal.toLocaleString(); document.getElementById('rev-collected-sub').textContent = paid.length + ' clinic' + (paid.length !== 1 ? 's' : '') + ' paid'; }
-    if(revPending) { revPending.textContent = '₱' + overdueTotal.toLocaleString(); document.getElementById('rev-pending-sub').textContent = overdue.length + ' clinic' + (overdue.length !== 1 ? 's' : '') + ' overdue'; }
-    if(revSetup) revSetup.textContent = '₱' + setupTotal.toLocaleString();
-    if(revTotal) document.getElementById('rev-total-sub').textContent = count + ' active subscription' + (count !== 1 ? 's' : '');
-  }
-
-  // Date
-  const dateStr = new Date().toLocaleDateString('en-PH', { weekday:'short', year:'numeric', month:'short', day:'numeric' });
-  ['today-date','today-date-c','today-date-r','today-date-a'].forEach(id => {
-    const el = document.getElementById(id); if(el) el.textContent = dateStr;
-  });
-
-  // Login
-  function togglePw() {
-    const pw = document.getElementById('login-pass');
-    const btn = document.getElementById('toggle-pw');
-    pw.type = pw.type === 'password' ? 'text' : 'password';
-    btn.textContent = pw.type === 'password' ? 'Show' : 'Hide';
-  }
-
-  function doLogin() {
-    const user = document.getElementById('login-user').value.trim().toLowerCase();
-    const pass = document.getElementById('login-pass').value;
-    const err = document.getElementById('login-error');
-    if(!user || !pass) { err.textContent = 'Please enter your credentials.'; err.style.display = 'block'; return; }
-    if(user !== OWNER.username || pass !== OWNER.password) { err.textContent = 'Incorrect username or password.'; err.style.display = 'block'; return; }
-    err.style.display = 'none';
-    const hour = new Date().getHours();
-    const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
-    document.getElementById('owner-greeting').textContent = greeting + ', Ver. 👑';
-    document.getElementById('login-screen').style.display = 'none';
-    renderAll();
-  }
-
-  function doLogout() {
-    document.getElementById('login-user').value = '';
-    document.getElementById('login-pass').value = '';
-    document.getElementById('login-error').style.display = 'none';
-    document.getElementById('owner-greeting').textContent = 'Good morning, Ver. 👑';
-    document.getElementById('login-screen').style.display = 'flex';
-  }
-
-
-  function goToWebsite() {
-    const overlay = document.getElementById('logout-overlay');
-    if(overlay) { overlay.classList.add('show'); }
-    setTimeout(() => { window.location.href = 'index.html?ts=' + Date.now(); }, 600);
-  }
-
-  // Sidebar toggle
-  function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const main = document.getElementById('main');
-    const toggle = document.getElementById('sidebar-toggle');
-    sidebar.classList.toggle('collapsed');
-    main.classList.toggle('expanded');
-    toggle.classList.toggle('collapsed');
-    toggle.textContent = sidebar.classList.contains('collapsed') ? '☰' : '✕';
-  }
-
-  // Section switching
-  const sections = ['dashboard','clinics','revenue','activity'];
-  function showSection(name) {
-    sections.forEach(s => {
-      const sec = document.getElementById('section-' + s);
-      const nav = document.getElementById('nav-' + s);
-      if(sec) sec.className = 'section-content' + (s === name ? ' active' : '');
-      if(nav) nav.classList.toggle('active', s === name);
-    });
-    window.scrollTo(0,0);
-  }
-
-  // Modal
-  function openModal(id) { document.getElementById('modal-' + id).classList.add('open'); }
-  function closeModal(id) { document.getElementById('modal-' + id).classList.remove('open'); }
-
-  function addClinic() {
-    const name = document.getElementById('new-clinic-name').value.trim();
-    const owner = document.getElementById('new-clinic-owner').value.trim();
-    const location = document.getElementById('new-clinic-location').value.trim();
-    const planEl = document.getElementById('new-clinic-plan');
-    const plan = planEl.options[planEl.selectedIndex].text.split(' ')[0];
-    const fee = plan === 'Pilot' ? 1500 : 3000;
-    if(!name) { showToast('Please enter the clinic name.'); return; }
-    clinics.push({ name, owner: owner || '—', location: location || '—', plan, fee, patients:0, since: new Date().toLocaleDateString('en-PH', {month:'short', year:'numeric'}), status: plan === 'Pilot' ? 'trial' : 'active' });
-    activities.unshift({ type:'new', text: name + ' was added to DentAyos.', time: new Date().toLocaleDateString('en-PH', {month:'short', day:'numeric', year:'numeric'}) + ' · Just now' });
-    renderAll();
-    closeModal('add-clinic');
-    ['new-clinic-name','new-clinic-owner','new-clinic-location','new-clinic-contact'].forEach(id => { document.getElementById(id).value = ''; });
-    showToast(name + ' added successfully.');
-  }
-
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = '✓  ' + msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
-  }
-</script>
-
 <!-- BACK TO TOP -->
-<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top" aria-label="Back to top">&#8679;</button>
-<script>
-  window.addEventListener('scroll', function() {
-    const btn = document.getElementById('back-to-top');
-    if(btn) btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
-  });
-</script>
+<button id="back-to-top" title="Back to top" aria-label="Back to top">&#8679;</button>
 
 
 <!-- LOGOUT OVERLAY -->
 <div class="logout-overlay" id="logout-overlay"><div class="logout-spinner"></div><div class="logout-msg">Returning to website...</div></div>
+<script src="js/owner.js"></script>
 </body>
 </html>
