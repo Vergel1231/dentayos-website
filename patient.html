@@ -6,6 +6,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
 <title>DentAyos — Patient Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/shared.css">
@@ -161,7 +162,7 @@
 </head>
 <body>
 
-<div class="login-screen" id="login-screen">
+<div class="login-screen" id="login-screen" role="main" aria-label="Patient Portal login">
   <div class="login-box">
     <div class="login-logo">Dent<span>Ayos</span></div>
     <div class="login-subtitle">Patient Portal</div>
@@ -169,17 +170,17 @@
     <p>Please log in to view your records and appointments.</p>
     <div class="form-group">
       <label>Username</label>
-      <input type="text" id="login-user" placeholder="Enter your username">
+      <input type="text" id="login-user" placeholder="Enter your username" required autocomplete="username" aria-required="true" aria-describedby="login-error">
     </div>
     <div class="form-group">
       <label>Password</label>
       <div class="pw-wrap">
-        <input type="password" id="login-pass" placeholder="Enter your password">
-        <button class="pw-toggle" id="pw-toggle">Show</button>
+        <input type="password" id="login-pass" placeholder="Enter your password" required autocomplete="current-password" aria-required="true" aria-describedby="login-error">
+        <button class="pw-toggle" id="pw-toggle" type="button" aria-label="Show password">Show</button>
       </div>
     </div>
-    <button class="login-btn" id="login-btn">Enter Patient Portal</button>
-    <div class="login-error" id="login-error">Incorrect username or password.</div>
+    <button class="login-btn" id="login-btn" type="button">Enter Patient Portal</button>
+    <div class="login-error" id="login-error" role="alert" aria-live="polite">Incorrect username or password.</div>
     <div class="login-back" style="margin-top:1.25rem;display:flex;justify-content:space-between;align-items:center;">
       <a href="javascript:void(0)" id="btn-goto-website-login" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;">← Website</a>
       <a href="javascript:void(0)" id="btn-show-signup" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;">Create Account →</a>
@@ -188,7 +189,7 @@
 </div>
 
 <!-- CREATE ACCOUNT SCREEN -->
-<div class="login-screen" id="signup-screen" style="display:none;">
+<div class="login-screen" id="signup-screen" style="display:none;" role="main" aria-label="Create patient account">
   <div class="login-box">
     <div class="login-logo">Dent<span>Ayos</span></div>
     <div class="login-subtitle">Patient Portal</div>
@@ -196,21 +197,21 @@
     <p>Register to access your dental records and book appointments.</p>
     <div class="form-group">
       <label>Full Name</label>
-      <input type="text" id="signup-name" placeholder="e.g. Maria Santos">
+      <input type="text" id="signup-name" placeholder="e.g. Maria Santos" required aria-required="true" autocomplete="name" aria-describedby="signup-error">
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
       <div class="form-group">
         <label>Age</label>
-        <input type="number" id="signup-age" placeholder="e.g. 32">
+        <input type="number" id="signup-age" placeholder="e.g. 32" min="1" max="120" aria-describedby="signup-error">
       </div>
       <div class="form-group">
         <label>Contact Number</label>
-        <input type="text" id="signup-contact" placeholder="09XX XXX XXXX">
+        <input type="text" id="signup-contact" placeholder="09XX XXX XXXX" pattern="^09\d{2}[\s-]?\d{3}[\s-]?\d{4}$" title="Enter a valid PH mobile number, e.g. 09XX XXX XXXX" autocomplete="tel" aria-describedby="signup-error">
       </div>
     </div>
     <div class="form-group">
       <label>Primary Concern</label>
-      <select id="signup-concern" style="width:100%;background:var(--dark2);border:0.5px solid var(--border);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:14px;padding:0.85rem 1rem;outline:none;">
+      <select id="signup-concern" aria-label="Primary dental concern" style="width:100%;background:var(--dark2);border:0.5px solid var(--border);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:14px;padding:0.85rem 1rem;outline:none;">
         <option>Dental Cleaning</option>
         <option>Tooth Extraction</option>
         <option>Braces Consultation</option>
@@ -223,17 +224,17 @@
     </div>
     <div class="form-group">
       <label>Username</label>
-      <input type="text" id="signup-user" placeholder="e.g. maria.santos">
+      <input type="text" id="signup-user" placeholder="e.g. maria.santos" required aria-required="true" pattern="^[a-zA-Z0-9._\-]{3,30}$" title="3–30 characters: letters, numbers, dots, hyphens, or underscores" autocomplete="username" aria-describedby="signup-error">
     </div>
     <div class="form-group">
       <label>Password</label>
       <div class="pw-wrap">
-        <input type="password" id="signup-pass" placeholder="Create a password">
-        <button class="pw-toggle" id="signup-pw-toggle">Show</button>
+        <input type="password" id="signup-pass" placeholder="Create a password (min. 8 characters)" required aria-required="true" minlength="8" autocomplete="new-password" aria-describedby="signup-error">
+        <button class="pw-toggle" id="signup-pw-toggle" type="button" aria-label="Show password">Show</button>
       </div>
     </div>
-    <button class="login-btn" id="signup-btn">Create Account</button>
-    <div class="login-error" id="signup-error">Please fill in all fields.</div>
+    <button class="login-btn" id="signup-btn" type="button">Create Account</button>
+    <div class="login-error" id="signup-error" role="alert" aria-live="polite">Please fill in all fields.</div>
     <div class="login-back" style="margin-top:1.25rem;display:flex;justify-content:space-between;align-items:center;">
       <a href="javascript:void(0)" id="btn-goto-website-signup" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;">← Website</a>
       <a href="javascript:void(0)" id="btn-back-to-login" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;">← Back to Login</a>
@@ -246,10 +247,10 @@
     <a href="#" class="nav-logo">Dent<span>Ayos</span></a>
     <div class="nav-right">
       <div class="nav-patient">
-        <div class="patient-avatar" id="nav-avatar">?</div>
+        <div class="patient-avatar" id="nav-avatar" aria-hidden="true">?</div>
         <div><p id="nav-name">—</p><span>Patient</span></div>
       </div>
-      <button class="logout-link" id="logout-btn">Log Out</button>
+      <button class="logout-link" id="logout-btn" aria-label="Log out of Patient Portal">Log Out</button>
     </div>
   </nav>
 
@@ -308,7 +309,7 @@
             <div class="time-slot">5:00 PM</div>
           </div>
           <p style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:.75rem;">Concern / Procedure</p>
-          <select class="concern-select">
+          <select class="concern-select" id="concern-select" aria-label="Select concern or procedure">
             <option>Dental Cleaning</option><option>Tooth Extraction</option>
             <option>Braces Consultation</option><option>Veneers</option>
             <option>Whitening</option><option>Filling</option>
@@ -316,7 +317,7 @@
             <option>Follow-up / Checkup</option>
           </select>
           <div id="booking-summary" style="display:none;background:var(--dark3);border:0.5px solid rgba(180,150,106,0.2);padding:.85rem 1rem;margin-bottom:1rem;font-size:13px;color:var(--teal);"></div>
-          <button class="book-btn" id="book-btn">Confirm Appointment</button>
+          <button class="book-btn" id="book-btn" type="button" aria-label="Confirm appointment booking">Confirm Appointment</button>
         </div>
       </div>
     </div>
@@ -330,7 +331,7 @@
 
 
 <!-- LOGOUT OVERLAY -->
-<div class="logout-overlay" id="logout-overlay"><div class="logout-spinner"></div><div class="logout-msg">Returning to website...</div></div>
+<div class="logout-overlay" id="logout-overlay" role="status" aria-live="polite" aria-label="Redirecting to website"><div class="logout-spinner"></div><div class="logout-msg">Returning to website...</div></div>
 <script src="js/patient.js"></script>
 </body>
 </html>
