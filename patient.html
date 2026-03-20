@@ -169,20 +169,20 @@
     <p>Please log in to view your records and appointments.</p>
     <div class="form-group">
       <label>Username</label>
-      <input type="text" id="login-user" placeholder="Enter your username" onkeydown="if(event.key==='Enter') doLogin()">
+      <input type="text" id="login-user" placeholder="Enter your username">
     </div>
     <div class="form-group">
       <label>Password</label>
       <div class="pw-wrap">
-        <input type="password" id="login-pass" placeholder="Enter your password" onkeydown="if(event.key==='Enter') doLogin()">
-        <button class="pw-toggle" id="pw-toggle" onclick="togglePw()">Show</button>
+        <input type="password" id="login-pass" placeholder="Enter your password">
+        <button class="pw-toggle" id="pw-toggle">Show</button>
       </div>
     </div>
-    <button class="login-btn" onclick="doLogin()">Enter Patient Portal</button>
+    <button class="login-btn" id="login-btn">Enter Patient Portal</button>
     <div class="login-error" id="login-error">Incorrect username or password.</div>
     <div class="login-back" style="margin-top:1.25rem;display:flex;justify-content:space-between;align-items:center;">
-      <a href="javascript:void(0)" onclick="goToWebsite()" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;">← Website</a>
-      <a href="#" onclick="showSignup()" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;">Create Account →</a>
+      <a href="javascript:void(0)" id="btn-goto-website-login" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;">← Website</a>
+      <a href="javascript:void(0)" id="btn-show-signup" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;">Create Account →</a>
     </div>
   </div>
 </div>
@@ -229,14 +229,14 @@
       <label>Password</label>
       <div class="pw-wrap">
         <input type="password" id="signup-pass" placeholder="Create a password">
-        <button class="pw-toggle" onclick="toggleSignupPw()">Show</button>
+        <button class="pw-toggle" id="signup-pw-toggle">Show</button>
       </div>
     </div>
-    <button class="login-btn" onclick="doSignup()">Create Account</button>
+    <button class="login-btn" id="signup-btn">Create Account</button>
     <div class="login-error" id="signup-error">Please fill in all fields.</div>
     <div class="login-back" style="margin-top:1.25rem;display:flex;justify-content:space-between;align-items:center;">
-      <a href="javascript:void(0)" onclick="goToWebsite()" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;">← Website</a>
-      <a href="#" onclick="showLogin()" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;">← Back to Login</a>
+      <a href="javascript:void(0)" id="btn-goto-website-signup" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;">← Website</a>
+      <a href="javascript:void(0)" id="btn-back-to-login" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;">← Back to Login</a>
     </div>
   </div>
 </div>
@@ -249,7 +249,7 @@
         <div class="patient-avatar" id="nav-avatar">?</div>
         <div><p id="nav-name">—</p><span>Patient</span></div>
       </div>
-      <button class="logout-link" onclick="doLogout()">Log Out</button>
+      <button class="logout-link" id="logout-btn">Log Out</button>
     </div>
   </nav>
 
@@ -301,11 +301,11 @@
             <div class="time-slot taken">9:00 AM</div>
             <div class="time-slot taken">10:00 AM</div>
             <div class="time-slot taken">11:00 AM</div>
-            <div class="time-slot" onclick="selectTime(this)">1:00 PM</div>
-            <div class="time-slot" onclick="selectTime(this)">2:00 PM</div>
+            <div class="time-slot">1:00 PM</div>
+            <div class="time-slot">2:00 PM</div>
             <div class="time-slot taken">3:00 PM</div>
-            <div class="time-slot" onclick="selectTime(this)">4:00 PM</div>
-            <div class="time-slot" onclick="selectTime(this)">5:00 PM</div>
+            <div class="time-slot">4:00 PM</div>
+            <div class="time-slot">5:00 PM</div>
           </div>
           <p style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:.75rem;">Concern / Procedure</p>
           <select class="concern-select">
@@ -316,7 +316,7 @@
             <option>Follow-up / Checkup</option>
           </select>
           <div id="booking-summary" style="display:none;background:var(--dark3);border:0.5px solid rgba(180,150,106,0.2);padding:.85rem 1rem;margin-bottom:1rem;font-size:13px;color:var(--teal);"></div>
-          <button class="book-btn" onclick="bookAppointment()">Confirm Appointment</button>
+          <button class="book-btn" id="book-btn">Confirm Appointment</button>
         </div>
       </div>
     </div>
@@ -325,343 +325,12 @@
 
 <div class="toast" id="toast"></div>
 
-<script>
-  const patientAccounts = [
-    { username:'maria.santos', password:'maria2026', name:'Maria B. Santos', firstName:'Maria', initials:'MS', age:'32 years old', contact:'0917 123 4567', concern:'Dental Cleaning', dentist:'Dr. Reyes', since:'January 2025', nextDate:'March 17, 2026', nextTime:'9:00 AM · Dental Cleaning',
-      notifications:[
-        { read:false, text:'Hi Maria! Reminder: your dental cleaning is tomorrow, March 17 at 9:00 AM.', time:'Today · 6:00 PM' },
-        { read:false, text:'Your appointment has been confirmed for March 17 at 9:00 AM. Please arrive 10 minutes early.', time:'March 14 · 10:00 AM' },
-        { read:false, text:'Thank you for your visit on March 1! Your next cleaning is on March 17. See you then! 🦷', time:'March 1 · 11:30 AM' },
-        { read:true, text:'Welcome to DentAyos! Your patient portal is now active.', time:'January 10, 2025' },
-      ],
-      history:[
-        { date:'Mar 1, 2026', procedure:'Cleaning', dentist:'Dr. Reyes', notes:'Routine cleaning. Mild tartar buildup. Next visit in 3 months.' },
-        { date:'Dec 5, 2025', procedure:'Cleaning', dentist:'Dr. Reyes', notes:'Routine cleaning completed. No cavities detected.' },
-        { date:'Sep 10, 2025', procedure:'Filling', dentist:'Dr. Reyes', notes:'Composite filling on lower left molar #36. Healing well.' },
-        { date:'Jan 10, 2025', procedure:'Consultation', dentist:'Dr. Reyes', notes:'Initial consultation. Full dental X-ray taken. Treatment plan discussed.' },
-      ]
-    },
-    { username:'jose.delacruz', password:'jose2026', name:'Jose Dela Cruz', firstName:'Jose', initials:'JD', age:'45 years old', contact:'0918 234 5678', concern:'Braces Consultation', dentist:'Dr. Reyes', since:'February 2026', nextDate:'March 20, 2026', nextTime:'9:00 AM · Braces Consultation',
-      notifications:[
-        { read:false, text:'Hi Jose! Reminder: your braces consultation is on March 20 at 9:00 AM.', time:'Today · 6:00 PM' },
-        { read:true, text:'Welcome to DentAyos! Your patient portal is now active.', time:'February 20, 2026' },
-      ],
-      history:[
-        { date:'Feb 20, 2026', procedure:'Consultation', dentist:'Dr. Reyes', notes:'Initial braces consultation. X-rays taken. Treatment plan: 18 months braces.' },
-      ]
-    },
-    { username:'ana.reyes', password:'ana2026', name:'Ana Reyes', firstName:'Ana', initials:'AR', age:'28 years old', contact:'0919 345 6789', concern:'Veneers', dentist:'Dr. Reyes', since:'March 2026', nextDate:'March 22, 2026', nextTime:'2:00 PM · Veneer Fitting',
-      notifications:[
-        { read:false, text:'Hi Ana! Reminder: your veneer fitting is on March 22 at 2:00 PM.', time:'Today · 6:00 PM' },
-        { read:true, text:'Welcome to DentAyos! Your patient portal is now active.', time:'March 5, 2026' },
-      ],
-      history:[
-        { date:'Mar 5, 2026', procedure:'Consultation', dentist:'Dr. Reyes', notes:'Veneer consultation. 4 upper front teeth. Shade selected: BL2.' },
-      ]
-    },
-  ];
-
-  let currentPatient = null;
-
-  // Load any previously registered accounts from localStorage
-  const savedAccounts = JSON.parse(localStorage.getItem('dentayos_patient_accounts') || '[]');
-  savedAccounts.forEach(a => {
-    if(!patientAccounts.find(p => p.username === a.username)) {
-      patientAccounts.push(a);
-    }
-  });
-
-  function showSignup() {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('signup-screen').style.display = 'flex';
-  }
-
-  function showLogin() {
-    document.getElementById('signup-screen').style.display = 'none';
-    document.getElementById('login-screen').style.display = 'flex';
-  }
-
-  function doSignup() {
-    const name = document.getElementById('signup-name').value.trim();
-    const age = document.getElementById('signup-age').value.trim();
-    const contact = document.getElementById('signup-contact').value.trim();
-    const concern = document.getElementById('signup-concern').value;
-    const username = document.getElementById('signup-user').value.trim().toLowerCase();
-    const password = document.getElementById('signup-pass').value;
-    const err = document.getElementById('signup-error');
-
-    if(!name || !username || !password) { err.textContent = 'Please fill in all required fields.'; err.style.display = 'block'; return; }
-    if(password.length < 8) { err.textContent = 'Password must be at least 8 characters.'; err.style.display = 'block'; return; }
-    if(password.toLowerCase() === username.toLowerCase()) { err.textContent = 'Password cannot be the same as your username.'; err.style.display = 'block'; return; }
-    if(patientAccounts.find(p => p.username === username)) { err.textContent = 'Username already exists. Please choose another.'; err.style.display = 'block'; return; }
-
-    const firstName = name.split(' ')[0];
-    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
-
-    const newPatient = {
-      username, password,
-      name, firstName, initials,
-      age: age ? age + ' years old' : '—',
-      contact: contact || '—',
-      concern,
-      dentist: 'Dr. Reyes',
-      since: new Date().toLocaleDateString('en-PH', { month: 'long', year: 'numeric' }),
-      nextDate: 'To be scheduled',
-      nextTime: 'Please book an appointment below',
-      notifications: [{ read: false, text: 'Welcome to DentAyos, ' + firstName + '! Your patient portal is now active. Book your first appointment below.', time: 'Just now' }],
-      history: []
-    };
-
-    patientAccounts.push(newPatient);
-
-    // Persist new account to localStorage so it survives logout/refresh
-    const saved = JSON.parse(localStorage.getItem('dentayos_patient_accounts') || '[]');
-    saved.push(newPatient);
-    localStorage.setItem('dentayos_patient_accounts', JSON.stringify(saved));
-
-    err.style.display = 'none';
-
-    // Auto login after signup
-    currentPatient = newPatient;
-    renderPortal(newPatient);
-    document.getElementById('signup-screen').style.display = 'none';
-    document.getElementById('portal').classList.add('active');
-    showToast('Account created! Welcome, ' + firstName + '.');
-  }
-
-  function togglePw() {
-    const pw = document.getElementById('login-pass');
-    const btn = document.getElementById('pw-toggle');
-    pw.type = pw.type === 'password' ? 'text' : 'password';
-    btn.textContent = pw.type === 'password' ? 'Show' : 'Hide';
-  }
-
-  function toggleSignupPw() {
-    const pw = document.getElementById('signup-pass');
-    const btn = pw.parentElement.querySelector('.pw-toggle');
-    pw.type = pw.type === 'password' ? 'text' : 'password';
-    btn.textContent = pw.type === 'password' ? 'Show' : 'Hide';
-  }
-
-  function goToWebsite() {
-    const overlay = document.getElementById('logout-overlay');
-    if(overlay) { overlay.classList.add('show'); }
-    setTimeout(() => { window.location.href = 'index.html?ts=' + Date.now(); }, 600);
-  }
-
-  function doLogin() {
-    const user = document.getElementById('login-user').value.trim().toLowerCase();
-    const pass = document.getElementById('login-pass').value;
-    const err = document.getElementById('login-error');
-    if(!user || !pass) { err.textContent = 'Please enter your credentials.'; err.style.display = 'block'; return; }
-    const patient = patientAccounts.find(p => p.username === user && p.password === pass);
-    if(!patient) { err.textContent = 'Incorrect username or password. Please try again.'; err.style.display = 'block'; return; }
-    err.style.display = 'none';
-    currentPatient = patient;
-    renderPortal(patient);
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('portal').classList.add('active');
-  }
-
-  let notifPollInterval = null;
-
-  function startNotifPolling(p) {
-    // Clear any existing poll
-    if(notifPollInterval) clearInterval(notifPollInterval);
-    const notifKey = 'dentayos_notifications_' + p.username.toLowerCase().replace(/\s+/g, '.');
-    let lastCount = JSON.parse(localStorage.getItem(notifKey) || '[]').length;
-
-    notifPollInterval = setInterval(() => {
-      if(!currentPatient) { clearInterval(notifPollInterval); return; }
-      const stored = JSON.parse(localStorage.getItem(notifKey) || '[]');
-      if(stored.length !== lastCount) {
-        lastCount = stored.length;
-        // Refresh notification panel
-        const allNotifs = [...stored, ...p.notifications];
-        const unread = allNotifs.filter(n => !n.read).length;
-        document.getElementById('notif-count').textContent = unread + ' unread';
-        document.getElementById('notif-list').innerHTML = allNotifs.map(n =>
-          `<div class="notif-item"><div class="notif-dot ${n.read ? 'read' : ''}"></div><div class="notif-text"><p>${n.text}</p><span>${n.time}</span></div></div>`
-        ).join('');
-        // Flash the notif count to draw attention
-        const countEl = document.getElementById('notif-count');
-        countEl.style.color = 'var(--gold)';
-        setTimeout(() => countEl.style.color = '', 2000);
-      }
-    }, 2000); // check every 2 seconds
-  }
-
-  function doLogout() {
-    currentPatient = null;
-    // Stop notification polling
-    if(notifPollInterval) { clearInterval(notifPollInterval); notifPollInterval = null; }
-    // Reset login fields
-    document.getElementById('login-user').value = '';
-    const loginPass = document.getElementById('login-pass');
-    loginPass.value = '';
-    loginPass.type = 'password';
-    document.getElementById('pw-toggle').textContent = 'Show';
-    document.getElementById('login-error').style.display = 'none';
-    // Reset signup fields
-    const signupPass = document.getElementById('signup-pass');
-    if(signupPass) {
-      signupPass.value = '';
-      signupPass.type = 'password';
-      const signupBtn = signupPass.parentElement.querySelector('.pw-toggle');
-      if(signupBtn) signupBtn.textContent = 'Show';
-    }
-    document.getElementById('portal').classList.remove('active');
-    document.getElementById('signup-screen').style.display = 'none';
-    document.getElementById('login-screen').style.display = 'flex';
-  }
-
-  function renderPortal(p) {
-    document.getElementById('nav-avatar').textContent = p.initials;
-    document.getElementById('nav-name').textContent = p.name;
-    document.getElementById('hero-greeting').innerHTML = 'Welcome back, <em>' + p.firstName + '.</em>';
-    document.getElementById('next-date').textContent = p.nextDate;
-    document.getElementById('next-time').textContent = p.nextTime;
-    document.getElementById('record-body').innerHTML = `
-      <div class="record-row"><div><div class="record-label">Full Name</div><div class="record-value">${p.name}</div></div><span class="record-badge">Active</span></div>
-      <div class="record-row"><div><div class="record-label">Age</div><div class="record-value">${p.age}</div></div></div>
-      <div class="record-row"><div><div class="record-label">Contact</div><div class="record-value">${p.contact}</div></div></div>
-      <div class="record-row"><div><div class="record-label">Primary Concern</div><div class="record-value">${p.concern}</div></div></div>
-      <div class="record-row"><div><div class="record-label">Attending Dentist</div><div class="record-value">${p.dentist}</div></div></div>
-      <div class="record-row"><div><div class="record-label">Patient Since</div><div class="record-value">${p.since}</div></div></div>`;
-    // Merge localStorage notifications (from clinic reschedule/actions) with built-in ones
-    const notifKey = 'dentayos_notifications_' + p.username.toLowerCase().replace(/\s+/g, '.');
-    const storedNotifs = JSON.parse(localStorage.getItem(notifKey) || '[]');
-    const allNotifs = [...storedNotifs, ...p.notifications];
-    const unread = allNotifs.filter(n => !n.read).length;
-    document.getElementById('notif-count').textContent = unread + ' unread';
-    document.getElementById('notif-list').innerHTML = allNotifs.map(n =>
-      `<div class="notif-item"><div class="notif-dot ${n.read ? 'read' : ''}"></div><div class="notif-text"><p>${n.text}</p><span>${n.time}</span></div></div>`
-    ).join('');
-
-    // Start live polling so new notifications from clinic appear without re-login
-    startNotifPolling(p);
-    document.getElementById('history-count').textContent = p.history.length + ' visit' + (p.history.length !== 1 ? 's' : '');
-    // Timeline history
-    const icons = { 'Cleaning':'🦷', 'Filling':'🔩', 'Consultation':'📋', 'Extraction':'⚙️', 'Root Canal':'🔬', 'Veneers':'✨', 'Whitening':'⭐' };
-    document.getElementById('history-timeline').innerHTML = p.history.length
-      ? p.history.map(h => `
-        <div class="tl-item">
-          <div class="tl-dot">${icons[h.procedure] || '🦷'}</div>
-          <div class="tl-card">
-            <div class="tl-card-top">
-              <span class="procedure-tag">${h.procedure}</span>
-              <span class="tl-date">${h.date}</span>
-            </div>
-            <div style="font-size:13px;color:var(--cream);font-weight:500;margin-bottom:.25rem;">${h.dentist}</div>
-            <div class="tl-note">${h.notes}</div>
-          </div>
-        </div>`).join('')
-      : '<p style="font-size:13px;color:var(--teal);">No treatment history yet. Your visits will appear here.</p>';
-    buildDateGrid();
-  }
-
-  function buildDateGrid() {
-    // March 2026 starts on Sunday (day 0)
-    const grid = document.getElementById('date-grid');
-    grid.innerHTML = '';
-    const startDay = 0; // March 1, 2026 is a Sunday
-    const totalDays = 31;
-    const today = 17; // March 17, 2026
-
-    // Empty cells before March 1
-    for(let e = 0; e < startDay; e++) {
-      const empty = document.createElement('div');
-      empty.className = 'date-cell empty';
-      grid.appendChild(empty);
-    }
-
-    for(let i = 1; i <= totalDays; i++) {
-      const d = document.createElement('div');
-      const isPast = i < today;
-      const isToday = i === today;
-      d.className = 'date-cell' + (isPast ? ' past' : '') + (isToday ? ' today' : '');
-      d.textContent = i;
-      if(!isPast) d.onclick = function(){ selectDate(this); };
-      grid.appendChild(d);
-    }
-  }
-
-  function updateBookingSummary() {
-    const date = document.querySelector('.date-cell.selected');
-    const time = document.querySelector('.time-slot.selected');
-    const concern = document.querySelector('.concern-select') ? document.querySelector('.concern-select').value : '';
-    const box = document.getElementById('booking-summary');
-    if(!box) return;
-    if(date && time) {
-      box.style.display = 'block';
-      box.innerHTML = `<span style="color:var(--cream);">📅 March ${date.textContent.trim()}, 2026 &nbsp;·&nbsp; ${time.textContent}</span>${concern ? ` &nbsp;·&nbsp; <span style="color:var(--gold);">${concern}</span>` : ''}`;
-    } else if(date) {
-      box.style.display = 'block';
-      box.innerHTML = `<span style="color:var(--cream);">📅 March ${date.textContent.trim()}, 2026</span> &nbsp;·&nbsp; <span style="color:var(--teal);">Select a time slot</span>`;
-    } else {
-      box.style.display = 'none';
-    }
-  }
-
-  function selectDate(el) {
-    document.querySelectorAll('.date-cell').forEach(c => c.classList.remove('selected'));
-    el.classList.add('selected');
-    updateBookingSummary();
-  }
-
-  function selectTime(el) {
-    document.querySelectorAll('.time-slot').forEach(t => t.classList.remove('selected'));
-    el.classList.add('selected');
-    updateBookingSummary();
-  }
-
-  function bookAppointment() {
-    const date = document.querySelector('.date-cell.selected');
-    const time = document.querySelector('.time-slot.selected');
-    const concern = document.querySelector('.concern-select').value;
-    if(!date || !time) { showToast('Please select a date and time.'); return; }
-
-    const appt = {
-      patient: currentPatient.name,
-      username: currentPatient.username,
-      concern: concern,
-      date: 'March ' + date.textContent.trim() + ', 2026',
-      time: time.textContent,
-      status: 'pending',
-      bookedAt: new Date().toLocaleString('en-PH')
-    };
-
-    const existing = JSON.parse(localStorage.getItem('dentayos_appointments') || '[]');
-    existing.push(appt);
-    localStorage.setItem('dentayos_appointments', JSON.stringify(existing));
-
-    // Reset selections
-    document.querySelectorAll('.date-cell').forEach(c => c.classList.remove('selected'));
-    document.querySelectorAll('.time-slot').forEach(t => t.classList.remove('selected'));
-    document.getElementById('booking-summary').style.display = 'none';
-
-    showToast('✓ Appointment booked for ' + appt.date + ' at ' + appt.time + '. ' + currentPatient.dentist + ' will confirm shortly.');
-  }
-
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = '✓  ' + msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3500);
-  }
-</script>
-
 <!-- BACK TO TOP -->
-<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top" aria-label="Back to top">&#8679;</button>
-<script>
-  window.addEventListener('scroll', function() {
-    const btn = document.getElementById('back-to-top');
-    if(btn) btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
-  });
-</script>
+<button id="back-to-top" title="Back to top" aria-label="Back to top">&#8679;</button>
 
 
 <!-- LOGOUT OVERLAY -->
 <div class="logout-overlay" id="logout-overlay"><div class="logout-spinner"></div><div class="logout-msg">Returning to website...</div></div>
+<script src="js/patient.js"></script>
 </body>
 </html>
