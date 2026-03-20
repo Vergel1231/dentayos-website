@@ -23,7 +23,7 @@ ul{list-style:none;}
 /* EXTRA TOKENS (index-only) */
 :root {
   --gold-lt:#D4B896;
-  --border:rgba(180,150,106,0.18); /* override shared.css default (0.15) for landing page contrast */
+  --border:rgba(180,150,106,0.18);
   --alt:#F7F4EF;
   --mid:#0F2220;
   --tx:#1A1A1A;
@@ -478,8 +478,8 @@ footer{border-top:.5px solid var(--border);padding:2.5rem 2rem;}
     </div>
     <div style="margin-top:2.5rem;">
       <div class="demo-tabs" role="tablist">
-        <button class="demo-tab active" role="tab" aria-selected="true" onclick="switchTab('clinic',this)">Clinic Portal</button>
-        <button class="demo-tab" role="tab" aria-selected="false" onclick="switchTab('patient',this)">Patient Portal</button>
+        <button class="demo-tab active" role="tab" aria-selected="true" data-tab="clinic">Clinic Portal</button>
+        <button class="demo-tab" role="tab" aria-selected="false" data-tab="patient">Patient Portal</button>
       </div>
       <div id="tab-clinic" class="demo-panel active" role="tabpanel">
         <div class="demo-feats">
@@ -747,28 +747,7 @@ footer{border-top:.5px solid var(--border);padding:2.5rem 2rem;}
   </div>
 </footer>
 
-<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">&#8679;</button>
-
-<script>
-  const reveals = document.querySelectorAll('.reveal');
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((e, i) => {
-      if(e.isIntersecting){ setTimeout(() => e.target.classList.add('visible'), i * 80); io.unobserve(e.target); }
-    });
-  }, {threshold:.1});
-  reveals.forEach(el => io.observe(el));
-
-  window.addEventListener('scroll', () => {
-    const b = document.getElementById('back-to-top');
-    if(b) b.style.display = window.scrollY > 400 ? 'flex' : 'none';
-  });
-
-  function switchTab(name, el) {
-    document.querySelectorAll('.demo-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
-    document.querySelectorAll('.demo-panel').forEach(p => p.classList.remove('active'));
-    el.classList.add('active'); el.setAttribute('aria-selected','true');
-    document.getElementById('tab-'+name).classList.add('active');
-  }
-</script>
+<button id="back-to-top" aria-label="Back to top">&#8679;</button>
+<script src="js/index.js"></script>
 </body>
 </html>
