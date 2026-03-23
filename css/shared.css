@@ -492,50 +492,31 @@ html, body { max-width: 100%; overflow-x: hidden; }
 
 /* ── RESPONSIVE ──────────────────────────────────────────── */
 @media (max-width: 768px) {
-  /* prevent any horizontal “cut off” */
   html, body { max-width: 100%; overflow-x: hidden; }
 
-  /* main should use full screen width */
-  .main { margin-left: 0; padding: 1.25rem; }
+  .main { margin-left: 0; padding: 3.25rem 1.25rem 1.25rem; }
 
-  /* make sidebar a drawer */
   .sidebar {
-    position: fixed;      /* keep it overlaying */
+    position: fixed;
     top: 0; left: 0; bottom: 0;
-    width: 240px;         /* same as desktop */
+    width: 240px;
     min-height: 100vh;
     transform: translateX(-240px); /* hidden by default */
   }
-  .sidebar.collapsed { transform: translateX(-240px); } /* unchanged */
-  /* IMPORTANT: when NOT collapsed, it should be visible */
-  .sidebar:not(.collapsed) { transform: translateX(0); }
+  .sidebar.collapsed { transform: translateX(-240px); }
 
-  /* toggle button should always be reachable */
-  .sidebar-toggle { left: 12px; }
+  .sidebar-toggle { top: 0.9rem; left: 0.9rem; width: 34px; height: 34px; border-radius: 6px; }
 
-  /* stack cards/panels */
+  .sidebar-logo { padding-left: 3.25rem; }
+
   .stats { grid-template-columns: 1fr; }
   .content-grid { grid-template-columns: 1fr; }
 
-  /* topbar should wrap on small screens */
-  .topbar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-  .topbar-right {
-    width: 100%;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-  }
+  .topbar { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+  .topbar-right { width: 100%; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }
 
-  /* modal form rows should stack on mobile */
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-    
-  /* tables: scroll instead of clipping */
+  .form-row { grid-template-columns: 1fr; }
+
   .panel-body { overflow-x: auto; }
   .patient-table { min-width: 700px; }
 }
