@@ -517,6 +517,16 @@ html, body { max-width: 100%; overflow-x: hidden; }
 
   .form-row { grid-template-columns: 1fr; }
 
-  .panel-body { overflow-x: auto; }
+  .panel-body {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* optional but nice on Android */
+  }
+
   .patient-table { min-width: 700px; }
+
+  /* NEW: prevent dates like "Mar 17" from being cut/wrapped */
+  .patient-table th,
+  .patient-table td {
+    white-space: nowrap;
+  }
 }
