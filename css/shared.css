@@ -517,6 +517,24 @@ html, body { max-width: 100%; overflow-x: hidden; }
   .stats { grid-template-columns: 1fr; }
   .content-grid { grid-template-columns: 1fr; }
 
+  /* topbar should wrap on small screens */
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .topbar-right {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* modal form rows should stack on mobile */
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+    
   /* tables: scroll instead of clipping */
   .panel-body { overflow-x: auto; }
   .patient-table { min-width: 700px; }

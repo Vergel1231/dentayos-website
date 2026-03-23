@@ -1,352 +1,557 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex">
-<meta name="description" content="DentAyos Owner Portal — restricted admin access for managing clinic accounts, tracking revenue, and monitoring platform activity.">
-<link rel="icon" href="images/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
-<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
-<title>DentAyos — Owner Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/shared.css">
-<style>
-  /* PAGE-SPECIFIC: owner.html only */
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <meta name="description"
+    content="DentAyos Owner Portal — restricted admin access for managing clinic accounts, tracking revenue, and monitoring platform activity.">
+  <link rel="icon" href="images/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+  <title>DentAyos — Owner Portal</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css">
+  <style>
+    /* PAGE-SPECIFIC: owner.html only */
 
-  /* Body needs flex for sidebar layout */
-  body { display: flex; }
+    /* Body needs flex for sidebar layout */
+    body {
+      display: flex;
+    }
 
-  /* OWNER BADGE (login screen) */
-  .owner-badge {
-    display: inline-block;
-    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-    background: rgba(180,150,106,0.15); color: var(--gold);
-    padding: 4px 12px; margin-bottom: 1.5rem;
-  }
+    /* OWNER BADGE (login screen) */
+    .owner-badge {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: rgba(180, 150, 106, 0.15);
+      color: var(--gold);
+      padding: 4px 12px;
+      margin-bottom: 1.5rem;
+    }
 
-  /* SIDEBAR OVERRIDES — owner portal uses gold accent instead of teal */
-  .sidebar-logo p { color: var(--gold); }
-  .staff-avatar { background: var(--gold); color: var(--dark); }
-  .staff-info span { color: var(--gold); }
+    /* SIDEBAR OVERRIDES — owner portal uses gold accent instead of teal */
+    .sidebar-logo p {
+      color: var(--gold);
+    }
 
-  /* STAT CARD VARIANTS — owner uses .success and .warning (not .success-card) */
-  .stat-card.success .stat-value { color: var(--success); }
-  .stat-card.warning .stat-value { color: var(--warning); }
+    .staff-avatar {
+      background: var(--gold);
+      color: var(--dark);
+    }
 
-  /* PANEL — owner panels have bottom margin */
-  .panel { margin-bottom: 1.5rem; }
+    .staff-info span {
+      color: var(--gold);
+    }
 
-  /* CLINIC TABLE */
-  .clinic-table { width: 100%; border-collapse: collapse; }
-  .clinic-table th {
-    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-    color: var(--teal); text-align: left; padding: 0 1rem 1rem 0; font-weight: 400;
-  }
-  .clinic-table td {
-    padding: 0.85rem 1rem 0.85rem 0;
-    border-top: 0.5px solid var(--border);
-    font-size: 13px; color: var(--cream); vertical-align: middle;
-  }
-  .clinic-table tr:hover td { background: rgba(180,150,106,0.03); }
-  .clinic-name { font-weight: 500; }
-  .clinic-meta { font-size: 11px; color: var(--teal); margin-top: 2px; }
+    /* STAT CARD VARIANTS — owner uses .success and .warning (not .success-card) */
+    .stat-card.success .stat-value {
+      color: var(--success);
+    }
 
-  /* STATUS BADGE VARIANTS — owner adds trial and overdue */
-  .status-badge.trial   { background: rgba(180,150,106,0.15); color: var(--gold); }
-  .status-badge.overdue { background: rgba(163,45,45,0.15); color: #E24B4A; }
+    .stat-card.warning .stat-value {
+      color: var(--warning);
+    }
 
-  /* ACTION BUTTON — owner danger variant */
-  .action-btn { margin-right: 4px; }
-  .action-btn.danger:hover { border-color: #E24B4A; color: #E24B4A; }
+    /* PANEL — owner panels have bottom margin */
+    .panel {
+      margin-bottom: 1.5rem;
+    }
 
-  /* REVENUE */
-  .revenue-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 0.85rem 0; border-bottom: 0.5px solid var(--border);
-  }
-  .revenue-row:last-child { border-bottom: none; }
-  .revenue-clinic { font-size: 13px; color: var(--cream); }
-  .revenue-plan   { font-size: 11px; color: var(--teal); margin-top: 2px; }
-  .revenue-amount { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--gold); }
-  .revenue-status { font-size: 11px; color: var(--teal); text-align: right; margin-top: 2px; }
+    /* CLINIC TABLE */
+    .clinic-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
 
-  /* ACTIVITY */
-  .activity-list { display: flex; flex-direction: column; gap: 0.75rem; }
-  .activity-item {
-    display: flex; gap: 1rem; align-items: flex-start;
-    padding: 0.85rem 1rem; border: 0.5px solid var(--border);
-  }
-  .activity-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
-  .activity-dot.new     { background: var(--success); }
-  .activity-dot.payment { background: var(--gold); }
-  .activity-dot.alert   { background: #E24B4A; }
-  .activity-dot.info    { background: var(--teal); }
-  .activity-text p    { font-size: 13px; color: var(--cream); line-height: 1.5; }
-  .activity-text span { font-size: 11px; color: var(--teal); margin-top: 2px; display: block; }
+    .clinic-table th {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal);
+      text-align: left;
+      padding: 0 1rem 1rem 0;
+      font-weight: 400;
+    }
 
-  /* SECTION SWITCHING */
-  .section-content { display: none; }
-  .section-content.active { display: block; }
+    .clinic-table td {
+      padding: 0.85rem 1rem 0.85rem 0;
+      border-top: 0.5px solid var(--border);
+      font-size: 13px;
+      color: var(--cream);
+      vertical-align: middle;
+    }
 
-  /* RESPONSIVE — owner-specific override */
-  @media (max-width: 768px) {
-    .sidebar { position: fixed; }
-  }
-</style>
+    .clinic-table tr:hover td {
+      background: rgba(180, 150, 106, 0.03);
+    }
+
+    .clinic-name {
+      font-weight: 500;
+    }
+
+    .clinic-meta {
+      font-size: 11px;
+      color: var(--teal);
+      margin-top: 2px;
+    }
+
+    /* STATUS BADGE VARIANTS — owner adds trial and overdue */
+    .status-badge.trial {
+      background: rgba(180, 150, 106, 0.15);
+      color: var(--gold);
+    }
+
+    .status-badge.overdue {
+      background: rgba(163, 45, 45, 0.15);
+      color: #E24B4A;
+    }
+
+    /* ACTION BUTTON — owner danger variant */
+    .action-btn {
+      margin-right: 4px;
+    }
+
+    .action-btn.danger:hover {
+      border-color: #E24B4A;
+      color: #E24B4A;
+    }
+
+    /* REVENUE */
+    .revenue-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem 0;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .revenue-row:last-child {
+      border-bottom: none;
+    }
+
+    .revenue-clinic {
+      font-size: 13px;
+      color: var(--cream);
+    }
+
+    .revenue-plan {
+      font-size: 11px;
+      color: var(--teal);
+      margin-top: 2px;
+    }
+
+    .revenue-amount {
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px;
+      color: var(--gold);
+    }
+
+    .revenue-status {
+      font-size: 11px;
+      color: var(--teal);
+      text-align: right;
+      margin-top: 2px;
+    }
+
+    /* ACTIVITY */
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .activity-item {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      padding: 0.85rem 1rem;
+      border: 0.5px solid var(--border);
+    }
+
+    .activity-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .activity-dot.new {
+      background: var(--success);
+    }
+
+    .activity-dot.payment {
+      background: var(--gold);
+    }
+
+    .activity-dot.alert {
+      background: #E24B4A;
+    }
+
+    .activity-dot.info {
+      background: var(--teal);
+    }
+
+    .activity-text p {
+      font-size: 13px;
+      color: var(--cream);
+      line-height: 1.5;
+    }
+
+    .activity-text span {
+      font-size: 11px;
+      color: var(--teal);
+      margin-top: 2px;
+      display: block;
+    }
+
+    /* SECTION SWITCHING */
+    .section-content {
+      display: none;
+    }
+
+    .section-content.active {
+      display: block;
+    }
+
+    /* RESPONSIVE — owner-specific override */
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+      }
+
+      body {
+        display: block;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- LOGIN -->
-<div class="login-screen" id="login-screen">
-  <div class="login-box">
-    <div class="login-logo">Dent<span>Ayos</span></div>
-    <div class="login-subtitle">Owner Portal</div>
-    <div class="owner-badge">Restricted Access</div>
-    <h2>Owner login.</h2>
-    <p>This portal is for DentAyos administrators only.</p>
-    <div class="login-form-group">
-      <label>Username</label>
-      <input type="text" id="login-user" placeholder="Enter owner username">
-    </div>
-    <div class="login-form-group">
-      <label>Password</label>
-      <div style="position:relative;">
-        <input type="password" id="login-pass" placeholder="Enter password" style="padding-right:3rem;">
-        <button id="toggle-pw" style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--teal);cursor:pointer;font-size:12px;letter-spacing:1px;">Show</button>
+  <!-- LOGIN -->
+  <div class="login-screen" id="login-screen">
+    <div class="login-box">
+      <div class="login-logo">Dent<span>Ayos</span></div>
+      <div class="login-subtitle">Owner Portal</div>
+      <div class="owner-badge">Restricted Access</div>
+      <h2>Owner login.</h2>
+      <p>This portal is for DentAyos administrators only.</p>
+      <div class="login-form-group">
+        <label>Username</label>
+        <input type="text" id="login-user" placeholder="Enter owner username">
       </div>
-    </div>
-    <button class="login-btn" id="login-btn">Access Owner Portal</button>
-    <div class="login-error" id="login-error">Incorrect credentials.</div>
-    <div style="text-align:center;margin-top:1.5rem;">
-      <a href="javascript:void(0)" id="back-to-website" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;transition:color 0.2s;">← Back to Website</a>
+      <div class="login-form-group">
+        <label>Password</label>
+        <div style="position:relative;">
+          <input type="password" id="login-pass" placeholder="Enter password" style="padding-right:3rem;">
+          <button id="toggle-pw"
+            style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--teal);cursor:pointer;font-size:12px;letter-spacing:1px;">Show</button>
+        </div>
+      </div>
+      <button class="login-btn" id="login-btn">Access Owner Portal</button>
+      <div class="login-error" id="login-error">Incorrect credentials.</div>
+      <div style="text-align:center;margin-top:1.5rem;">
+        <a href="javascript:void(0)" id="back-to-website"
+          style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);text-decoration:none;transition:color 0.2s;">←
+          Back to Website</a>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- SIDEBAR TOGGLE -->
-<button class="sidebar-toggle" id="sidebar-toggle" title="Toggle sidebar">☰</button>
+  <!-- SIDEBAR TOGGLE -->
+  <button class="sidebar-toggle" id="sidebar-toggle" title="Toggle sidebar">☰</button>
 
-<!-- SIDEBAR -->
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-logo">
-    <h1>Dent<span>Ayos</span></h1>
-    <p>Owner Portal</p>
-  </div>
-  <nav class="sidebar-nav">
-    <div class="nav-item active" id="nav-dashboard">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
-      Dashboard
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <h1>Dent<span>Ayos</span></h1>
+      <p>Owner Portal</p>
     </div>
-    <div class="nav-item" id="nav-clinics">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 14V6l6-4 6 4v8"/><rect x="5" y="9" width="3" height="5"/><rect x="8" y="9" width="3" height="5"/></svg>
-      Clinics
-    </div>
-    <div class="nav-item" id="nav-revenue">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M8 1v14M4 5h6a2 2 0 010 4H6a2 2 0 000 4h6"/></svg>
-      Revenue
-    </div>
-    <div class="nav-item" id="nav-activity">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><polyline points="1,8 4,4 7,9 10,5 13,8 15,6"/></svg>
-      Activity
-    </div>
-  </nav>
-  <div class="sidebar-footer">
-    <div class="staff-badge">
-      <div class="staff-avatar">V</div>
-      <div class="staff-info">
-        <p id="owner-name">Ver</p>
-        <span>DentAyos Owner</span>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" id="nav-dashboard">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
+          <rect x="1" y="1" width="6" height="6" rx="1" />
+          <rect x="9" y="1" width="6" height="6" rx="1" />
+          <rect x="1" y="9" width="6" height="6" rx="1" />
+          <rect x="9" y="9" width="6" height="6" rx="1" />
+        </svg>
+        Dashboard
       </div>
+      <div class="nav-item" id="nav-clinics">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
+          <path d="M2 14V6l6-4 6 4v8" />
+          <rect x="5" y="9" width="3" height="5" />
+          <rect x="8" y="9" width="3" height="5" />
+        </svg>
+        Clinics
+      </div>
+      <div class="nav-item" id="nav-revenue">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
+          <path d="M8 1v14M4 5h6a2 2 0 010 4H6a2 2 0 000 4h6" />
+        </svg>
+        Revenue
+      </div>
+      <div class="nav-item" id="nav-activity">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
+          <polyline points="1,8 4,4 7,9 10,5 13,8 15,6" />
+        </svg>
+        Activity
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="staff-badge">
+        <div class="staff-avatar">V</div>
+        <div class="staff-info">
+          <p id="owner-name">Ver</p>
+          <span>DentAyos Owner</span>
+        </div>
+      </div>
+      <a href="javascript:void(0)" id="btn-website" class="logout-btn"
+        style="display:inline-block;text-align:center;text-decoration:none;margin-bottom:.5rem;">← Website</a>
+      <button class="logout-btn" id="btn-logout">← Log Out</button>
     </div>
-    <a href="javascript:void(0)" id="btn-website" class="logout-btn" style="display:inline-block;text-align:center;text-decoration:none;margin-bottom:.5rem;">← Website</a>
-    <button class="logout-btn" id="btn-logout">← Log Out</button>
-  </div>
-</aside>
+  </aside>
 
-<!-- MAIN -->
-<main class="main" id="main">
+  <!-- MAIN -->
+  <main class="main" id="main">
 
-  <!-- DASHBOARD -->
-  <div id="section-dashboard" class="section-content active">
-    <div class="topbar">
-      <div>
-        <h2 id="owner-greeting">Good morning, Ver. 👑</h2>
-        <p>Here's your DentAyos platform overview.</p>
+    <!-- DASHBOARD -->
+    <div id="section-dashboard" class="section-content active">
+      <div class="topbar">
+        <div>
+          <h2 id="owner-greeting">Good morning, Ver. 👑</h2>
+          <p>Here's your DentAyos platform overview.</p>
+        </div>
+        <div class="topbar-right">
+          <div class="date-badge" id="today-date"></div>
+          <button class="add-btn" id="btn-add-clinic-dash">+ Add Clinic</button>
+        </div>
       </div>
-      <div class="topbar-right">
-        <div class="date-badge" id="today-date"></div>
-        <button class="add-btn" id="btn-add-clinic-dash">+ Add Clinic</button>
+      <div class="stats">
+        <div class="stat-card highlight">
+          <div class="stat-label">Total Clinics</div>
+          <div class="stat-value" id="stat-clinics">3</div>
+          <div class="stat-sub">1 on trial</div>
+        </div>
+        <div class="stat-card success">
+          <div class="stat-label">Monthly Revenue</div>
+          <div class="stat-value" id="stat-revenue">₱9,000</div>
+          <div class="stat-sub">From 3 active clinics</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Patients</div>
+          <div class="stat-value">72</div>
+          <div class="stat-sub">Across all clinics</div>
+        </div>
+        <div class="stat-card warning">
+          <div class="stat-label">Overdue Payments</div>
+          <div class="stat-value">1</div>
+          <div class="stat-sub">Requires follow-up</div>
+        </div>
+      </div>
+      <div class="content-grid">
+        <div class="panel full-width">
+          <div class="panel-header">
+            <h3>Clinic Accounts</h3><span id="clinic-count">3 total</span>
+          </div>
+          <div class="panel-body">
+            <table class="clinic-table">
+              <thead>
+                <tr>
+                  <th>Clinic</th>
+                  <th>Plan</th>
+                  <th>Monthly Fee</th>
+                  <th>Patients</th>
+                  <th>Since</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="clinic-tbody-dash"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Revenue Breakdown</h3><span>This month</span>
+          </div>
+          <div class="panel-body" id="revenue-breakdown"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Recent Activity</h3><span>Platform-wide</span>
+          </div>
+          <div class="panel-body">
+            <div class="activity-list" id="activity-dash"></div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="stats">
-      <div class="stat-card highlight">
-        <div class="stat-label">Total Clinics</div>
-        <div class="stat-value" id="stat-clinics">3</div>
-        <div class="stat-sub">1 on trial</div>
+
+    <!-- CLINICS -->
+    <div id="section-clinics" class="section-content">
+      <div class="topbar">
+        <div>
+          <h2>Clinics</h2>
+          <p>All registered clinic accounts on DentAyos.</p>
+        </div>
+        <div class="topbar-right">
+          <div class="date-badge" id="today-date-c"></div>
+          <button class="add-btn" id="btn-add-clinic-clinics">+ Add Clinic</button>
+        </div>
       </div>
-      <div class="stat-card success">
-        <div class="stat-label">Monthly Revenue</div>
-        <div class="stat-value" id="stat-revenue">₱9,000</div>
-        <div class="stat-sub">From 3 active clinics</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Total Patients</div>
-        <div class="stat-value">72</div>
-        <div class="stat-sub">Across all clinics</div>
-      </div>
-      <div class="stat-card warning">
-        <div class="stat-label">Overdue Payments</div>
-        <div class="stat-value">1</div>
-        <div class="stat-sub">Requires follow-up</div>
-      </div>
-    </div>
-    <div class="content-grid">
-      <div class="panel full-width">
-        <div class="panel-header"><h3>Clinic Accounts</h3><span id="clinic-count">3 total</span></div>
+      <div class="panel">
+        <div class="panel-header">
+          <h3>All Clinic Accounts</h3><span id="clinic-count-full">3 total</span>
+        </div>
         <div class="panel-body">
           <table class="clinic-table">
-            <thead><tr><th>Clinic</th><th>Plan</th><th>Monthly Fee</th><th>Patients</th><th>Since</th><th>Status</th><th>Action</th></tr></thead>
-            <tbody id="clinic-tbody-dash"></tbody>
+            <thead>
+              <tr>
+                <th>Clinic</th>
+                <th>Owner / Contact</th>
+                <th>Plan</th>
+                <th>Monthly Fee</th>
+                <th>Patients</th>
+                <th>Since</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="clinic-tbody-full"></tbody>
           </table>
         </div>
       </div>
-      <div class="panel">
-        <div class="panel-header"><h3>Revenue Breakdown</h3><span>This month</span></div>
-        <div class="panel-body" id="revenue-breakdown"></div>
+    </div>
+
+    <!-- REVENUE -->
+    <div id="section-revenue" class="section-content">
+      <div class="topbar">
+        <div>
+          <h2>Revenue</h2>
+          <p>Monthly income across all clinic subscriptions.</p>
+        </div>
+        <div class="topbar-right">
+          <div class="date-badge" id="today-date-r"></div>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat-card highlight">
+          <div class="stat-label">This Month</div>
+          <div class="stat-value" id="rev-total">₱9,000</div>
+          <div class="stat-sub" id="rev-total-sub">3 active subscriptions</div>
+        </div>
+        <div class="stat-card success">
+          <div class="stat-label">Collected</div>
+          <div class="stat-value" id="rev-collected">₱6,000</div>
+          <div class="stat-sub" id="rev-collected-sub">2 clinics paid</div>
+        </div>
+        <div class="stat-card warning">
+          <div class="stat-label">Pending</div>
+          <div class="stat-value" id="rev-pending">₱3,000</div>
+          <div class="stat-sub" id="rev-pending-sub">1 clinic overdue</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Setup Fees (Total)</div>
+          <div class="stat-value" id="rev-setup">₱13,000</div>
+          <div class="stat-sub">One-time collected</div>
+        </div>
       </div>
       <div class="panel">
-        <div class="panel-header"><h3>Recent Activity</h3><span>Platform-wide</span></div>
+        <div class="panel-header">
+          <h3>Per Clinic Revenue</h3><span>March 2026</span>
+        </div>
+        <div class="panel-body" id="revenue-full"></div>
+      </div>
+    </div>
+
+    <!-- ACTIVITY -->
+    <div id="section-activity" class="section-content">
+      <div class="topbar">
+        <div>
+          <h2>Activity</h2>
+          <p>All platform-wide events and alerts.</p>
+        </div>
+        <div class="topbar-right">
+          <div class="date-badge" id="today-date-a"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <h3>Activity Log</h3><span>All events</span>
+        </div>
         <div class="panel-body">
-          <div class="activity-list" id="activity-dash"></div>
+          <div class="activity-list" id="activity-full"></div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- CLINICS -->
-  <div id="section-clinics" class="section-content">
-    <div class="topbar">
-      <div><h2>Clinics</h2><p>All registered clinic accounts on DentAyos.</p></div>
-      <div class="topbar-right">
-        <div class="date-badge" id="today-date-c"></div>
-        <button class="add-btn" id="btn-add-clinic-clinics">+ Add Clinic</button>
-      </div>
-    </div>
-    <div class="panel">
-      <div class="panel-header"><h3>All Clinic Accounts</h3><span id="clinic-count-full">3 total</span></div>
-      <div class="panel-body">
-        <table class="clinic-table">
-          <thead><tr><th>Clinic</th><th>Owner / Contact</th><th>Plan</th><th>Monthly Fee</th><th>Patients</th><th>Since</th><th>Status</th><th>Action</th></tr></thead>
-          <tbody id="clinic-tbody-full"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+  </main>
 
-  <!-- REVENUE -->
-  <div id="section-revenue" class="section-content">
-    <div class="topbar">
-      <div><h2>Revenue</h2><p>Monthly income across all clinic subscriptions.</p></div>
-      <div class="topbar-right"><div class="date-badge" id="today-date-r"></div></div>
-    </div>
-    <div class="stats">
-      <div class="stat-card highlight">
-        <div class="stat-label">This Month</div>
-        <div class="stat-value" id="rev-total">₱9,000</div>
-        <div class="stat-sub" id="rev-total-sub">3 active subscriptions</div>
+  <!-- ADD CLINIC MODAL -->
+  <div class="modal-overlay" id="modal-add-clinic">
+    <div class="modal">
+      <button class="modal-close" id="btn-close-add-clinic">✕</button>
+      <h3>Add New Clinic</h3>
+      <p>Register a new clinic account on DentAyos.</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Clinic Name</label>
+          <input type="text" id="new-clinic-name" placeholder="e.g. Smile Dental Clinic">
+        </div>
+        <div class="form-group">
+          <label>Owner / Contact</label>
+          <input type="text" id="new-clinic-owner" placeholder="e.g. Dr. Santos">
+        </div>
       </div>
-      <div class="stat-card success">
-        <div class="stat-label">Collected</div>
-        <div class="stat-value" id="rev-collected">₱6,000</div>
-        <div class="stat-sub" id="rev-collected-sub">2 clinics paid</div>
-      </div>
-      <div class="stat-card warning">
-        <div class="stat-label">Pending</div>
-        <div class="stat-value" id="rev-pending">₱3,000</div>
-        <div class="stat-sub" id="rev-pending-sub">1 clinic overdue</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Setup Fees (Total)</div>
-        <div class="stat-value" id="rev-setup">₱13,000</div>
-        <div class="stat-sub">One-time collected</div>
-      </div>
-    </div>
-    <div class="panel">
-      <div class="panel-header"><h3>Per Clinic Revenue</h3><span>March 2026</span></div>
-      <div class="panel-body" id="revenue-full"></div>
-    </div>
-  </div>
-
-  <!-- ACTIVITY -->
-  <div id="section-activity" class="section-content">
-    <div class="topbar">
-      <div><h2>Activity</h2><p>All platform-wide events and alerts.</p></div>
-      <div class="topbar-right"><div class="date-badge" id="today-date-a"></div></div>
-    </div>
-    <div class="panel">
-      <div class="panel-header"><h3>Activity Log</h3><span>All events</span></div>
-      <div class="panel-body">
-        <div class="activity-list" id="activity-full"></div>
-      </div>
-    </div>
-  </div>
-
-</main>
-
-<!-- ADD CLINIC MODAL -->
-<div class="modal-overlay" id="modal-add-clinic">
-  <div class="modal">
-    <button class="modal-close" id="btn-close-add-clinic">✕</button>
-    <h3>Add New Clinic</h3>
-    <p>Register a new clinic account on DentAyos.</p>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Clinic Name</label>
-        <input type="text" id="new-clinic-name" placeholder="e.g. Smile Dental Clinic">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Location</label>
+          <input type="text" id="new-clinic-location" placeholder="e.g. Quezon City">
+        </div>
+        <div class="form-group">
+          <label>Plan</label>
+          <select id="new-clinic-plan">
+            <option value="Pilot">Pilot — ₱1,500/mo</option>
+            <option value="Standard">Standard — ₱3,000/mo</option>
+          </select>
+        </div>
       </div>
       <div class="form-group">
-        <label>Owner / Contact</label>
-        <input type="text" id="new-clinic-owner" placeholder="e.g. Dr. Santos">
+        <label>Contact Number</label>
+        <input type="text" id="new-clinic-contact" placeholder="09XX XXX XXXX">
       </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Location</label>
-        <input type="text" id="new-clinic-location" placeholder="e.g. Quezon City">
+      <div class="modal-actions">
+        <button class="btn-cancel" id="btn-cancel-add-clinic">Cancel</button>
+        <button class="btn-save" id="btn-save-add-clinic">Add Clinic</button>
       </div>
-      <div class="form-group">
-        <label>Plan</label>
-        <select id="new-clinic-plan">
-          <option value="Pilot">Pilot — ₱1,500/mo</option>
-          <option value="Standard">Standard — ₱3,000/mo</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Contact Number</label>
-      <input type="text" id="new-clinic-contact" placeholder="09XX XXX XXXX">
-    </div>
-    <div class="modal-actions">
-      <button class="btn-cancel" id="btn-cancel-add-clinic">Cancel</button>
-      <button class="btn-save" id="btn-save-add-clinic">Add Clinic</button>
     </div>
   </div>
-</div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
 
-<!-- BACK TO TOP -->
-<button id="back-to-top" title="Back to top" aria-label="Back to top">&#8679;</button>
+  <!-- BACK TO TOP -->
+  <button id="back-to-top" title="Back to top" aria-label="Back to top">&#8679;</button>
 
 
-<!-- LOGOUT OVERLAY -->
-<div class="logout-overlay" id="logout-overlay"><div class="logout-spinner"></div><div class="logout-msg">Returning to website...</div></div>
-<script src="js/owner.js"></script>
+  <!-- LOGOUT OVERLAY -->
+  <div class="logout-overlay" id="logout-overlay">
+    <div class="logout-spinner"></div>
+    <div class="logout-msg">Returning to website...</div>
+  </div>
+  <script src="js/owner.js"></script>
 </body>
+
 </html>

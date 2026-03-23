@@ -32,6 +32,13 @@
     .section-content.active {
       display: block;
     }
+
+    /* MOBILE: don’t force flex layout */
+    @media (max-width: 768px) {
+      body {
+        display: block;
+      }
+    }
   </style>
 </head>
 
