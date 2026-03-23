@@ -490,8 +490,12 @@ body {
 
 /* ── RESPONSIVE ──────────────────────────────────────────── */
 @media (max-width: 768px) {
+  body      { display: block; }
   .sidebar   { position: relative; width: 100%; min-height: auto; flex-direction: row; flex-wrap: wrap; }
+  .sidebar-toggle { left: 12px; }
   .main      { margin-left: 0; padding: 1.5rem; }
   .stats     { grid-template-columns: 1fr 1fr; }
   .content-grid { grid-template-columns: 1fr; }
+  .panel-body { overflow-x: auto; }
+  .patient-table { min-width: 700px; }
 }
