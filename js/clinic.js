@@ -169,10 +169,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const sidebar = document.getElementById('sidebar');
     const main = document.getElementById('main');
     const toggle = document.getElementById('sidebar-toggle');
-    sidebar.classList.toggle('collapsed');
-    main.classList.toggle('expanded');
-    toggle.classList.toggle('collapsed');
-    toggle.textContent = sidebar.classList.contains('collapsed') ? '☰' : '✕';
+
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+    if (isMobile) {
+      // Mobile drawer: use .open
+      sidebar.classList.toggle('open');
+      toggle.textContent = sidebar.classList.contains('open') ? '✕' : '☰';
+    } else {
+      // Desktop: keep your existing behavior
+      sidebar.classList.toggle('collapsed');
+      main.classList.toggle('expanded');
+      toggle.classList.toggle('collapsed');
+      toggle.textContent = sidebar.classList.contains('collapsed') ? '☰' : '✕';
+    }
   }
 
   // ── SECTION SWITCHING ─────────────────────────────────────

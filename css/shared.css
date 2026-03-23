@@ -529,4 +529,15 @@ html, body { max-width: 100%; overflow-x: hidden; }
   .patient-table td {
     white-space: nowrap;
   }
+
+  /* Mobile drawer: hidden by default */
+.sidebar { transform: translateX(-240px); }
+
+/* Mobile drawer: visible when open */
+.sidebar.open { transform: translateX(0); }
+}
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
