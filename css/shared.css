@@ -35,6 +35,8 @@ body {
   min-height: 100vh;
 }
 
+html, body { max-width: 100%; overflow-x: hidden; }
+
 /* ── SIDEBAR ─────────────────────────────────────────────── */
 .sidebar {
   width: 240px;
@@ -490,12 +492,32 @@ body {
 
 /* ── RESPONSIVE ──────────────────────────────────────────── */
 @media (max-width: 768px) {
-  body      { display: block; }
-  .sidebar   { position: relative; width: 100%; min-height: auto; flex-direction: row; flex-wrap: wrap; }
+  /* prevent any horizontal “cut off” */
+  html, body { max-width: 100%; overflow-x: hidden; }
+
+  /* main should use full screen width */
+  .main { margin-left: 0; padding: 1.25rem; }
+
+  /* make sidebar a drawer */
+  .sidebar {
+    position: fixed;      /* keep it overlaying */
+    top: 0; left: 0; bottom: 0;
+    width: 240px;         /* same as desktop */
+    min-height: 100vh;
+    transform: translateX(-240px); /* hidden by default */
+  }
+  .sidebar.collapsed { transform: translateX(-240px); } /* unchanged */
+  /* IMPORTANT: when NOT collapsed, it should be visible */
+  .sidebar:not(.collapsed) { transform: translateX(0); }
+
+  /* toggle button should always be reachable */
   .sidebar-toggle { left: 12px; }
-  .main      { margin-left: 0; padding: 1.5rem; }
-  .stats     { grid-template-columns: 1fr 1fr; }
+
+  /* stack cards/panels */
+  .stats { grid-template-columns: 1fr; }
   .content-grid { grid-template-columns: 1fr; }
+
+  /* tables: scroll instead of clipping */
   .panel-body { overflow-x: auto; }
   .patient-table { min-width: 700px; }
 }
